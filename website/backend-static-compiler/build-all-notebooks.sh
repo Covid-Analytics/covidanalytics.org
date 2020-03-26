@@ -18,6 +18,8 @@ for Notebook in ../../analysis/*.ipynb; do
   #docker exec -it $Compiler /bin/bash
   docker cp $Compiler:/app/notebook.html "$INSTALL_DIR/index.html"
   docker kill $Compiler > /dev/null
+  # temp hack since the template includes this file, let's just crate one here
+  touch "$INSTALL_DIR/custom.css"
   echo "...done"
   echo
 done

@@ -6,7 +6,7 @@
     {%- endif -%}
 {% endblock input_group %}
 
-{%- block html_head -%}
+{% block html_head %}
 {{ super() }}
     <!-- customize looks for embedding -->
     <style type="text/css">
@@ -17,4 +17,4 @@
             width: 100%;
         }
     </style>
-{%- endblock html_head -%}
+{% endblock html_head %}

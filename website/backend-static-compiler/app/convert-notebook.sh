@@ -1,3 +1,3 @@
 #!/bin/bash
 
-jupyter-nbconvert --to html --template hidecode --execute notebook.ipynb
+jupyter-nbconvert --execute --allow-errors --to html --template covidanalytics --no-input --no-prompt  notebook.ipynb
