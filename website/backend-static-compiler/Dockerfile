@@ -15,4 +15,4 @@ WORKDIR /app
 
 # copy any needed code in /app
 COPY ./app/convert-notebook.sh /app/convert-notebook.sh
-COPY ./app/hidecode.tpl /usr/lib/python3/dist-packages/nbconvert/templates/html/hidecode.tpl
+COPY ./app/templates/hidecode.tpl /usr/lib/python3/dist-packages/nbconvert/templates/html/hidecode.tpl
