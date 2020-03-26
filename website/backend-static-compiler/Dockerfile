@@ -12,3 +12,6 @@ RUN apt-get -yq install python3-matplotlib python3-numpy python3-pandas
 # place ourselves in /app
 RUN mkdir /app
 WORKDIR /app
+
+# copy any needed code in /app
+COPY ./app /app
