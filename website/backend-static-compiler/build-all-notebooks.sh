@@ -11,12 +11,9 @@ docker build . -f Dockerfile --tag=covana-backend-compiler
 for Notebook in ../../analysis/*.ipynb; do
   echo "Creating container to compiler $Notebok..."
   Compiler=`docker run -d --rm -t covana-backend-compiler:latest /bin/bash`
-  echo " > copying over the notebook"
   docker cp "$Notebook" $Compiler:/app/notebook.ipynb
-  echo " > compiling it"
-  docker exec $Compiler /app/compile-notebook.sh
-  echo " > getting the result back"
+  docker exec $Compiler /app/convert-notebook.sh
+  docker exec -it $Compiler /bin/bash
   docker cp $Compiler:/app/notebook.html "$INSTALL_DIR/index.html"
-  echo " > killing the compiler container."
   docker kill $Compiler > /dev/null
 done
