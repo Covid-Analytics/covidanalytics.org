@@ -13,7 +13,7 @@ for Notebook in ../../analysis/*.ipynb; do
   Compiler=`docker run -d --rm -t covana-backend-compiler:latest /bin/bash`
   docker cp "$Notebook" $Compiler:/app/notebook.ipynb
   docker exec $Compiler /app/convert-notebook.sh
-  docker exec -it $Compiler /bin/bash
+  #docker exec -it $Compiler /bin/bash
   docker cp $Compiler:/app/notebook.html "$INSTALL_DIR/index.html"
   docker kill $Compiler > /dev/null
 done
