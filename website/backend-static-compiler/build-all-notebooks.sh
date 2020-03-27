@@ -14,14 +14,14 @@ echo "[`date`] Using the 'covana-backend-compiler' container to convert: $Notebo
 Compiler=`docker run --rm -d -t covana-backend-compiler:latest /bin/bash`
 echo "> Copying notebooks from '../../../analysis' to the container 'input/' folder"
 for Notebook in ../../analysis/*.ipynb; do
-  docker cp "$Notebook" $Compiler:/app/input/
+  docker cp "$Notebook" "$Compiler":/app/input/
 done
 echo "> Compiling..."
-docker exec -t $Compiler python3 /app/convert-ipynb.py
+docker exec -t "$Compiler" python3 /app/convert-ipynb.py
 #docker exec -it $Compiler /bin/bash
-docker cp $Compiler:/app/output .
+docker cp "$Compiler":/app/output .
 echo "> Removing container..."
-docker kill $Compiler > /dev/null
+docker kill "$Compiler" > /dev/null
 echo "...done."
 
 touch "$INSTALL_DIR/custom.css"
