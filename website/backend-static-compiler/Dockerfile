@@ -10,4 +10,3 @@ RUN pip install -r requirements.txt
 
 # copy the conversion program
 COPY ./app/convert-ipynb.py .
-

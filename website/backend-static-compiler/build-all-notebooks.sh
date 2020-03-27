@@ -12,9 +12,9 @@ echo
 # Perform the conversion via docker
 echo "[`date`] Using the 'covana-backend-compiler' container to convert: $Notebook"
 Compiler=`docker run --rm -d -t covana-backend-compiler:latest /bin/bash`
-echo "> Copying notebooks"
+echo "> Copying notebooks from '../../../analysis' to the container 'input/' folder"
 for Notebook in ../../analysis/*.ipynb; do
-  docker cp "$Notebook" $Compiler:/app/
+  docker cp "$Notebook" $Compiler:/app/input/
 done
 echo "> Compiling..."
 docker exec -t $Compiler python3 /app/convert-ipynb.py
