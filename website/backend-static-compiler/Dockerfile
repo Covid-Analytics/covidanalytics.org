@@ -1,7 +1,7 @@
 FROM python:3.7-buster
 
 # place ourselves in /app
-RUN mkdir -p /app /app/output
+RUN mkdir -p /app /app/input /app/output
 WORKDIR /app
 
 # install the dependencies
