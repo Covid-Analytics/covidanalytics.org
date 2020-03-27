@@ -24,5 +24,7 @@ echo "> Removing container..."
 docker kill "$Compiler" > /dev/null
 echo "...done."
 
+# Install the new contents
+cp -a "output/*" "$INSTALL_DIR"
 touch "$INSTALL_DIR/custom.css"
-echo
+ln -nsf "$INSTALL_DIR/Covid19_world.html" "$INSTALL_DIR/index.html"
