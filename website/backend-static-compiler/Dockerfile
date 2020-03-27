@@ -13,6 +13,9 @@ RUN apt-get -yq install python3-matplotlib python3-numpy python3-pandas
 RUN mkdir /app
 WORKDIR /app
 
-# copy any needed code in /app
-COPY ./app/convert-notebook.sh /app/convert-notebook.sh
-COPY ./app/templates/covidanalytics.tpl /usr/lib/python3/dist-packages/nbconvert/templates/html/covidanalytics.tpl
+# install the dependencies
+COPY ./app/requirements.txt /app/
+RUN pip install -r requirements.txt
+
+# copy the conversion program
+COPY ./app/convert-ipynb.py /app/

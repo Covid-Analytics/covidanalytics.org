@@ -1,0 +1,10 @@
+# for the script
+nbformat
+nbconvert
+jinja2
+# for execution of the notebook
+jupyter_client
+ipykernel
+# used inside the notebooks
+pandas==1.0.3
+matplotlib==3.2.1
