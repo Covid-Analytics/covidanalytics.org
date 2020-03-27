@@ -9,6 +9,10 @@ from nbconvert.preprocessors import ExecutePreprocessor, ClearOutputPreprocessor
 from traitlets.config import Config
 from jinja2 import DictLoader
 
+# Configuration (shall have a command line, one day)
+NOTEBOOK_PATHS = ['.', './input', '../../../analysis']
+OUTPUT_FOLDER = 'output'
+
 # This is the inline'd template
 inline_template = DictLoader({'ours.tpl': """
 {%- extends 'full.tpl' -%}
@@ -34,9 +38,9 @@ inline_template = DictLoader({'ours.tpl': """
 """})
 
 
-def convert_notebook_to_assets(notebook_file_name, output_file_name):
+def convert_notebook_to_assets(notebook_file_name, base_name, output_folder):
     # open file
-    print('Converting Notebook (' + notebook_file_name + ')')
+    print('Converting Notebook: ' + notebook_file_name + ' ...')
     nb_file = open(notebook_file_name, 'r').read()
     nb = nbformat.reads(nb_file, as_version=4)
 
@@ -49,7 +53,7 @@ def convert_notebook_to_assets(notebook_file_name, output_file_name):
     print(" - executing...")
     ep = ExecutePreprocessor(timeout=600, kernel_name='python3', allow_errors=False)
     try:
-        ep.preprocess(nb, {'__metadata': {'path': 'notebooks/'}})
+        ep.preprocess(nb, {'metadata': {'path': 'output/'}})
     except Exception as e:
         print('ERROR: Execution of the notebook ' + notebook_file_name + ' stopped, likely for missing some py libs.')
         print('       Please check the output/exception and add those to the requirements.')
@@ -73,29 +77,33 @@ def convert_notebook_to_assets(notebook_file_name, output_file_name):
     (body, resources) = html_exporter.from_notebook_node(nb)
 
     # save html output file, with reference to the pictures
-    print(" - saving html to file (" + output_file_name + ")")
-    with open(output_file_name, 'wt') as the_file:
+    output_html_file_name = output_folder + "/" + base_name + ".html"
+    print(" - saving html to file: " + output_html_file_name)
+    with open(output_html_file_name, 'wt') as the_file:
         the_file.write(body)
 
     return body
 
 
-# find all notebooks
-notebooks = []
-for probe_dir in ['../../../analysis', '.']:
-    for nb_file_name in glob.glob(probe_dir + '/*.ipynb'):
-        file_path = os.path.normpath(nb_file_name)
-        file_basename = os.path.splitext(os.path.basename(file_path))[0]
-        notebooks.append({
-            'input': file_path,
-            'basename': file_basename,
-            'output': file_basename + '.html',
-        })
-print("Discovered " + str(len(notebooks)) + " notebooks in the default locations. Performing the following:")
-print("  " + str(notebooks))
+def scan_for_notebooks(paths_list):
+    print("Finding notebooks in: " + str(paths_list))
+    nb_list = []
+    for probe_dir in paths_list:
+        for nb_file_name in glob.glob(probe_dir + '/*.ipynb'):
+            file_path = os.path.normpath(nb_file_name)
+            file_basename = os.path.splitext(os.path.basename(file_path))[0]
+            nb_list.append({
+                'input': file_path,
+                'basename': file_basename,
+            })
+    print(" - found " + str(len(nb_list)) + " notebooks:" + str(nb_list))
+    return nb_list
 
-# operate on all notebooks
+
+# Main
+os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+notebooks = scan_for_notebooks(NOTEBOOK_PATHS)
 for task in notebooks:
-    convert_notebook_to_assets(task['input'], task['output'])
+    convert_notebook_to_assets(task['input'], task['basename'], OUTPUT_FOLDER)
 
 print("done.")
