@@ -9,17 +9,20 @@ echo "Building or refreshing the Docker container for compiling notebooks to HTM
 docker build . -f Dockerfile --tag=covana-backend-compiler
 echo
 
-# compile each notebook by allocating and running a compiler container
+# Perform the conversion via docker
+echo "[`date`] Using the 'covana-backend-compiler' container to convert: $Notebook"
+Compiler=`docker run --rm -d -t covana-backend-compiler:latest /bin/bash`
+echo "> Copying notebooks"
 for Notebook in ../../analysis/*.ipynb; do
-  echo "[`date`] Using the 'covana-backend-compiler' container to convert: $Notebook"
-  Compiler=`docker run -d --rm -t covana-backend-compiler:latest /bin/bash`
-  docker cp "$Notebook" $Compiler:/app/notebook.ipynb
-  docker exec -t $Compiler python3 /app/convert-ipynb.py
-  #docker exec -it $Compiler /bin/bash
-  docker cp $Compiler:/app/notebook.html "$INSTALL_DIR/index.html"
-  docker kill $Compiler > /dev/null
-  # temp hack since the template includes this file, let's just crate one here
-  touch "$INSTALL_DIR/custom.css"
-  echo "...done"
-  echo
+  docker cp "$Notebook" $Compiler:/app/
 done
+echo "> Compiling..."
+docker exec -t $Compiler python3 /app/convert-ipynb.py
+#docker exec -it $Compiler /bin/bash
+docker cp $Compiler:/app/output .
+echo "> Removing container..."
+docker kill $Compiler > /dev/null
+echo "...done."
+
+touch "$INSTALL_DIR/custom.css"
+echo

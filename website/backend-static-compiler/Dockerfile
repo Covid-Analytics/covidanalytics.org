@@ -8,7 +8,7 @@ RUN apt-get update && apt-get -yq install --no-install-recommends \
 #     python3-matplotlib python3-numpy python3-pandas
 
 # place ourselves in /app
-RUN mkdir /app
+RUN mkdir -p /app /app/output
 WORKDIR /app
 
 # install the dependencies
