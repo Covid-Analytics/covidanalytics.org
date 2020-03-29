@@ -74,17 +74,33 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
             "exclude_input": True,
             "exclude_input_prompt": True,
             "exclude_output_prompt": True,
-        }
+        },
+        "HTMLExporter": {
+            "preprocessors": ['nbconvert.preprocessors.ExtractOutputPreprocessor']
+        },
     })
     html_exporter = HTMLExporter(config=c_clean, extra_loaders=[inline_template])
     html_exporter.template_file = 'ours.tpl'
     (body, resources) = html_exporter.from_notebook_node(nb)
 
-    # save html output file, with reference to the pictures
+    # save html output file, with local reference to the pictures
     output_html_file_name = output_folder + os.sep + "index.html"
     print(" - saving html to file: " + output_html_file_name)
     with open(output_html_file_name, 'wt') as the_file:
         the_file.write(body)
+
+    # save all the figures
+    figures = resources['outputs']
+    figures_count = len(figures)
+    figure_index = 1
+    for figure_file in figures:
+        output_figure_file_name = output_folder + os.sep + figure_file
+        print(" - saving figure " + str(figure_index) + " of " + str(figures_count) + ": " + output_figure_file_name)
+        if not figure_file.endswith('.png'):
+            print("WARNING: figure is not a PNG file")
+            continue
+        with open(output_figure_file_name, 'wb') as the_file:
+            the_file.write(figures[figure_file])
 
     return body
 
