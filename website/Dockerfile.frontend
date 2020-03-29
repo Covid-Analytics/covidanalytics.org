@@ -1,2 +1,7 @@
-# Website frontend: build and deploy react app
-# ...
+# Builds the Frontend of the application inside a node image
+FROM node:lts-buster
+
+# Install the dependencies
+WORKDIR /app
+COPY ./frontend/package.json /app
+RUN npm install

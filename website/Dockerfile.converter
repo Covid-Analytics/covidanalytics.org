@@ -2,8 +2,8 @@
 FROM python:3.7-buster
 
 # place ourselves in /app
-RUN mkdir -p /app /app/input /app/output
 WORKDIR /app
+RUN mkdir -p /app/input /app/output
 
 # install the dependencies
 COPY ./backend-converter/requirements.txt .
