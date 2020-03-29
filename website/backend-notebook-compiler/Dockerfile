@@ -1,3 +1,4 @@
+# This first part builds the compiler: Notebooks -> Assets (pictures and HTML and JS-loader)
 FROM python:3.7-buster
 
 # place ourselves in /app
