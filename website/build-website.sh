@@ -13,7 +13,7 @@ echo
 echo "[$(date)] Running"
 CONVERTER_PROCESS=$(docker run --rm -d -t covana-converter:latest /bin/bash)
 echo "> Copying notebooks from '../../../analysis' to the container 'input/' folder"
-for NOTEBOOK in ../../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONVERTER_PROCESS":/app/input/; done
+for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONVERTER_PROCESS":/app/input/; done
 echo "> Compiling..."
 docker exec -t "$CONVERTER_PROCESS" python3 /app/convert-ipynb.py
 docker cp "$CONVERTER_PROCESS":/app/output .
