@@ -4,6 +4,7 @@
 import glob
 import os
 import nbformat
+import json
 from nbconvert import HTMLExporter
 from nbconvert.preprocessors import ExecutePreprocessor, ClearOutputPreprocessor
 from traitlets.config import Config
@@ -38,9 +39,28 @@ inline_template = DictLoader({'ours.tpl': """
 """})
 
 
+def input_file_to_folder(basename):
+    return basename.lower().replace(' ', '_').replace('.', '_')
+
+
+def scan_for_notebooks(paths_list):
+    print("Finding notebooks in: " + str(paths_list))
+    nb_list = []
+    for probe_dir in paths_list:
+        for nb_file_name in glob.glob(probe_dir + '/*.ipynb'):
+            file_path = os.path.normpath(nb_file_name)
+            file_basename = os.path.splitext(os.path.basename(file_path))[0]
+            nb_list.append({
+                'input': file_path,
+                'basename': input_file_to_folder(file_basename),
+            })
+    print(" - found " + str(len(nb_list)) + " notebooks:" + str(nb_list))
+    return nb_list
+
+
 def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
     # define and create output folder
-    output_folder = output_prefix + os.sep + base_name
+    output_folder = output_prefix + '/' + base_name
     os.makedirs(output_folder, exist_ok=True)
 
     # open file
@@ -84,50 +104,46 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
     (body, resources) = html_exporter.from_notebook_node(nb)
 
     # save html output file, with local reference to the pictures
-    output_html_file_name = output_folder + os.sep + "index.html"
+    output_html_file_name = output_folder + '/' + "index.html"
     print(" - saving html to file: " + output_html_file_name)
     with open(output_html_file_name, 'wt') as the_file:
         the_file.write(body)
 
     # save all the figures
+    local_assets = []
     figures = resources['outputs']
     figures_count = len(figures)
     figure_index = 1
     for figure_file in figures:
-        output_figure_file_name = output_folder + os.sep + figure_file
+        output_figure_file_name = output_folder + '/' + figure_file
         print(" - saving figure " + str(figure_index) + " of " + str(figures_count) + ": " + output_figure_file_name)
         if not figure_file.endswith('.png'):
             print("WARNING: figure is not a PNG file")
             continue
         with open(output_figure_file_name, 'wb') as the_file:
             the_file.write(figures[figure_file])
+        local_assets.append({
+            'notebook': base_name,
+            'figure': figure_file,
+            'file': output_figure_file_name,
+            'html_notebook': output_html_file_name,
+        })
 
-    return body
+    # return a recap of all assets
+    return local_assets
 
 
-def input_file_to_folder(basename):
-    return basename.lower().replace(' ', '_').replace('.', '_')
-
-
-def scan_for_notebooks(paths_list):
-    print("Finding notebooks in: " + str(paths_list))
-    nb_list = []
-    for probe_dir in paths_list:
-        for nb_file_name in glob.glob(probe_dir + '/*.ipynb'):
-            file_path = os.path.normpath(nb_file_name)
-            file_basename = os.path.splitext(os.path.basename(file_path))[0]
-            nb_list.append({
-                'input': file_path,
-                'basename': input_file_to_folder(file_basename),
-            })
-    print(" - found " + str(len(nb_list)) + " notebooks:" + str(nb_list))
-    return nb_list
+def write_assets_loader(assets, output_prefix):
+    with open(output_prefix + '/' + 'assets.json', 'wt') as the_file:
+        the_file.write(json.dumps(assets))
 
 
 # Main
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 notebooks = scan_for_notebooks(NOTEBOOK_PATHS)
+all_figures = []
 for task in notebooks:
-    convert_notebook_to_assets(task['input'], task['basename'], OUTPUT_FOLDER)
+    all_figures.extend(convert_notebook_to_assets(task['input'], task['basename'], OUTPUT_FOLDER))
+write_assets_loader(all_figures, OUTPUT_FOLDER)
 
 print("done.")
