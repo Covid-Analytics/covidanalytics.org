@@ -1,4 +1,4 @@
-# This first part builds the compiler: Notebooks -> Assets (pictures and HTML and JS-loader)
+# Notebook converter: Notebooks -> Assets (pictures and HTML and JS-loader)
 FROM python:3.7-buster
 
 # place ourselves in /app
@@ -11,6 +11,3 @@ RUN pip install -r requirements.txt
 
 # copy the conversion program
 COPY ./backend-converter/convert-ipynb.py .
-
-# Next section: compiler frontend
-# ...

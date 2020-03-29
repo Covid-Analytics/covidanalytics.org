@@ -7,7 +7,7 @@ LOCAL_OUTPUT_DIR="out_converter"
 
 # build the container to statically compile the notebooks to html
 echo "Building or refreshing the Docker container for compiling notebooks to HTML"
-docker build . -f Dockerfile --tag=covana-converter
+docker build . -f Dockerfile.converter --tag=covana-converter
 echo
 
 # Perform the conversion via docker
