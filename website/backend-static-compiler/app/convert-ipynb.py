@@ -135,7 +135,7 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
 
 def write_assets_loader(assets, output_prefix):
     with open(output_prefix + '/' + 'assets.json', 'wt') as the_file:
-        the_file.write(json.dumps(assets))
+        the_file.write(json.dumps(assets, indent=2))
 
 
 # Main
