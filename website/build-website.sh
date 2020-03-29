@@ -18,7 +18,7 @@ echo "> Copying notebooks from '../../../analysis' to the container 'input/' fol
 for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONVERTER_PROCESS":/app/input/; done
 echo "> Converting Notebooks (and copying the output to $LOCAL_CONVERTER_OUTPUT)..."
 docker exec -t "$CONVERTER_PROCESS" python3 /app/convert-ipynb.py
-docker cp "$CONVERTER_PROCESS":/app/output "$LOCAL_CONVERTER_OUTPUT"
+docker cp "$CONVERTER_PROCESS":/app/output/ "$LOCAL_CONVERTER_OUTPUT"
 echo "> Removing container..."
 docker kill "$CONVERTER_PROCESS" > /dev/null
 echo "...done."
@@ -31,10 +31,10 @@ echo "...done."
 docker build . -f Dockerfile.frontend --tag=covana-frontend
 FRONTEND_PROCESS=$(docker run --rm -d -t covana-frontend:latest /bin/bash)
 echo "> Copying site files..."
-docker cp frontend/ "$FRONTEND_PROCESS":/app
+docker cp frontend/. "$FRONTEND_PROCESS":/app/
 echo "> Compiling Frontend (and copying the output to $LOCAL_FRONTEND_OUTPUT)..."
 docker exec -t "$FRONTEND_PROCESS" npm run build
-docker cp "$FRONTEND_PROCESS":/app/build "$LOCAL_FRONTEND_OUTPUT"
+docker cp "$FRONTEND_PROCESS":/app/build/ "$LOCAL_FRONTEND_OUTPUT"
 echo "> Removing container..."
 docker kill "$FRONTEND_PROCESS" > /dev/null
 echo "...done."
