@@ -12,19 +12,19 @@ LOCAL_FRONTEND_OUTPUT="out_frontend"
 docker build . -f Dockerfile.converter --tag=covana-converter
 
 # perform the conversion (instanciate the container, copy files, excute script, copy back output) - 1 minute
-# NOTE: to inspect the image at any state: docker exec -it $CONVERTER_PROCESS /bin/bash
+# NOTE: to inspect the image at any state: docker exec -it $CONV_CONTAINER /bin/bash
 echo "> Start Notebooks Converter container"
-CONVERTER_PROCESS=$(docker run --rm -d -t covana-converter:latest /bin/bash)
+CONV_CONTAINER=$(docker run --rm -d -t covana-converter:latest /bin/bash)
 
 echo "> Copying notebooks from '../../../analysis' to the container 'input/' folder"
-for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONVERTER_PROCESS":/app/input/; done
+for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONV_CONTAINER":/app/input/; done
 
 echo "> Converting Notebooks (and copying the output to $LOCAL_CONVERTER_OUTPUT)..."
-time docker exec -t "$CONVERTER_PROCESS" python3 /app/convert-ipynb.py
-docker cp "$CONVERTER_PROCESS":/app/output/ "$LOCAL_CONVERTER_OUTPUT"
+time docker exec -t "$CONV_CONTAINER" python3 /app/convert-ipynb.py
+docker cp "$CONV_CONTAINER":/app/output/ "$LOCAL_CONVERTER_OUTPUT"
 
 echo "> Removing container..."
-docker kill "$CONVERTER_PROCESS" > /dev/null
+docker kill "$CONV_CONTAINER" > /dev/null
 echo "...done."
 
 # == Frontend ==
@@ -34,18 +34,18 @@ docker build . -f Dockerfile.frontend --tag=covana-frontend
 
 # perform the frontend compilation - 2 minutes
 echo "> Start Frontend compiler container"
-FRONTEND_PROCESS=$(docker run --rm -d -t covana-frontend:latest /bin/bash)
+FRONTEND_CONTAINER=$(docker run --rm -d -t covana-frontend:latest /bin/bash)
 
 echo "> Copying GLUE files (site already in the image)..."
-# TODO: IMPROVE GLUE
-docker cp "$LOCAL_CONVERTER_OUTPUT/." "$FRONTEND_PROCESS":/app/public/
+docker cp "$LOCAL_CONVERTER_OUTPUT/." "$FRONTEND_CONTAINER":/app/public/
+#docker exec -t "$FRONTEND_CONTAINER" mv /app/public/... /app/...
 
 echo "> Compiling Frontend (and copying the output to $LOCAL_FRONTEND_OUTPUT)..."
-time docker exec -t "$FRONTEND_PROCESS" npm run build
-docker cp "$FRONTEND_PROCESS":/app/build/ "$LOCAL_FRONTEND_OUTPUT"
+time docker exec -t "$FRONTEND_CONTAINER" npm run build
+docker cp "$FRONTEND_CONTAINER":/app/build/ "$LOCAL_FRONTEND_OUTPUT"
 
 echo "> Removing container..."
-docker kill "$FRONTEND_PROCESS" > /dev/null
+docker kill "$FRONTEND_CONTAINER" > /dev/null
 echo "...done."
 
 
