@@ -3,6 +3,7 @@
 # change this to specify where this application will be served from
 # it not in a parameter yet for risk management
 INSTALL_DIR="/srv/org.covidanalytics/static"
+LOCAL_OUTPUT_DIR="converter_output"
 
 # build the container to statically compile the notebooks to html
 echo "Building or refreshing the Docker container for compiling notebooks to HTML"
@@ -16,14 +17,14 @@ echo "> Copying notebooks from '../../../analysis' to the container 'input/' fol
 for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONVERTER_PROCESS":/app/input/; done
 echo "> Compiling..."
 docker exec -t "$CONVERTER_PROCESS" python3 /app/convert-ipynb.py
-docker cp "$CONVERTER_PROCESS":/app/output .
+docker cp "$CONVERTER_PROCESS":/app/output "$LOCAL_OUTPUT_DIR"
 #docker exec -it $CONVERTER_PROCESS /bin/bash
 echo "> Removing container..."
 docker kill "$CONVERTER_PROCESS" > /dev/null
 echo "...done."
 
 # Install the new contents
-cp -a output/* "$INSTALL_DIR"
-touch "$INSTALL_DIR/custom.css"
+cp -a "$LOCAL_OUTPUT_DIR"/* "$INSTALL_DIR"
 # TEMP: link to the index
+touch "$INSTALL_DIR/custom.css"
 ln -nsf "covid19_world/index.html" "$INSTALL_DIR/index.html"
