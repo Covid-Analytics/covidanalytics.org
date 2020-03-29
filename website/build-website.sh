@@ -29,8 +29,8 @@ echo "...done."
 docker build . -f Dockerfile.frontend --tag=covana-frontend
 FRONTEND_PROCESS=$(docker run --rm -d -t covana-frontend:latest /bin/bash)
 echo "> Copying GLUE files (site already in the image)..."
-# TODO: MISSING GLUE
-#docker cp $LOCAL_CONVERTER_OUTPUT?? /. "$FRONTEND_PROCESS":/app/
+# TODO: IMPROVE GLUE
+docker cp "$LOCAL_CONVERTER_OUTPUT/." "$FRONTEND_PROCESS":/app/public/
 echo "> Compiling Frontend (and copying the output to $LOCAL_FRONTEND_OUTPUT)..."
 docker exec -t "$FRONTEND_PROCESS" npm run build
 docker cp "$FRONTEND_PROCESS":/app/build/ "$LOCAL_FRONTEND_OUTPUT"
