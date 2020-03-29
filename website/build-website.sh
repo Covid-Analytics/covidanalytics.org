@@ -6,20 +6,20 @@ INSTALL_DIR="/srv/org.covidanalytics/static"
 
 # build the container to statically compile the notebooks to html
 echo "Building or refreshing the Docker container for compiling notebooks to HTML"
-docker build . -f Dockerfile --tag=covana-compiler
+docker build . -f Dockerfile --tag=covana-converter
 echo
 
 # Perform the conversion via docker
 echo "[$(date)] Running"
-Compiler=$(docker run --rm -d -t covana-compiler:latest /bin/bash)
+CONVERTER_PROCESS=$(docker run --rm -d -t covana-converter:latest /bin/bash)
 echo "> Copying notebooks from '../../../analysis' to the container 'input/' folder"
-for Notebook in ../../analysis/*.ipynb; do docker cp "$Notebook" "$Compiler":/app/input/; done
+for NOTEBOOK in ../../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONVERTER_PROCESS":/app/input/; done
 echo "> Compiling..."
-docker exec -t "$Compiler" python3 /app/convert-ipynb.py
-#docker exec -it $Compiler /bin/bash
-docker cp "$Compiler":/app/output .
+docker exec -t "$CONVERTER_PROCESS" python3 /app/convert-ipynb.py
+docker cp "$CONVERTER_PROCESS":/app/output .
+#docker exec -it $CONVERTER_PROCESS /bin/bash
 echo "> Removing container..."
-docker kill "$Compiler" > /dev/null
+docker kill "$CONVERTER_PROCESS" > /dev/null
 echo "...done."
 
 # Install the new contents
