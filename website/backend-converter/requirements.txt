@@ -1,10 +1,17 @@
 # for the script
-nbformat
-nbconvert
-jinja2
+nbformat==5.0.4
+nbconvert==5.6.1
+jinja2==2.11.1
 # for execution of the notebook
-jupyter_client
-ipykernel
+jupyter_client==6.1.2
+ipykernel==5.2.0
 # used inside the notebooks
-pandas==1.0.3
 matplotlib==3.2.1
+pandas==1.0.3
+numpy==1.18.2
+# forward looking
+scipy==1.4.1
+scikit-learn==0.22.2.post1
+Pillow==7.0.0
+scikit-image==0.16.2
+opencv-python==4.2.0.32
