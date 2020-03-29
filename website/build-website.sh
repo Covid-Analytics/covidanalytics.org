@@ -31,7 +31,7 @@ echo "...done."
 docker build . -f Dockerfile.frontend --tag=covana-frontend
 FRONTEND_PROCESS=$(docker run --rm -d -t covana-frontend:latest /bin/bash)
 echo "> Copying site files..."
-docker cp frontend/* "$FRONTEND_PROCESS":/app
+docker cp frontend/ "$FRONTEND_PROCESS":/app
 echo "> Compiling Frontend (and copying the output to $LOCAL_FRONTEND_OUTPUT)..."
 docker exec -t "$FRONTEND_PROCESS" npm run build
 docker cp "$FRONTEND_PROCESS":/app/build "$LOCAL_FRONTEND_OUTPUT"
