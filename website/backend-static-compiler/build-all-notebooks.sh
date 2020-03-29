@@ -25,6 +25,6 @@ docker kill "$Compiler" > /dev/null
 echo "...done."
 
 # Install the new contents
-cp -a "output/*" "$INSTALL_DIR"
+cp -a output/* "$INSTALL_DIR"
 touch "$INSTALL_DIR/custom.css"
-ln -nsf "$INSTALL_DIR/covid19_world/index.html" "$INSTALL_DIR/index.html"
+ln -nsf "covid19_world/index.html" "$INSTALL_DIR/index.html"
