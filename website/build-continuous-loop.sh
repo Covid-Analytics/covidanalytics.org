@@ -2,6 +2,6 @@
 
 while /bin/true; do
   git pull
-  ./build-all-notebooks.sh
+  ./build-website.sh
   sleep 2m;
 done
