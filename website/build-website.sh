@@ -3,7 +3,7 @@
 # change this to specify where this application will be served from
 # it not in a parameter yet for risk management
 INSTALL_DIR="/srv/org.covidanalytics/static"
-LOCAL_OUTPUT_DIR="converter_output"
+LOCAL_OUTPUT_DIR="out_converter"
 
 # build the container to statically compile the notebooks to html
 echo "Building or refreshing the Docker container for compiling notebooks to HTML"
