@@ -6,8 +6,11 @@ RUN mkdir -p /app /app/input /app/output
 WORKDIR /app
 
 # install the dependencies
-COPY ./backend-notebook-compiler/requirements.txt .
+COPY ./backend-converter/requirements.txt .
 RUN pip install -r requirements.txt
 
 # copy the conversion program
-COPY ./backend-notebook-compiler/convert-ipynb.py .
+COPY ./backend-converter/convert-ipynb.py .
+
+# Next section: compiler frontend
+# ...
