@@ -7,7 +7,7 @@ COPY ./frontend/package.json /app
 RUN npm install
 
 # Copy the frontend files, as they're only refreshed with frontend refresh
-COPY . /app
+COPY ./frontend/. /app
 
 # NOTE:
 # - from now on we'll proceed with copy of the generated code from the Converter container and with the build
