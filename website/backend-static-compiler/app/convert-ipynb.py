@@ -38,7 +38,11 @@ inline_template = DictLoader({'ours.tpl': """
 """})
 
 
-def convert_notebook_to_assets(notebook_file_name, base_name, output_folder):
+def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
+    # define and create output folder
+    output_folder = output_prefix + os.sep + base_name
+    os.makedirs(output_folder, exist_ok=True)
+
     # open file
     print('Converting Notebook: ' + notebook_file_name + ' ...')
     nb_file = open(notebook_file_name, 'r').read()
@@ -53,7 +57,7 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_folder):
     print(" - executing...")
     ep = ExecutePreprocessor(timeout=600, kernel_name='python3', allow_errors=False)
     try:
-        ep.preprocess(nb, {'metadata': {'path': 'output/'}})
+        ep.preprocess(nb, {'metadata': {'path': output_folder}})
     except Exception as e:
         print('ERROR: Execution of the notebook ' + notebook_file_name + ' stopped, likely for missing some py libs.')
         print('       Please check the output/exception and add those to the requirements.')
@@ -77,12 +81,16 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_folder):
     (body, resources) = html_exporter.from_notebook_node(nb)
 
     # save html output file, with reference to the pictures
-    output_html_file_name = output_folder + "/" + base_name + ".html"
+    output_html_file_name = output_folder + os.sep + "index.html"
     print(" - saving html to file: " + output_html_file_name)
     with open(output_html_file_name, 'wt') as the_file:
         the_file.write(body)
 
     return body
+
+
+def input_file_to_folder(basename):
+    return basename.lower().replace(' ', '_').replace('.', '_')
 
 
 def scan_for_notebooks(paths_list):
@@ -94,7 +102,7 @@ def scan_for_notebooks(paths_list):
             file_basename = os.path.splitext(os.path.basename(file_path))[0]
             nb_list.append({
                 'input': file_path,
-                'basename': file_basename,
+                'basename': input_file_to_folder(file_basename),
             })
     print(" - found " + str(len(nb_list)) + " notebooks:" + str(nb_list))
     return nb_list

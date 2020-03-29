@@ -27,4 +27,4 @@ echo "...done."
 # Install the new contents
 cp -a "output/*" "$INSTALL_DIR"
 touch "$INSTALL_DIR/custom.css"
-ln -nsf "$INSTALL_DIR/Covid19_world.html" "$INSTALL_DIR/index.html"
+ln -nsf "$INSTALL_DIR/covid19_world/index.html" "$INSTALL_DIR/index.html"
