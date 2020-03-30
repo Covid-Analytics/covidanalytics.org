@@ -13,7 +13,7 @@ import SimpleNavbar from "components/Navbars/SimpleNavbar.js";
 import Footer from "components/Footer/Footer.js";
 import SimpleSidebar from "components/Sidebar/SimpleSidebar.js";
 
-import routes from "routes.js";
+import {dashRoutes, getRoutes, getActiveRouteTitle} from "routes.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/layouts/adminStyle.js";
 
@@ -72,53 +72,12 @@ export default function SimpleLayout(props) {
     };
   });
   // functions for changing the states from components
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-  const getRouteBrandText = routes => {
-    let activeRoute = "Live Charts";
-    for (let i = 0; i < routes.length; i++) {
-      if (routes[i].collapse) {
-        let collapseActiveRoute = getRouteBrandText(routes[i].views);
-        if (collapseActiveRoute !== activeRoute) {
-          return collapseActiveRoute;
-        }
-      } else {
-        if (
-          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-        ) {
-          return routes[i].name;
-        }
-      }
-    }
-    return activeRoute;
-  };
-  const getRoutes = routes => {
-    return routes.map((prop, key) => {
-      if (prop.collapse) {
-        return getRoutes(prop.views);
-      }
-      if (prop.layout === "/_dash") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      } else {
-        return null;
-      }
-    });
-  };
-  const sidebarMinimize = () => {
-    setMiniActive(!miniActive);
-  };
-
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+  const handleSidebarMinimize = () => setMiniActive(!miniActive);
   return (
     <div className={classes.wrapper}>
       <SimpleSidebar
-        routes={routes}
+        routes={dashRoutes}
         logoText={"Covid-19 Live"}
         logo={logo}
         image={image}
@@ -131,16 +90,17 @@ export default function SimpleLayout(props) {
       />
       <div className={mainPanelClasses} ref={mainPanel}>
         <SimpleNavbar
-          sidebarMinimize={sidebarMinimize.bind(this)}
+          sidebarMinimize={handleSidebarMinimize.bind(this)}
           miniActive={miniActive}
-          brandText={getRouteBrandText(routes)}
+          brandText={getActiveRouteTitle(dashRoutes)}
           handleDrawerToggle={handleDrawerToggle}
           {...rest}
         />
         <div className={classes.content}>
           <div className={classes.container}>
             <Switch>
-              {getRoutes(routes)}
+              {getRoutes(dashRoutes, '')}
+              <Redirect from="/" to="/data"/>
             </Switch>
           </div>
         </div>

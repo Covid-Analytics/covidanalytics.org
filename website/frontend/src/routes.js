@@ -1,3 +1,6 @@
+import React from "react";
+import {Route} from "react-router-dom";
+
 import Buttons from "views/Components/Buttons.js";
 import Calendar from "views/Calendar/Calendar.js";
 import Charts from "views/Charts/Charts.js";
@@ -18,6 +21,7 @@ import ReactTables from "views/Tables/ReactTables.js";
 import RegisterPage from "views/Pages/RegisterPage.js";
 import RegularForms from "views/Forms/RegularForms.js";
 import RegularTables from "views/Tables/RegularTables.js";
+import SimpleDashboard from "views/Dashboard/SimpleDashboard.js";
 import SweetAlert from "views/Components/SweetAlert.js";
 import TimelinePage from "views/Pages/Timeline.js";
 import Typography from "views/Components/Typography.js";
@@ -37,7 +41,16 @@ import Place from "@material-ui/icons/Place";
 import Timeline from "@material-ui/icons/Timeline";
 import WidgetsIcon from "@material-ui/icons/Widgets";
 
-var dashRoutes = [
+const dashRoutes = [
+  // Enrico mod
+  {
+    path: "/data",
+    name: "Live Data",
+    icon: DashboardIcon,
+    component: SimpleDashboard,
+    layout: ""
+  },
+  // Former
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -290,4 +303,31 @@ var dashRoutes = [
     layout: "/_dash"
   }
 ];
-export default dashRoutes;
+
+const getRoutes = (routes, base_layout = '') => {
+  return routes.map((r, idx) => {
+    if (r.collapse)
+      return getRoutes(r.views, base_layout);
+    if (r.layout === base_layout)
+      return <Route path={r.layout + r.path} component={r.component} key={idx}/>;
+    else
+      return null;
+  });
+};
+
+const getActiveRouteTitle = (routes) => {
+  const nameUnset = "Default Brand Text";
+  for (let i = 0; i < routes.length; i++) {
+    if (!routes[i].collapse) {
+      if (window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1)
+        return routes[i].name;
+    } else {
+      const collapseActiveRoute = getActiveRouteTitle(routes[i].views);
+      if (collapseActiveRoute !== nameUnset)
+        return collapseActiveRoute;
+    }
+  }
+  return nameUnset;
+};
+
+export {dashRoutes, getRoutes, getActiveRouteTitle};

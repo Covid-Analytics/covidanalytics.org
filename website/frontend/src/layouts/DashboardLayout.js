@@ -14,7 +14,7 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
-import routes from "routes.js";
+import {dashRoutes, getRoutes, getActiveRouteTitle} from "routes.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/layouts/adminStyle.js";
 
@@ -95,42 +95,6 @@ export default function DashboardLayout(props) {
   const getRoute = () => {
     return window.location.pathname !== "/_dash/full-screen-maps";
   };
-  const getActiveRoute = routes => {
-    let activeRoute = "Default Brand Text";
-    for (let i = 0; i < routes.length; i++) {
-      if (routes[i].collapse) {
-        let collapseActiveRoute = getActiveRoute(routes[i].views);
-        if (collapseActiveRoute !== activeRoute) {
-          return collapseActiveRoute;
-        }
-      } else {
-        if (
-          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-        ) {
-          return routes[i].name;
-        }
-      }
-    }
-    return activeRoute;
-  };
-  const getRoutes = routes => {
-    return routes.map((prop, key) => {
-      if (prop.collapse) {
-        return getRoutes(prop.views);
-      }
-      if (prop.layout === "/_dash") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      } else {
-        return null;
-      }
-    });
-  };
   const sidebarMinimize = () => {
     setMiniActive(!miniActive);
   };
@@ -143,7 +107,7 @@ export default function DashboardLayout(props) {
   return (
     <div className={classes.wrapper}>
       <Sidebar
-        routes={routes}
+        routes={dashRoutes}
         logoText={"Covid-19 Live"}
         logo={logo}
         image={image}
@@ -158,7 +122,7 @@ export default function DashboardLayout(props) {
         <AdminNavbar
           sidebarMinimize={sidebarMinimize.bind(this)}
           miniActive={miniActive}
-          brandText={getActiveRoute(routes)}
+          brandText={getActiveRouteTitle(dashRoutes)}
           handleDrawerToggle={handleDrawerToggle}
           {...rest}
         />
@@ -167,15 +131,15 @@ export default function DashboardLayout(props) {
           <div className={classes.content}>
             <div className={classes.container}>
               <Switch>
-                {getRoutes(routes)}
-                <Redirect from="/_dash" to="/_dash/dashboard" />
+                {getRoutes(dashRoutes, '/_dash')}
+                {/*<Redirect from="/_dash" to="/_dash/dashboard" />*/}
               </Switch>
             </div>
           </div>
         ) : (
           <div className={classes.map}>
             <Switch>
-              {getRoutes(routes)}
+              {getRoutes(dashRoutes, '/_dash')}
               <Redirect from="/_dash" to="/_dash/dashboard" />
             </Switch>
           </div>
