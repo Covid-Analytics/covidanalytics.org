@@ -129,6 +129,11 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
             'html_notebook': output_html_file_name,
         })
 
+    # create an empty 'custom.css'
+    custom_css_file_name = output_folder + '/' + 'custom.css'
+    with open(custom_css_file_name, 'wt') as the_file:
+        the_file.write("")
+
     # return a recap of all assets
     return local_assets
 
