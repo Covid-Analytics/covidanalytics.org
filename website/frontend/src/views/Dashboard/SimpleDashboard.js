@@ -47,7 +47,7 @@ export default function SimpleDashboard() {
     <div>
       {/* 1st row: Global Stats and diffs */}
       <GridContainer>
-        <GridItem xs={12} sm={6} md={6} lg={3}>
+        <GridItem xs={12} sm={6} md={6} lg={3} xl={2}>
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
@@ -65,7 +65,7 @@ export default function SimpleDashboard() {
           </Card>
         </GridItem>
 
-        <GridItem xs={12} sm={6} md={6} lg={3}>
+        <GridItem xs={12} sm={6} md={6} lg={3} xl={2}>
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success"><Store/></CardIcon>
@@ -81,7 +81,7 @@ export default function SimpleDashboard() {
           </Card>
         </GridItem>
 
-        <GridItem xs={12} sm={6} md={6} lg={3}>
+        <GridItem xs={12} sm={6} md={6} lg={3} xl={2}>
           <Card>
             <CardHeader color="danger" stats icon>
               <CardIcon color="danger"><Warning/></CardIcon>
@@ -101,7 +101,7 @@ export default function SimpleDashboard() {
       {/* row 2: Import all the Charts */}
       <GridContainer>
         {dataGlue.map((e, idx) => (
-          <GridItem xs={12} sm={12} md={3} key={idx}>
+          <GridItem xs={12} sm={12} md={6} lg={3} key={idx}>
             {e}
           </GridItem>
         ))}
