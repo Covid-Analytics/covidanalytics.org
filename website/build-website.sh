@@ -50,7 +50,6 @@ echo "...done."
 
 
 # Install the new contents
-cp -a "$LOCAL_CONVERTER_OUTPUT"/* "$INSTALL_DIR"
+cp -a "$LOCAL_FRONTEND_OUTPUT"/* "$INSTALL_DIR"
 # TEMP: link to the index
-touch "$INSTALL_DIR/custom.css"
-ln -nsf "covid19_world/index.html" "$INSTALL_DIR/index.html"
+#ln -nsf "covid19_world/index.html" "$INSTALL_DIR/index.html"
