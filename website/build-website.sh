@@ -21,7 +21,8 @@ for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONV_CONTAINER":
 
 echo "> Converting Notebooks (and copying the output to $LOCAL_CONVERTER_OUTPUT)..."
 time docker exec -t "$CONV_CONTAINER" python3 /app/convert-ipynb.py
-docker cp "$CONV_CONTAINER":/app/output/ "$LOCAL_CONVERTER_OUTPUT"
+rm -fr "$LOCAL_CONVERTER_OUTPUT"
+docker cp "$CONV_CONTAINER":/app/output/. "$LOCAL_CONVERTER_OUTPUT"
 
 echo "> Removing container..."
 docker kill "$CONV_CONTAINER" > /dev/null
@@ -42,6 +43,7 @@ docker cp "$LOCAL_CONVERTER_OUTPUT/." "$FRONTEND_CONTAINER":/app/public/
 
 echo "> Compiling Frontend (and copying the output to $LOCAL_FRONTEND_OUTPUT)..."
 time docker exec -t "$FRONTEND_CONTAINER" npm run build
+rm -fr "$LOCAL_FRONTEND_OUTPUT"
 docker cp "$FRONTEND_CONTAINER":/app/build/. "$LOCAL_FRONTEND_OUTPUT"
 
 echo "> Removing container..."
