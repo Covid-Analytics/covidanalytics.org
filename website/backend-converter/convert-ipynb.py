@@ -11,7 +11,7 @@ from traitlets.config import Config
 from jinja2 import DictLoader
 
 # Configuration (shall have a command line, one day)
-NOTEBOOK_PATHS = ['.', './input', '../../../analysis']
+NOTEBOOK_PATHS = ['.', './input', '../../analysis']
 OUTPUT_FOLDER = 'output'
 
 # This is the inline'd template
@@ -104,10 +104,16 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
     (body, resources) = html_exporter.from_notebook_node(nb)
 
     # save html output file, with local reference to the pictures
+    local_html = []
     output_html_file_name = output_folder + '/' + "index.html"
     print(" - saving html to file: " + output_html_file_name)
     with open(output_html_file_name, 'wt') as the_file:
         the_file.write(body)
+    local_html.append({
+        'notebook': base_name,
+        'html_notebook': output_html_file_name,
+        'html_body': body,
+    })
 
     # save all the figures
     local_assets = []
@@ -124,9 +130,9 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
             the_file.write(figures[figure_file])
         local_assets.append({
             'notebook': base_name,
+            'html_notebook': output_html_file_name,
             'figure': figure_file,
             'file': output_figure_file_name,
-            'html_notebook': output_html_file_name,
         })
 
     # create an empty 'custom.css'
@@ -135,10 +141,10 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
         the_file.write("")
 
     # return a recap of all assets
-    return local_assets
+    return local_html, local_assets
 
 
-def write_assets_loader(assets, output_prefix):
+def write_assets_loader(pages, assets, output_prefix):
     with open(output_prefix + '/' + 'assets.json', 'wt') as the_file:
         the_file.write(json.dumps(assets, indent=2))
 
@@ -146,9 +152,12 @@ def write_assets_loader(assets, output_prefix):
 # Main
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 notebooks = scan_for_notebooks(NOTEBOOK_PATHS)
+all_pages = []
 all_figures = []
 for task in notebooks:
-    all_figures.extend(convert_notebook_to_assets(task['input'], task['basename'], OUTPUT_FOLDER))
-write_assets_loader(all_figures, OUTPUT_FOLDER)
+    nb_html, nb_assets = convert_notebook_to_assets(task['input'], task['basename'], OUTPUT_FOLDER)
+    all_pages.extend(nb_html)
+    all_figures.extend(nb_assets)
+write_assets_loader(all_pages, all_figures, OUTPUT_FOLDER)
 
 print("done.")
