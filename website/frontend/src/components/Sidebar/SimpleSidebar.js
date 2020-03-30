@@ -17,7 +17,7 @@ import Collapse from "@material-ui/core/Collapse";
 import Icon from "@material-ui/core/Icon";
 
 // core components
-import AdminNavbarLinks from "components/Navbars/AdminNavbarLinks.js";
+import SimpleNavbarLinks from "components/Navbars/SimpleNavbarLinks";
 
 import sidebarStyle from "assets/jss/material-dashboard-pro-react/components/sidebarStyle.js";
 
@@ -53,7 +53,7 @@ class SidebarWrapper extends React.Component {
       <div className={className} ref={this.sidebarWrapper}>
         {/*{user}*/}
         {headerLinks}
-        {/*{links}*/}
+        {links}
       </div>
     );
   }
@@ -112,22 +112,19 @@ class SimpleSidebar extends React.Component {
   }
 
   // this function creates the links and collapses that appear in the sidebar (left menu)
-  createLinks = routes => {
+  createLinks = (routes) => {
     const {classes, color, rtlActive} = this.props;
-    return routes.map((prop, key) => {
-      if (prop.redirect) {
+    return routes.map((route, idx) => {
+      if (route.redirect)
         return null;
-      }
-      if (prop.collapse) {
-        var st = {};
-        st[prop["state"]] = !this.state[prop.state];
+      if (route.collapse) {
+        let st = {};
+        st[route["state"]] = !this.state[route.state];
         const navLinkClasses =
           classes.itemLink +
           " " +
           cx({
-            [" " + classes.collapseActive]: this.getCollapseInitialState(
-              prop.views
-            )
+            [" " + classes.collapseActive]: this.getCollapseInitialState(route.views)
           });
         const itemText =
           classes.itemText +
@@ -169,10 +166,10 @@ class SimpleSidebar extends React.Component {
           });
         return (
           <ListItem
-            key={key}
+            key={idx}
             className={cx(
-              {[classes.item]: prop.icon !== undefined},
-              {[classes.collapseItem]: prop.icon === undefined}
+              {[classes.item]: route.icon !== undefined},
+              {[classes.collapseItem]: route.icon === undefined}
             )}
           >
             <NavLink
@@ -183,38 +180,38 @@ class SimpleSidebar extends React.Component {
                 this.setState(st);
               }}
             >
-              {prop.icon !== undefined ? (
-                typeof prop.icon === "string" ? (
-                  <Icon className={itemIcon}>{prop.icon}</Icon>
+              {route.icon !== undefined ? (
+                typeof route.icon === "string" ? (
+                  <Icon className={itemIcon}>{route.icon}</Icon>
                 ) : (
-                  <prop.icon className={itemIcon}/>
+                  <route.icon className={itemIcon}/>
                 )
               ) : (
                 <span className={collapseItemMini}>
-                  {rtlActive ? prop.rtlMini : prop.mini}
+                  {rtlActive ? route.rtlMini : route.mini}
                 </span>
               )}
               <ListItemText
-                primary={rtlActive ? prop.rtlName : prop.name}
+                primary={rtlActive ? route.rtlName : route.name}
                 secondary={
                   <b
                     className={
                       caret +
                       " " +
-                      (this.state[prop.state] ? classes.caretActive : "")
+                      (this.state[route.state] ? classes.caretActive : "")
                     }
                   />
                 }
                 disableTypography={true}
                 className={cx(
-                  {[itemText]: prop.icon !== undefined},
-                  {[collapseItemText]: prop.icon === undefined}
+                  {[itemText]: route.icon !== undefined},
+                  {[collapseItemText]: route.icon === undefined}
                 )}
               />
             </NavLink>
-            <Collapse in={this.state[prop.state]} unmountOnExit>
+            <Collapse in={this.state[route.state]} unmountOnExit>
               <List className={classes.list + " " + classes.collapseList}>
-                {this.createLinks(prop.views)}
+                {this.createLinks(route.views)}
               </List>
             </Collapse>
           </ListItem>
@@ -224,7 +221,7 @@ class SimpleSidebar extends React.Component {
         classes.collapseItemLink +
         " " +
         cx({
-          [" " + classes[color]]: this.activeRoute(prop.path)
+          [" " + classes[color]]: this.activeRoute(route.path)
         });
       const collapseItemMini =
         classes.collapseItemMini +
@@ -236,7 +233,7 @@ class SimpleSidebar extends React.Component {
         classes.itemLink +
         " " +
         cx({
-          [" " + classes[color]]: this.activeRoute(prop.path)
+          [" " + classes[color]]: this.activeRoute(route.path)
         });
       const itemText =
         classes.itemText +
@@ -266,36 +263,36 @@ class SimpleSidebar extends React.Component {
         });
       return (
         <ListItem
-          key={key}
+          key={idx}
           className={cx(
-            {[classes.item]: prop.icon !== undefined},
-            {[classes.collapseItem]: prop.icon === undefined}
+            {[classes.item]: route.icon !== undefined},
+            {[classes.collapseItem]: route.icon === undefined}
           )}
         >
           <NavLink
-            to={prop.layout + prop.path}
+            to={route.layout + route.path}
             className={cx(
-              {[navLinkClasses]: prop.icon !== undefined},
-              {[innerNavLinkClasses]: prop.icon === undefined}
+              {[navLinkClasses]: route.icon !== undefined},
+              {[innerNavLinkClasses]: route.icon === undefined}
             )}
           >
-            {prop.icon !== undefined ? (
-              typeof prop.icon === "string" ? (
-                <Icon className={itemIcon}>{prop.icon}</Icon>
+            {route.icon !== undefined ? (
+              typeof route.icon === "string" ? (
+                <Icon className={itemIcon}>{route.icon}</Icon>
               ) : (
-                <prop.icon className={itemIcon}/>
+                <route.icon className={itemIcon}/>
               )
             ) : (
               <span className={collapseItemMini}>
-                {rtlActive ? prop.rtlMini : prop.mini}
+                {rtlActive ? route.rtlMini : route.mini}
               </span>
             )}
             <ListItemText
-              primary={rtlActive ? prop.rtlName : prop.name}
+              primary={rtlActive ? route.rtlName : route.name}
               disableTypography={true}
               className={cx(
-                {[itemText]: prop.icon !== undefined},
-                {[collapseItemText]: prop.icon === undefined}
+                {[itemText]: route.icon !== undefined},
+                {[collapseItemText]: route.icon === undefined}
               )}
             />
           </NavLink>
@@ -447,8 +444,8 @@ class SimpleSidebar extends React.Component {
         </List>
       </div>
     );
-    var links = (
-      <List className={classes.list}>{this.createLinks(routes)}</List>
+    const links = (
+      <List className={classes.list}>{this.createLinks(routes.filter(r => r.layout === ''))}</List>
     );
 
     const logoNormal =
@@ -473,20 +470,12 @@ class SimpleSidebar extends React.Component {
       cx({
         [classes.whiteAfter]: bgColor === "white"
       });
-    var brand = (
+    const brand = (
       <div className={logoClasses}>
-        <a
-          href="https://www.covidanalytics.org/"
-          target="_blank"
-          className={logoMini}
-        >
+        <a href="https://www.covidanalytics.org/" target="_blank" className={logoMini}>
           <img src={logo} alt="logo" className={classes.img}/>
         </a>
-        <a
-          href="https://www.covidanalytics.org/"
-          target="_blank"
-          className={logoNormal}
-        >
+        <a href="https://www.covidanalytics.org/" target="_blank" className={logoNormal}>
           {logoText}
         </a>
       </div>
@@ -510,6 +499,7 @@ class SimpleSidebar extends React.Component {
       });
     return (
       <div ref={this.mainPanel}>
+        {/* Mobile (right) Drawer-based sidebar */}
         <Hidden mdUp implementation="css">
           <Drawer
             variant="temporary"
@@ -527,7 +517,7 @@ class SimpleSidebar extends React.Component {
             <SidebarWrapper
               className={sidebarWrapper}
               user={user}
-              headerLinks={<AdminNavbarLinks rtlActive={rtlActive}/>}
+              headerLinks={<SimpleNavbarLinks/>}
               links={links}
             />
             {image !== undefined ? (
@@ -538,6 +528,7 @@ class SimpleSidebar extends React.Component {
             ) : null}
           </Drawer>
         </Hidden>
+        {/* Desktop (Left) Drawer-based sidebar */}
         <Hidden smDown implementation="css">
           <Drawer
             onMouseOver={() => this.setState({miniActive: false})}
@@ -553,6 +544,7 @@ class SimpleSidebar extends React.Component {
             <SidebarWrapper
               className={sidebarWrapper}
               user={user}
+              // headerLinks={no header links as we have the Navbar for those, on desktop}
               links={links}
             />
             {image !== undefined ? (

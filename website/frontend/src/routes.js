@@ -44,10 +44,33 @@ import WidgetsIcon from "@material-ui/icons/Widgets";
 const dashRoutes = [
   // Enrico mod
   {
-    path: "/data",
-    name: "Live Data",
+    path: '/charts',
+    name: "Latest Charts",
     icon: DashboardIcon,
     component: SimpleDashboard,
+    layout: ""
+  },
+  {
+    collapse: true,
+    name: "Analyses",
+    icon: Apps,
+    state: "analysesCollapse",
+    views: [
+      {
+        path: "/notebooks/1",
+        name: "Notebook 1",
+        mini: "N1",
+        component: "",
+        layout: ""
+      },
+      {
+        path: "/notebooks/2",
+        name: "Notebook 2",
+        mini: "N2",
+        component: "",
+        layout: ""
+      },
+    ],
     layout: ""
   },
   // Former

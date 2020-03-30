@@ -71,6 +71,7 @@ export default function HeaderLinks(props) {
   });
   return (
     <div className={wrapper}>
+      {/* Search Input and Button */}
       {/*<CustomInput*/}
       {/*  formControlProps={{*/}
       {/*    className: classes.top + " " + classes.search*/}
@@ -83,38 +84,20 @@ export default function HeaderLinks(props) {
       {/*    }*/}
       {/*  }}*/}
       {/*/>*/}
-      <Button
-        color="white"
-        aria-label="edit"
-        justIcon
-        round
-        className={searchButton}
-      >
-        <Search className={classes.headerLinksSvg + " " + classes.searchIcon}/>
-      </Button>
-      <Button
-        color="transparent"
-        simple
-        aria-label="Dashboard"
-        justIcon
-        className={classes.buttonLink}
-        muiClasses={{
-          label: ""
-        }}
-      >
-        <Dashboard
-          className={
-            classes.headerLinksSvg +
-            " " +
-            classes.links
-          }
-        />
-        <Hidden mdUp implementation="css">
-          <span className={classes.linkText}>
-            Dashboard
-          </span>
-        </Hidden>
-      </Button>
+      {/*<Button color="white" aria-label="edit" justIcon round className={searchButton}>*/}
+      {/*  <Search className={classes.headerLinksSvg + " " + classes.searchIcon}/>*/}
+      {/*</Button>*/}
+
+      {/* Dashboard Button*/}
+      {/*<Button color="transparent" simple aria-label="Dashboard" justIcon className={classes.buttonLink} muiClasses={{label: ""}}>*/}
+      {/*  <Dashboard className={classes.headerLinksSvg + " " + classes.links}/>*/}
+      {/*  <Hidden mdUp implementation="css">*/}
+      {/*    <span className={classes.linkText}>*/}
+      {/*      Dashboard*/}
+      {/*    </span>*/}
+      {/*  </Hidden>*/}
+      {/*</Button>*/}
+
       {/*<div className={managerClasses}>*/}
       {/*  <Button*/}
       {/*    color="transparent"*/}

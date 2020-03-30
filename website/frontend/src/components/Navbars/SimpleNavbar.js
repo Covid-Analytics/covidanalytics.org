@@ -19,6 +19,7 @@ import ViewList from "@material-ui/icons/ViewList";
 import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarStyle.js";
+import SimpleNavbarLinks from "./SimpleNavbarLinks";
 
 const useStyles = makeStyles(styles);
 
@@ -54,9 +55,9 @@ export default function SimpleNavbar(props) {
         </div>
 
         {/* Links (none here) */}
-        {/*<Hidden smDown implementation="css">*/}
-        {/*<SimpleNavbarLinks/>*/}
-        {/*</Hidden>*/}
+        <Hidden smDown implementation="css">
+          <SimpleNavbarLinks/>
+        </Hidden>
 
         {/* Mobile: Drawer toggle on the right side */}
         <Hidden mdUp implementation="css">

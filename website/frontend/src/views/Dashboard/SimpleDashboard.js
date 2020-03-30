@@ -45,7 +45,7 @@ export default function SimpleDashboard() {
   const classes = useStyles();
   return (
     <div>
-      {/* 1st row: Global Stats and diffs */}
+      {/* row: Global Stats and diffs */}
       <GridContainer>
         <GridItem xs={12} sm={6} md={6} lg={3} xl={2}>
           <Card>
@@ -98,7 +98,7 @@ export default function SimpleDashboard() {
         </GridItem>
       </GridContainer>
 
-      {/* row 2: Import all the Charts */}
+      {/* row: Import all the Charts */}
       <GridContainer>
         {dataGlue.map((e, idx) => (
           <GridItem xs={12} sm={12} md={6} lg={3} key={idx}>
@@ -107,7 +107,8 @@ export default function SimpleDashboard() {
         ))}
       </GridContainer>
 
-      {/* 2nd row: Geo Table */}
+
+      {/* row: Geo Table */}
       <GridContainer>
         <GridItem xs={12} style={{display: 'none'}}>
           <Card>

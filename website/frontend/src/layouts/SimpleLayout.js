@@ -100,7 +100,7 @@ export default function SimpleLayout(props) {
           <div className={classes.container}>
             <Switch>
               {getRoutes(dashRoutes, '')}
-              <Redirect from="/" to="/data"/>
+              <Redirect from="/" to={dashRoutes[0].path}/>
             </Switch>
           </div>
         </div>
