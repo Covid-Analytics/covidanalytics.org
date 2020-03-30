@@ -42,7 +42,7 @@ docker cp "$LOCAL_CONVERTER_OUTPUT/." "$FRONTEND_CONTAINER":/app/public/
 
 echo "> Compiling Frontend (and copying the output to $LOCAL_FRONTEND_OUTPUT)..."
 time docker exec -t "$FRONTEND_CONTAINER" npm run build
-docker cp "$FRONTEND_CONTAINER":/app/build/ "$LOCAL_FRONTEND_OUTPUT"
+docker cp "$FRONTEND_CONTAINER":/app/build/. "$LOCAL_FRONTEND_OUTPUT"
 
 echo "> Removing container..."
 docker kill "$FRONTEND_CONTAINER" > /dev/null
