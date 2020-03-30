@@ -38,8 +38,10 @@ echo "> Start Frontend compiler container"
 FRONTEND_CONTAINER=$(docker run --rm -d -t covana-frontend:latest /bin/bash)
 
 echo "> Copying GLUE files (site already in the image)..."
+# copy to the public wesbite, for serving the index.html pages
 docker cp "$LOCAL_CONVERTER_OUTPUT/." "$FRONTEND_CONTAINER":/app/public/
-#docker exec -t "$FRONTEND_CONTAINER" mv /app/public/... /app/...
+# copy to the data folder, for glueing up the figures
+docker cp "$LOCAL_CONVERTER_OUTPUT/." "$FRONTEND_CONTAINER":/app/src/data/
 
 echo "> Compiling Frontend (and copying the output to $LOCAL_FRONTEND_OUTPUT)..."
 time docker exec -t "$FRONTEND_CONTAINER" npm run build
