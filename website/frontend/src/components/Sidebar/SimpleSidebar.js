@@ -51,15 +51,15 @@ class SidebarWrapper extends React.Component {
     const {className, user, headerLinks, links} = this.props;
     return (
       <div className={className} ref={this.sidebarWrapper}>
-        {user}
+        {/*{user}*/}
         {headerLinks}
-        {links}
+        {/*{links}*/}
       </div>
     );
   }
 }
 
-class Sidebar extends React.Component {
+class SimpleSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -568,11 +568,11 @@ class Sidebar extends React.Component {
   }
 }
 
-Sidebar.defaultProps = {
+SimpleSidebar.defaultProps = {
   bgColor: "blue"
 };
 
-Sidebar.propTypes = {
+SimpleSidebar.propTypes = {
   classes: PropTypes.object.isRequired,
   bgColor: PropTypes.oneOf(["white", "black", "blue"]),
   rtlActive: PropTypes.bool,
@@ -601,4 +601,4 @@ SidebarWrapper.propTypes = {
   links: PropTypes.object
 };
 
-export default withStyles(sidebarStyle)(Sidebar);
+export default withStyles(sidebarStyle)(SimpleSidebar);

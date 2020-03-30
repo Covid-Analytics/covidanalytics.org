@@ -28,7 +28,8 @@ import styles from "assets/jss/material-dashboard-pro-react/components/authNavba
 
 const useStyles = makeStyles(styles);
 
-export default function AuthNavbar(props) {
+export default function AuthNavbar(props)
+{
   const [open, setOpen] = React.useState(false);
   const handleDrawerToggle = () => {
     setOpen(!open);
