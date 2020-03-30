@@ -109,7 +109,7 @@ export default function SimpleDashboard() {
 
       {/* 2nd row: Geo Table */}
       <GridContainer>
-        <GridItem xs={12}>
+        <GridItem xs={12} style={{display: 'none'}}>
           <Card>
             <CardHeader color="success" icon>
               <CardIcon color="success">
