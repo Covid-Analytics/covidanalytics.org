@@ -168,7 +168,7 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
     return local_html, local_figures
 
 
-glue_frontend_template = """
+glue_frontend_template = """// MACHINE GENERATED CODE, by convert-ipynb.py
 import React from "react";
 
 // Import all Figures (path is relative to the src/data folder in the Frontend)
@@ -198,9 +198,11 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
         fig_index = fig_index + 1
         var_name = 'figure' + str(fig_index)
 
-        frontend_glue_data_file_relative = fig_file.replace(output_prefix, '')
+        frontend_glue_relative_file = fig_file.replace(output_prefix + '/', '')
 
-        frontend_imports.append('import ' + var_name + ' from "./' + frontend_glue_data_file_relative + '";')
+        # append one import
+        frontend_imports.append('import ' + var_name + ' from "./' + frontend_glue_relative_file + '";')
+        # append one component
         frontend_components.append(
             '  <EmbeddedChart imageResource={' + var_name + '} folder="' + fig_notebook + '" title="' + fig_title + '" comment="' + fig_comment + '" updatedUtc="' + fig_updated + '"/>,')
 
