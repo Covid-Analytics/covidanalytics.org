@@ -194,8 +194,8 @@ material-dashboard-pro-react
     │       └── Wizard.js
     ├── index.js
     ├── layouts
-    │   ├── Admin.js
-    │   ├── Auth.js
+    │   ├── DashboardLayout.js
+    │   ├── AuthLayout.js
     │   └── RTL.js
     ├── routes.js
     ├── variables

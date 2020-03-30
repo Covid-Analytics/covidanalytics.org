@@ -17,10 +17,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 
-import AuthLayout from "layouts/Auth.js";
-import AdminLayout from "layouts/DashboardLayout.js";
+import AuthLayout from "layouts/AuthLayout.js";
+import DashboardLayout from "layouts/DashboardLayout.js";
+import SimpleLayout from "layouts/SimpleLayout.js";
 
 import "assets/scss/material-dashboard-pro-react.scss?v=1.8.0";
 
@@ -29,9 +30,9 @@ const hist = createBrowserHistory();
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
-      <Route path="/auth" component={AuthLayout} />
-      <Route path="/admin" component={AdminLayout} />
-      <Redirect from="/" to="/admin/dashboard" />
+      <Route path="/_auth" component={AuthLayout} />
+      <Route path="/_dash" component={DashboardLayout} />
+      <Route path="/" component={SimpleLayout} />
     </Switch>
   </Router>,
   document.getElementById("root")

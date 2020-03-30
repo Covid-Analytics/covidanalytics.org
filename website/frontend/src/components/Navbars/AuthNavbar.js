@@ -1,10 +1,10 @@
 import React from "react";
 import cx from "classnames";
 import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
+import {NavLink} from "react-router-dom";
 
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Hidden from "@material-ui/core/Hidden";
@@ -38,15 +38,15 @@ export default function AuthNavbar(props) {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
   };
   const classes = useStyles();
-  const { color, brandText } = props;
+  const {color, brandText} = props;
   const appBarClasses = cx({
     [" " + classes[color]]: color
   });
   var list = (
     <List className={classes.list}>
       <ListItem className={classes.listItem}>
-        <NavLink to={"/admin/dashboard"} className={classes.navLink}>
-          <Dashboard className={classes.listItemIcon} />
+        <NavLink to={"/_dash/dashboard"} className={classes.navLink}>
+          <Dashboard className={classes.listItemIcon}/>
           <ListItemText
             primary={"Dashboard"}
             disableTypography={true}
@@ -56,12 +56,12 @@ export default function AuthNavbar(props) {
       </ListItem>
       <ListItem className={classes.listItem}>
         <NavLink
-          to={"/auth/pricing-page"}
+          to={"/_auth/pricing-page"}
           className={cx(classes.navLink, {
-            [classes.navLinkActive]: activeRoute("/auth/pricing-page")
+            [classes.navLinkActive]: activeRoute("/_auth/pricing-page")
           })}
         >
-          <MonetizationOn className={classes.listItemIcon} />
+          <MonetizationOn className={classes.listItemIcon}/>
           <ListItemText
             primary={"Pricing"}
             disableTypography={true}
@@ -71,12 +71,12 @@ export default function AuthNavbar(props) {
       </ListItem>
       <ListItem className={classes.listItem}>
         <NavLink
-          to={"/auth/register-page"}
+          to={"/_auth/register-page"}
           className={cx(classes.navLink, {
-            [classes.navLinkActive]: activeRoute("/auth/register-page")
+            [classes.navLinkActive]: activeRoute("/_auth/register-page")
           })}
         >
-          <PersonAdd className={classes.listItemIcon} />
+          <PersonAdd className={classes.listItemIcon}/>
           <ListItemText
             primary={"Register"}
             disableTypography={true}
@@ -86,12 +86,12 @@ export default function AuthNavbar(props) {
       </ListItem>
       <ListItem className={classes.listItem}>
         <NavLink
-          to={"/auth/login-page"}
+          to={"/_auth/login-page"}
           className={cx(classes.navLink, {
-            [classes.navLinkActive]: activeRoute("/auth/login-page")
+            [classes.navLinkActive]: activeRoute("/_auth/login-page")
           })}
         >
-          <Fingerprint className={classes.listItemIcon} />
+          <Fingerprint className={classes.listItemIcon}/>
           <ListItemText
             primary={"Login"}
             disableTypography={true}
@@ -101,12 +101,12 @@ export default function AuthNavbar(props) {
       </ListItem>
       <ListItem className={classes.listItem}>
         <NavLink
-          to={"/auth/lock-screen-page"}
+          to={"/_auth/lock-screen-page"}
           className={cx(classes.navLink, {
-            [classes.navLinkActive]: activeRoute("/auth/lock-screen-page")
+            [classes.navLinkActive]: activeRoute("/_auth/lock-screen-page")
           })}
         >
-          <LockOpen className={classes.listItemIcon} />
+          <LockOpen className={classes.listItemIcon}/>
           <ListItemText
             primary={"Lock"}
             disableTypography={true}
@@ -142,7 +142,7 @@ export default function AuthNavbar(props) {
             aria-label="open drawer"
             onClick={handleDrawerToggle}
           >
-            <Menu />
+            <Menu/>
           </Button>
         </Hidden>
         <Hidden mdUp>

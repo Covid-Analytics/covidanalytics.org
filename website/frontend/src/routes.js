@@ -14,7 +14,6 @@ import LoginPage from "views/Pages/LoginPage.js";
 import Notifications from "views/Components/Notifications.js";
 import Panels from "views/Components/Panels.js";
 import PricingPage from "views/Pages/PricingPage.js";
-import RTLSupport from "views/Pages/RTLSupport.js";
 import ReactTables from "views/Tables/ReactTables.js";
 import RegisterPage from "views/Pages/RegisterPage.js";
 import RegularForms from "views/Forms/RegularForms.js";
@@ -42,323 +41,253 @@ var dashRoutes = [
   {
     path: "/dashboard",
     name: "Dashboard",
-    rtlName: "لوحة القيادة",
     icon: DashboardIcon,
     component: Dashboard,
-    layout: "/admin"
+    layout: "/_dash"
   },
   {
     collapse: true,
     name: "Pages",
-    rtlName: "صفحات",
     icon: Image,
     state: "pageCollapse",
     views: [
       {
         path: "/pricing-page",
         name: "Pricing Page",
-        rtlName: "عالتسعير",
         mini: "PP",
-        rtlMini: "ع",
         component: PricingPage,
-        layout: "/auth"
-      },
-      {
-        path: "/rtl-support-page",
-        name: "RTL Support",
-        rtlName: "صودعم رتل",
-        mini: "RS",
-        rtlMini: "صو",
-        component: RTLSupport,
-        layout: "/rtl"
+        layout: "/_auth"
       },
       {
         path: "/timeline-page",
         name: "Timeline Page",
-        rtlName: "تيالجدول الزمني",
         mini: "T",
-        rtlMini: "تي",
         component: TimelinePage,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/login-page",
         name: "Login Page",
-        rtlName: "هعذاتسجيل الدخول",
         mini: "L",
-        rtlMini: "هعذا",
         component: LoginPage,
-        layout: "/auth"
+        layout: "/_auth"
       },
       {
         path: "/register-page",
         name: "Register Page",
-        rtlName: "تسجيل",
         mini: "R",
-        rtlMini: "صع",
         component: RegisterPage,
-        layout: "/auth"
+        layout: "/_auth"
       },
       {
         path: "/lock-screen-page",
         name: "Lock Screen Page",
-        rtlName: "اقفل الشاشة",
         mini: "LS",
-        rtlMini: "هذاع",
         component: LockScreenPage,
-        layout: "/auth"
+        layout: "/_auth"
       },
       {
         path: "/user-page",
         name: "User Profile",
-        rtlName: "ملف تعريفي للمستخدم",
         mini: "UP",
-        rtlMini: "شع",
         component: UserProfile,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/error-page",
         name: "Error Page",
-        rtlName: "صفحة الخطأ",
         mini: "E",
-        rtlMini: "البريد",
         component: ErrorPage,
-        layout: "/auth"
+        layout: "/_auth"
       }
     ]
   },
   {
     collapse: true,
     name: "Components",
-    rtlName: "المكونات",
     icon: Apps,
     state: "componentsCollapse",
     views: [
       {
         collapse: true,
         name: "Multi Level Collapse",
-        rtlName: "انهيار متعدد المستويات",
         mini: "MC",
-        rtlMini: "ر",
         state: "multiCollapse",
         views: [
           {
             path: "/buttons",
             name: "Buttons",
-            rtlName: "وصفت",
             mini: "B",
-            rtlMini: "ب",
             component: Buttons,
-            layout: "/admin"
+            layout: "/_dash"
           }
         ]
       },
       {
         path: "/buttons",
         name: "Buttons",
-        rtlName: "وصفت",
         mini: "B",
-        rtlMini: "ب",
         component: Buttons,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/grid-system",
         name: "Grid System",
-        rtlName: "نظام الشبكة",
         mini: "GS",
-        rtlMini: "زو",
         component: GridSystem,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/panels",
         name: "Panels",
-        rtlName: "لوحات",
         mini: "P",
-        rtlMini: "ع",
         component: Panels,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/sweet-alert",
         name: "Sweet Alert",
-        rtlName: "الحلو تنبيه",
         mini: "SA",
-        rtlMini: "ومن",
         component: SweetAlert,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/notifications",
         name: "Notifications",
-        rtlName: "إخطارات",
         mini: "N",
-        rtlMini: "ن",
         component: Notifications,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/icons",
         name: "Icons",
-        rtlName: "الرموز",
         mini: "I",
-        rtlMini: "و",
         component: Icons,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/typography",
         name: "Typography",
-        rtlName: "طباعة",
         mini: "T",
-        rtlMini: "ر",
         component: Typography,
-        layout: "/admin"
+        layout: "/_dash"
       }
     ]
   },
   {
     collapse: true,
     name: "Forms",
-    rtlName: "إستمارات",
     icon: "content_paste",
     state: "formsCollapse",
     views: [
       {
         path: "/regular-forms",
         name: "Regular Forms",
-        rtlName: "أشكال عادية",
         mini: "RF",
-        rtlMini: "صو",
         component: RegularForms,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/extended-forms",
         name: "Extended Forms",
-        rtlName: "نماذج موسعة",
         mini: "EF",
-        rtlMini: "هوو",
         component: ExtendedForms,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/validation-forms",
         name: "Validation Forms",
-        rtlName: "نماذج التحقق من الصحة",
         mini: "VF",
-        rtlMini: "تو",
         component: ValidationForms,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/wizard",
         name: "Wizard",
-        rtlName: "ساحر",
         mini: "W",
-        rtlMini: "ث",
         component: Wizard,
-        layout: "/admin"
+        layout: "/_dash"
       }
     ]
   },
   {
     collapse: true,
     name: "Tables",
-    rtlName: "الجداول",
     icon: GridOn,
     state: "tablesCollapse",
     views: [
       {
         path: "/regular-tables",
         name: "Regular Tables",
-        rtlName: "طاولات عادية",
         mini: "RT",
-        rtlMini: "صر",
         component: RegularTables,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/extended-tables",
         name: "Extended Tables",
-        rtlName: "جداول ممتدة",
         mini: "ET",
-        rtlMini: "هور",
         component: ExtendedTables,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/react-tables",
         name: "React Tables",
-        rtlName: "رد فعل الطاولة",
         mini: "RT",
-        rtlMini: "در",
         component: ReactTables,
-        layout: "/admin"
+        layout: "/_dash"
       }
     ]
   },
   {
     collapse: true,
     name: "Maps",
-    rtlName: "خرائط",
     icon: Place,
     state: "mapsCollapse",
     views: [
       {
         path: "/google-maps",
         name: "Google Maps",
-        rtlName: "خرائط جوجل",
         mini: "GM",
-        rtlMini: "زم",
         component: GoogleMaps,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/full-screen-maps",
         name: "Full Screen Map",
-        rtlName: "خريطة كاملة الشاشة",
         mini: "FSM",
-        rtlMini: "ووم",
         component: FullScreenMap,
-        layout: "/admin"
+        layout: "/_dash"
       },
       {
         path: "/vector-maps",
         name: "Vector Map",
-        rtlName: "خريطة المتجه",
         mini: "VM",
-        rtlMini: "تم",
         component: VectorMap,
-        layout: "/admin"
+        layout: "/_dash"
       }
     ]
   },
   {
     path: "/widgets",
     name: "Widgets",
-    rtlName: "الحاجيات",
     icon: WidgetsIcon,
     component: Widgets,
-    layout: "/admin"
+    layout: "/_dash"
   },
   {
     path: "/charts",
     name: "Charts",
-    rtlName: "الرسوم البيانية",
     icon: Timeline,
     component: Charts,
-    layout: "/admin"
+    layout: "/_dash"
   },
   {
     path: "/calendar",
     name: "Calendar",
-    rtlName: "التقويم",
     icon: DateRange,
     component: Calendar,
-    layout: "/admin"
+    layout: "/_dash"
   }
 ];
 export default dashRoutes;

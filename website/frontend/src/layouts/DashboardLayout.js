@@ -22,7 +22,7 @@ var ps;
 
 const useStyles = makeStyles(styles);
 
-export default function Dashboard(props) {
+export default function DashboardLayout(props) {
   const { ...rest } = props;
   // states and functions
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -93,7 +93,7 @@ export default function Dashboard(props) {
     setMobileOpen(!mobileOpen);
   };
   const getRoute = () => {
-    return window.location.pathname !== "/admin/full-screen-maps";
+    return window.location.pathname !== "/_dash/full-screen-maps";
   };
   const getActiveRoute = routes => {
     let activeRoute = "Default Brand Text";
@@ -118,7 +118,7 @@ export default function Dashboard(props) {
       if (prop.collapse) {
         return getRoutes(prop.views);
       }
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/_dash") {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -144,7 +144,7 @@ export default function Dashboard(props) {
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
-        logoText={"Creative Tim"}
+        logoText={"Covid-19 Live"}
         logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}
@@ -168,7 +168,7 @@ export default function Dashboard(props) {
             <div className={classes.container}>
               <Switch>
                 {getRoutes(routes)}
-                <Redirect from="/admin" to="/admin/dashboard" />
+                <Redirect from="/_dash" to="/_dash/dashboard" />
               </Switch>
             </div>
           </div>
@@ -176,7 +176,7 @@ export default function Dashboard(props) {
           <div className={classes.map}>
             <Switch>
               {getRoutes(routes)}
-              <Redirect from="/admin" to="/admin/dashboard" />
+              <Redirect from="/_dash" to="/_dash/dashboard" />
             </Switch>
           </div>
         )}
