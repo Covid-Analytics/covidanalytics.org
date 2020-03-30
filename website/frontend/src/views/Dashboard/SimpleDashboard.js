@@ -23,7 +23,8 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
-import {EmbeddedChart} from "./EmbeddedChart";
+import {dataGlue} from "data/DataGlue"
+
 // react plugin for creating vector maps
 // import {VectorMap} from "react-jvectormap";
 
@@ -99,9 +100,11 @@ export default function SimpleDashboard() {
 
       {/* row 2: Import all the Charts */}
       <GridContainer>
-        <GridItem xs={12} sm={12} md={4}>
-          <EmbeddedChart/>
-        </GridItem>
+        {dataGlue.map((e, idx) => (
+          <GridItem xs={12} sm={12} md={4} key={idx}>
+            {e}
+          </GridItem>
+        ))}
       </GridContainer>
 
       {/* 2nd row: Geo Table */}

@@ -9,8 +9,6 @@ import AccessTime from "@material-ui/icons/AccessTime";
 
 import {cardTitle, grayColor, successColor} from "assets/jss/material-dashboard-pro-react";
 
-import figure1 from "data/ex1/card-3.jpeg"
-
 const embeddedChartStyles = {
   cardTitle: {
     ...cardTitle,
@@ -67,25 +65,25 @@ const embeddedChartStyles = {
 };
 const useStyles = makeStyles(embeddedChartStyles);
 
-export function EmbeddedChart() {
+export function EmbeddedChart(props) {
+  const {imageResource, folder, title, comment, updatedUtc} = props;
   const classes = useStyles();
-  console.log(figure1);
   return (
     <Card chart className={classes.cardHover}>
       <CardHeader color="info" className={classes.cardHeaderHover} style={{padding: 0}}>
-        <img src={figure1} alt="Chart data" className={classes.cardImagePreview}/>
+        <img src={imageResource} alt={"Chart for " + folder} className={classes.cardImagePreview}/>
       </CardHeader>
       <CardBody>
-        <h4 className={classes.cardTitle}>Chart Title</h4>
+        <h4 className={classes.cardTitle}>{title}</h4>
         <p className={classes.cardCategory}>
           <span className={classes.successText}>
             <ArrowUpward className={classes.upArrowCardCategory}/> 55%
           </span>{" "}
-          increase in today's cases.
+          {comment}
         </p>
       </CardBody>
       <CardFooter chart>
-        <div className={classes.stats}><AccessTime/>{" "}updated 4 minutes ago</div>
+        <div className={classes.stats}><AccessTime/>{" "}updated {updatedUtc} minutes ago</div>
       </CardFooter>
     </Card>
   );
