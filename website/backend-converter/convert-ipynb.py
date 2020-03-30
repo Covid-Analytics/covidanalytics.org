@@ -152,10 +152,10 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
         with open(output_figure_file_name, 'wb') as the_file:
             the_file.write(figures[figure_file])
         local_figures.append({
-            'notebook': base_name,
-            'html_notebook': output_html_file_name,
             'figure': figure_file,
             'file': output_figure_file_name,
+            'notebook': base_name,
+            'html_notebook': output_html_file_name,
         })
 
     # create an empty 'custom.css'
