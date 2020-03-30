@@ -71,10 +71,16 @@ export function EmbeddedChart(props) {
   return (
     <Card chart className={classes.cardHover}>
       <CardHeader color="info" className={classes.cardHeaderHover} style={{padding: 0}}>
-        <img src={imageResource} alt={"Chart for " + folder} className={classes.cardImagePreview}/>
+        <a href={"/" + folder}>
+          <img src={imageResource} alt={"Chart for " + folder} className={classes.cardImagePreview}/>
+        </a>
       </CardHeader>
       <CardBody>
-        <h4 className={classes.cardTitle}>{title}</h4>
+        <h4 className={classes.cardTitle}>
+          <a href={"/" + folder}>
+            {title}
+          </a>
+        </h4>
         <p className={classes.cardCategory}>
           <span className={classes.successText}>
             <ArrowUpward className={classes.upArrowCardCategory}/> 55%
