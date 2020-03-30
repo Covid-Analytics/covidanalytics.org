@@ -4,10 +4,10 @@
  */
 import React from "react";
 
-// Import all Pics
+// Import all Figures (path is relative to the src/data folder in the Frontend)
 import figure1 from "./placeholder.png"
 
-// Return the Components
+// Return the EmbeddedChart(s)
 import {EmbeddedChart} from "views/Dashboard/EmbeddedChart";
 
 export const dataGlue = [

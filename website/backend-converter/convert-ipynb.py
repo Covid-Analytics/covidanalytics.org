@@ -13,6 +13,7 @@ from jinja2 import DictLoader
 # Configuration (shall have a command line, one day)
 NOTEBOOK_PATHS = ['.', './input', '../../analysis']
 OUTPUT_FOLDER = 'output'
+FRONTEND_GLUE_FILE = 'DataGlue.js'
 
 # This is the inline'd template
 stand_alone_tpl = """
@@ -167,9 +168,51 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
     return local_html, local_figures
 
 
-def write_assets_loader(pages, assets, output_prefix):
-    with open(output_prefix + '/' + 'assets.json', 'wt') as the_file:
-        the_file.write(json.dumps(assets, indent=2))
+glue_frontend_template = """
+import React from "react";
+
+// Import all Figures (path is relative to the src/data folder in the Frontend)
+%CHART_IMPORTS%
+
+// Return the EmbeddedChart(s)
+import {EmbeddedChart} from "views/Dashboard/EmbeddedChart";
+
+export const dataGlue = [
+%COMPONENTS%
+];
+"""
+
+
+def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
+    frontend_imports = []
+    frontend_components = []
+    fig_index = 0
+    for figure in figures:
+        fig_alt = figure['figure']
+        fig_file = figure['file']
+        fig_notebook = figure['notebook']
+        fig_title = fig_alt
+        fig_comment = "in today's cases."
+        fig_updated = '4'
+
+        fig_index = fig_index + 1
+        var_name = 'figure' + str(fig_index)
+
+        frontend_glue_data_file_relative = fig_file.replace(output_prefix, '')
+
+        frontend_imports.append('import ' + var_name + ' from "./' + frontend_glue_data_file_relative + '";')
+        frontend_components.append(
+            '  <EmbeddedChart imageResource={' + var_name + '} folder="' + fig_notebook + '" title="' + fig_title + '" comment="' + fig_comment + '" updatedUtc="' + fig_updated + '"/>,')
+
+    glue_string = glue_frontend_template \
+        .replace('%CHART_IMPORTS%', "\n".join(frontend_imports)) \
+        .replace('%COMPONENTS%', "\n".join(frontend_components))
+
+    with open(output_prefix + '/' + frontend_glue_file_name, 'wt') as the_file:
+        the_file.write(glue_string)
+
+    # with open(output_prefix + '/' + 'figures.map.json', 'wt') as the_file:
+    #     the_file.write(json.dumps(figures, indent=2))
 
 
 # Main
@@ -181,6 +224,6 @@ for task in notebooks:
     nb_html, nb_figures = convert_notebook_to_assets(task['input'], task['basename'], OUTPUT_FOLDER)
     all_pages.extend(nb_html)
     all_figures.extend(nb_figures)
-write_assets_loader(all_pages, all_figures, OUTPUT_FOLDER)
+write_assets_loader(all_pages, all_figures, OUTPUT_FOLDER, FRONTEND_GLUE_FILE)
 
 print("done.")
