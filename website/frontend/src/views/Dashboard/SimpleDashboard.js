@@ -101,7 +101,7 @@ export default function SimpleDashboard() {
       {/* row 2: Import all the Charts */}
       <GridContainer>
         {dataGlue.map((e, idx) => (
-          <GridItem xs={12} sm={12} md={4} key={idx}>
+          <GridItem xs={12} sm={12} md={3} key={idx}>
             {e}
           </GridItem>
         ))}

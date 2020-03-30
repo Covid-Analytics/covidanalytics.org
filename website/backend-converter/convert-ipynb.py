@@ -175,7 +175,7 @@ import React from "react";
 %CHART_IMPORTS%
 
 // Return the EmbeddedChart(s)
-import {EmbeddedChart} from "views/Dashboard/EmbeddedChart";
+import {EmbeddedChart} from "./EmbeddedChart";
 
 export const dataGlue = [
 %COMPONENTS%
@@ -187,6 +187,10 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
     frontend_imports = []
     frontend_components = []
     fig_index = 0
+    fig_count = len(figures)
+    print('Generating Fronted Glue JS for ' + str(fig_count) + ' Figures ...')
+
+    # generate JS statements for every figure (2 statements, for importing and showing)
     for figure in figures:
         fig_alt = figure['figure']
         fig_file = figure['file']
@@ -210,7 +214,9 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
         .replace('%CHART_IMPORTS%', "\n".join(frontend_imports)) \
         .replace('%COMPONENTS%', "\n".join(frontend_components))
 
-    with open(output_prefix + '/' + frontend_glue_file_name, 'wt') as the_file:
+    output_frontend_glue_name = output_prefix + '/' + frontend_glue_file_name
+    print(" - saving frontend glue JS: " + output_frontend_glue_name)
+    with open(output_frontend_glue_name, 'wt') as the_file:
         the_file.write(glue_string)
 
     # with open(output_prefix + '/' + 'figures.map.json', 'wt') as the_file:

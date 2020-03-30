@@ -8,7 +8,7 @@ import React from "react";
 import figure1 from "./placeholder.png"
 
 // Return the EmbeddedChart(s)
-import {EmbeddedChart} from "views/Dashboard/EmbeddedChart";
+import {EmbeddedChart} from "./EmbeddedChart";
 
 export const dataGlue = [
   <EmbeddedChart imageResource={figure1} folder="nb1_go" title="Chart 1" comment="in today's cases." updatedUtc="5"/>,
