@@ -23,7 +23,8 @@ const embeddedChartStyles = {
     }
   },
   cardHeaderHover: {
-    transition: "all 300ms cubic-bezier(0.34, 1.61, 0.7, 1)"
+    transition: "all 300ms cubic-bezier(0.34, 1.61, 0.7, 1)",
+    background: 'white',
   },
   cardImagePreview: {
     width: '100%',
@@ -70,7 +71,7 @@ export function EmbeddedChart(props) {
   const classes = useStyles();
   return (
     <Card chart className={classes.cardHover}>
-      <CardHeader color="info" className={classes.cardHeaderHover} style={{padding: 0}}>
+      <CardHeader color="rose" className={classes.cardHeaderHover} style={{padding: 0, background: 'white'}}>
         <a href={"/" + folder}>
           <img src={imageResource} alt={"Chart for " + folder} className={classes.cardImagePreview}/>
         </a>
