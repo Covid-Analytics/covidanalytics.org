@@ -8,7 +8,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import Footer from "components/Footer/Footer.js";
 
-import {dashRoutes, getRoutes, getActiveRouteTitle} from "routes.js";
+import {dashRoutes, getRoutesForLayout, getActiveRouteTitle} from "routes.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/layouts/authStyle.js";
 
@@ -33,18 +33,16 @@ export default function AuthLayout(props) {
     };
   });
   const getBgImage = () => {
-    if (window.location.pathname.indexOf("/_auth/register-page") !== -1) {
-      return register;
-    } else if (window.location.pathname.indexOf("/_auth/login-page") !== -1) {
-      return login;
-    } else if (window.location.pathname.indexOf("/_auth/pricing-page") !== -1) {
-      return pricing;
-    } else if (
-      window.location.pathname.indexOf("/_auth/lock-screen-page") !== -1
-    ) {
-      return lock;
-    } else if (window.location.pathname.indexOf("/_auth/error-page") !== -1) {
-      return error;
+    const bgMap = {
+      '/register-page': register,
+      '/login-page': login,
+      '/pricing-page': pricing,
+      '/lock-screen-page': lock,
+      '/error-page': error,
+    };
+    for (let location in bgMap) {
+      if (window.location.pathname.indexOf(location) !== -1)
+        return bgMap[location];
     }
   };
   return (
@@ -56,7 +54,7 @@ export default function AuthLayout(props) {
           style={{backgroundImage: "url(" + getBgImage() + ")"}}
         >
           <Switch>
-            {getRoutes(dashRoutes, '/_auth')}
+            {getRoutesForLayout(dashRoutes, '/_auth')}
             {/*<Redirect from="/_auth" to="/_auth/login-page"/>*/}
           </Switch>
           <Footer white/>

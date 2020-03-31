@@ -23,7 +23,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
-import {dataGlue} from "data/DataGlue"
+import {ChartsGlue} from "data/DataGlue"
 
 // react plugin for creating vector maps
 // import {VectorMap} from "react-jvectormap";
@@ -46,7 +46,8 @@ export default function SimpleDashboard() {
   return (
     <div>
       {/* row: Global Stats and diffs */}
-      <GridContainer>
+      {/*<Hidden smDown implementation="css">*/}
+      <GridContainer style={{display: 'none'}}>
         <GridItem xs={12} sm={6} md={6} lg={3} xl={2}>
           <Card>
             <CardHeader color="warning" stats icon>
@@ -97,10 +98,11 @@ export default function SimpleDashboard() {
           </Card>
         </GridItem>
       </GridContainer>
+      {/*</Hidden>*/}
 
       {/* row: Import all the Charts */}
       <GridContainer>
-        {dataGlue.map((e, idx) => (
+        {ChartsGlue.map((e, idx) => (
           <GridItem xs={12} sm={12} md={6} lg={3} key={idx}>
             {e}
           </GridItem>

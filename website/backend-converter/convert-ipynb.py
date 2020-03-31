@@ -4,7 +4,7 @@
 import glob
 import os
 import nbformat
-import json
+from datetime import datetime, timezone
 from nbconvert import HTMLExporter
 from nbconvert.preprocessors import ExecutePreprocessor, ClearOutputPreprocessor
 from traitlets.config import Config
@@ -27,15 +27,22 @@ stand_alone_tpl = """
 
 {% block html_head %}
 {{ super() }}
-    <!-- customize looks for embedding -->
-    <style type="text/css">
-        div.output_subarea {
-            max-width: initial;
-        }
-        .rendered_html table {
-            width: 100%;
-        }
-    </style>
+<!-- customize looks -->
+<style type="text/css">
+  body {
+    background: transparent;
+    padding: 0
+  }
+  div#notebook-container{
+    padding: 2ex 4ex 2ex 4ex;
+  }
+  div.output_subarea {
+    max-width: initial;
+  }
+  .rendered_html table {
+    width: 100%;
+  }
+</style>
 {% endblock html_head %}
 """
 react_glue_tpl = """
@@ -170,34 +177,43 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
 
 glue_frontend_template = """// MACHINE GENERATED CODE, by convert-ipynb.py
 import React from "react";
+import {EmbeddedChart} from "./EmbeddedChart";
 
 // Import all Figures (path is relative to the src/data folder in the Frontend)
 %CHART_IMPORTS%
 
-// Return the EmbeddedChart(s)
-import {EmbeddedChart} from "./EmbeddedChart";
-
-export const dataGlue = [
+// List the EmbeddedChart(s)
+export const ChartsGlue = [
 %COMPONENTS%
 ];
+
+// List the Notebooks
+export const NotebooksGlue = [
+%NOTEBOOKS%
+];
+
+// Metadata
+export const MetaDataGlue = {
+%METADATA%
+};
 """
 
 
 def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
-    frontend_imports = []
-    frontend_components = []
-    fig_index = 0
+    update_utc = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
     fig_count = len(figures)
     print('Generating Fronted Glue JS for ' + str(fig_count) + ' Figures ...')
 
-    # generate JS statements for every figure (2 statements, for importing and showing)
+    # Figures: generate JS statements for every figure (2 statements, for importing and showing)
+    frontend_imports = []
+    frontend_components = []
+    fig_index = 0
     for figure in figures:
         fig_alt = figure['figure']
         fig_file = figure['file']
         fig_notebook = figure['notebook']
         fig_title = fig_alt
         fig_comment = "in today's cases."
-        fig_updated = '4'
 
         fig_index = fig_index + 1
         var_name = 'figure' + str(fig_index)
@@ -208,19 +224,31 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
         frontend_imports.append('import ' + var_name + ' from "./' + frontend_glue_relative_file + '";')
         # append one component
         frontend_components.append(
-            '  <EmbeddedChart imageResource={' + var_name + '} folder="' + fig_notebook + '" title="' + fig_title + '" comment="' + fig_comment + '" updatedUtc="' + fig_updated + '"/>,')
+            '<EmbeddedChart imageResource={' + var_name + '} folder="' + fig_notebook + '" title="' + fig_title + '" comment="' + fig_comment + '" updated="' + update_utc + '"/>,')
 
+    # Notebooks
+    page_data = []
+    for page in pages:
+        page_name = page['notebook']
+        page_title = page_name.replace('_', ' ').title()
+        page_file = page['html_notebook'].replace(output_prefix + '/', '')
+        # append one JSON descriptor
+        page_def = '{id: "' + page_name + '", title: "' + page_title + '", href: "/' + page_file + '"}'
+        page_data.append(page_def)
+
+    # Metadata
+    meta_strings = ["convert_iso8601: '" + update_utc + "'"]
     glue_string = glue_frontend_template \
         .replace('%CHART_IMPORTS%', "\n".join(frontend_imports)) \
-        .replace('%COMPONENTS%', "\n".join(frontend_components))
+        .replace('%COMPONENTS%', "\n".join(["  " + fc for fc in frontend_components])) \
+        .replace('%NOTEBOOKS%', ",\n".join(["  " + pd for pd in page_data])) \
+        .replace('%METADATA%', ",\n".join(["  " + ms for ms in meta_strings]))
 
+    # write the JS file
     output_frontend_glue_name = output_prefix + '/' + frontend_glue_file_name
     print(" - saving frontend glue JS: " + output_frontend_glue_name)
     with open(output_frontend_glue_name, 'wt') as the_file:
         the_file.write(glue_string)
-
-    # with open(output_prefix + '/' + 'figures.map.json', 'wt') as the_file:
-    #     the_file.write(json.dumps(figures, indent=2))
 
 
 # Main

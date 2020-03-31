@@ -13,7 +13,7 @@ import SimpleNavbar from "components/Navbars/SimpleNavbar.js";
 import Footer from "components/Footer/Footer.js";
 import SimpleSidebar from "components/Sidebar/SimpleSidebar.js";
 
-import {dashRoutes, getRoutes, getActiveRouteTitle} from "routes.js";
+import {dashRoutes, getRoutesForLayout, getActiveRouteTitle} from "routes.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/layouts/adminStyle.js";
 
@@ -99,7 +99,7 @@ export default function SimpleLayout(props) {
         <div className={classes.content}>
           <div className={classes.container}>
             <Switch>
-              {getRoutes(dashRoutes, '')}
+              {getRoutesForLayout(dashRoutes, '')}
               <Redirect from="/" to={dashRoutes[0].path}/>
             </Switch>
           </div>

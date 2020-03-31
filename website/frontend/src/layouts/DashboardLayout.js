@@ -14,7 +14,7 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
-import {dashRoutes, getRoutes, getActiveRouteTitle} from "routes.js";
+import {dashRoutes, getRoutesForLayout, getActiveRouteTitle} from "routes.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/layouts/adminStyle.js";
 
@@ -131,7 +131,7 @@ export default function DashboardLayout(props) {
           <div className={classes.content}>
             <div className={classes.container}>
               <Switch>
-                {getRoutes(dashRoutes, '/_dash')}
+                {getRoutesForLayout(dashRoutes, '/_dash')}
                 {/*<Redirect from="/_dash" to="/_dash/dashboard" />*/}
               </Switch>
             </div>
@@ -139,7 +139,7 @@ export default function DashboardLayout(props) {
         ) : (
           <div className={classes.map}>
             <Switch>
-              {getRoutes(dashRoutes, '/_dash')}
+              {getRoutesForLayout(dashRoutes, '/_dash')}
               <Redirect from="/_dash" to="/_dash/dashboard" />
             </Switch>
           </div>

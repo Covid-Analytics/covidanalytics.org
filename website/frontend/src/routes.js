@@ -31,15 +31,21 @@ import VectorMap from "views/Maps/VectorMap.js";
 import Widgets from "views/Widgets/Widgets.js";
 import Wizard from "views/Forms/Wizard.js";
 
+
 // @material-ui/icons
 import Apps from "@material-ui/icons/Apps";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import DateRange from "@material-ui/icons/DateRange";
 import GridOn from "@material-ui/icons/GridOn";
 import Image from "@material-ui/icons/Image";
+import NotesIcon from '@material-ui/icons/Notes';
 import Place from "@material-ui/icons/Place";
 import Timeline from "@material-ui/icons/Timeline";
 import WidgetsIcon from "@material-ui/icons/Widgets";
+
+// Other
+import NotebookViewer from "views/Components/NotebookViewer";
+import {NotebooksGlue} from "data/DataGlue";
 
 const dashRoutes = [
   // Enrico mod
@@ -51,27 +57,13 @@ const dashRoutes = [
     layout: ""
   },
   {
+    is_notebooks_container: true,
     collapse: true,
     name: "Analyses",
-    icon: Apps,
+    icon: NotesIcon,
     state: "analysesCollapse",
-    views: [
-      {
-        path: "/notebooks/1",
-        name: "Notebook 1",
-        mini: "N1",
-        component: "",
-        layout: ""
-      },
-      {
-        path: "/notebooks/2",
-        name: "Notebook 2",
-        mini: "N2",
-        component: "",
-        layout: ""
-      },
-    ],
-    layout: ""
+    views: [],
+    layout: "",
   },
   // Former
   {
@@ -327,30 +319,58 @@ const dashRoutes = [
   }
 ];
 
-const getRoutes = (routes, base_layout = '') => {
+function addNotebooksRoutes(notebooksRoutes, notebooksGlue) {
+  notebooksGlue.forEach(notebook => {
+    const id = notebook.id;
+    const href = notebook.href;
+    const title = notebook.title;
+    const mini = title.split(' ').map(s => s[0] || "").join('').slice(0, 2);
+    notebooksRoutes.views.push({
+      path: "/notebook/" + id,
+      name: title,
+      mini: mini,
+      component: NotebookViewer,
+      layout: "",
+      // notebook-specific route data
+      nb_id: id,
+      nb_href: href,
+    })
+  })
+}
+
+// add the Notebooks from the Glue data
+addNotebooksRoutes(dashRoutes.find(r => r.is_notebooks_container), NotebooksGlue);
+
+
+function getRoutesForLayout(routes, base_layout = '') {
   return routes.map((r, idx) => {
     if (r.collapse)
-      return getRoutes(r.views, base_layout);
+      return getRoutesForLayout(r.views, base_layout);
     if (r.layout === base_layout)
       return <Route path={r.layout + r.path} component={r.component} key={idx}/>;
     else
       return null;
   });
-};
+}
 
-const getActiveRouteTitle = (routes) => {
-  const nameUnset = "Default Brand Text";
+function getActiveRoute(routes) {
   for (let i = 0; i < routes.length; i++) {
-    if (!routes[i].collapse) {
-      if (window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1)
-        return routes[i].name;
-    } else {
-      const collapseActiveRoute = getActiveRouteTitle(routes[i].views);
-      if (collapseActiveRoute !== nameUnset)
+    if (routes[i].collapse) {
+      const collapseActiveRoute = getActiveRoute(routes[i].views);
+      if (collapseActiveRoute !== null)
         return collapseActiveRoute;
+    } else {
+      if (window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1)
+        return routes[i];
     }
   }
-  return nameUnset;
-};
+  return null;
+}
 
-export {dashRoutes, getRoutes, getActiveRouteTitle};
+function getActiveRouteTitle(routes) {
+  const route = getActiveRoute(routes);
+  if (route) return route.name;
+  return "Route Title Not Set";
+}
+
+export {dashRoutes, getRoutesForLayout, getActiveRouteTitle, getActiveRoute};

@@ -20,13 +20,13 @@ echo "> Copying notebooks from '../analysis' to the container 'input/' folder"
 for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONV_CONTAINER":/app/input/; done
 
 echo "> Converting Notebooks (and copying the output to $LOCAL_CONVERTER_OUTPUT)..."
-time docker exec -t "$CONV_CONTAINER" python3 /app/convert-ipynb.py
 rm -fr "$LOCAL_CONVERTER_OUTPUT"
+time docker exec -t "$CONV_CONTAINER" python3 /app/convert-ipynb.py
 docker cp "$CONV_CONTAINER":/app/output/. "$LOCAL_CONVERTER_OUTPUT"
 
-echo "> Removing container..."
+echo -n "> Removing container... "
 docker kill "$CONV_CONTAINER" > /dev/null
-echo "...done."
+echo "done."
 
 # == Frontend ==
 
@@ -44,16 +44,23 @@ docker cp "$LOCAL_CONVERTER_OUTPUT/." "$FRONTEND_CONTAINER":/app/public/
 docker cp "$LOCAL_CONVERTER_OUTPUT/." "$FRONTEND_CONTAINER":/app/src/data/
 
 echo "> Compiling Frontend (and copying the output to $LOCAL_FRONTEND_OUTPUT)..."
-time docker exec -t "$FRONTEND_CONTAINER" npm run build
 rm -fr "$LOCAL_FRONTEND_OUTPUT"
+time docker exec -t "$FRONTEND_CONTAINER" npm run build
 docker cp "$FRONTEND_CONTAINER":/app/build/. "$LOCAL_FRONTEND_OUTPUT"
 
-echo "> Removing container..."
+echo -n "> Removing container... "
 docker kill "$FRONTEND_CONTAINER" > /dev/null
-echo "...done."
-
+echo "done."
 
 # Install the new contents
+rm -fr "$INSTALL_DIR"/precache* "$INSTALL_DIR"/static/
 cp -a "$LOCAL_FRONTEND_OUTPUT"/* "$INSTALL_DIR"
-# TEMP: link to the index
-#ln -nsf "covid19_world/index.html" "$INSTALL_DIR/index.html"
+rm -f "$INSTALL_DIR"/DataGlue.js "$INSTALL_DIR"/service-worker.js
+
+
+# == Cleanup ==
+echo -n "> Cleaning up docker images... "
+# shellcheck disable=SC2046
+docker rmi $(docker image ls -f dangling=true -q) 2> /dev/null
+echo "done."
+echo

@@ -7,6 +7,8 @@ import {makeStyles} from "@material-ui/core/styles";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
 
+import TimeAgo from 'react-timeago'
+
 import {cardTitle, grayColor, successColor} from "assets/jss/material-dashboard-pro-react";
 
 const embeddedChartStyles = {
@@ -67,7 +69,7 @@ const embeddedChartStyles = {
 const useStyles = makeStyles(embeddedChartStyles);
 
 export function EmbeddedChart(props) {
-  const {imageResource, folder, title, comment, updatedUtc} = props;
+  const {imageResource, folder, title, comment, updated} = props;
   const classes = useStyles();
   return (
     <Card chart className={classes.cardHover}>
@@ -90,7 +92,7 @@ export function EmbeddedChart(props) {
         </p>
       </CardBody>
       <CardFooter chart>
-        <div className={classes.stats}><AccessTime/>{" "}updated {updatedUtc} minutes ago</div>
+        <div className={classes.stats}><AccessTime/> {<TimeAgo date={updated}/>}.</div>
       </CardFooter>
     </Card>
   );
