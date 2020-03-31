@@ -20,7 +20,7 @@ const embeddedChartStyles = {
   cardHover: {
     "&:hover": {
       "& $cardHeaderHover": {
-        // transform: "translate3d(0, -50px, 0)"
+        transform: "translate3d(0, -10px, 0)"
       }
     }
   },
