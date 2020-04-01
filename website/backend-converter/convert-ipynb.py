@@ -2,21 +2,22 @@
 # a bundle of pics and html ready for frontend compiling into our react UI.
 
 import glob
-import hashlib
 import json
 import os
 import nbformat
+import pandas
 import random
 from datetime import datetime, timedelta, timezone
+from jinja2 import DictLoader
 from nbconvert import HTMLExporter
 from nbconvert.preprocessors import ExecutePreprocessor, ClearOutputPreprocessor
 from traitlets.config import Config
-from jinja2 import DictLoader
 
 # Configuration (shall have a command line, one day)
 NOTEBOOK_PATHS = ['.', './input', '../../analysis']
 OUTPUT_FOLDER = 'output'
 FRONTEND_GLUE_FILE = 'DataGlue.js'
+FIGURES_META_FILE = 'figures-meta.csv'
 
 # This is the inline'd template
 stand_alone_tpl = """
@@ -212,35 +213,55 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
     fig_count = len(figures)
     print('Generating Fronted Glue JS for ' + str(fig_count) + ' Figures ...')
 
+    # begin loading Meta info about the figures - this is to compensate for the lack of information transfer between
+    # the notebooks and the Glue. To compensate, manual editing is needed, and we use a simple CSV file here
+    df_figures = pandas.read_csv(FIGURES_META_FILE, sep=',').fillna('')
+
     # Figures: generate JS statements for every figure
     frontend_components = []
     fig_index = 0
+    df_warning_silencer = False
     for figure in figures:
         fig_index = fig_index + 1
 
-        # from the conversion
+        # figure: conversion parameters
         fig_id = figure['figure']
         fig_file = figure['file']
         notebook_id = figure['notebook']
         fig_updated = figure['convert_time']
 
-        # relative URL to the image (/public folder referencing in React) - example of the replace: '/covid19_world/output_5_0.png'
+        # figure: relative URL of the PNG (/public folder referencing in React) - example: '/covid19_world/output_5_0.png'
         fig_img_src = "process.env.PUBLIC_URL + '/" + fig_file.replace(output_prefix + '/', '') + "'"
 
-        # add manual metadata
-        fig_title = fig_id  # TODO: FIX THIS
-        fig_comment = "short commentary"  # TODO: FIX THIS
-        notebook_scopes = [scope for scope in ['global', 'us', 'italy'] if random.random() < 0.3]  # TODO: FIX THIS
-        notebook_tags = [scope for scope in ['mortality', 'cases', 'trends'] if random.random() < 0.3]  # TODO: FIX THIS
+        # figure: metadata: default values - to NEVER show(!)
+        fig_title = fig_id
+        fig_short = "short commentary"
+        fig_scopes = ",".join([scope for scope in ['global', 'us', 'italy'] if random.random() < 0.3])
+        fig_tags = ",".join([scope for scope in ['mortality', 'cases', 'trends'] if random.random() < 0.3])
+
+        # figure: metadata: replace with editorial values from the local 'CSV' database
+        df = df_figures
+        df = df[df['notebook_id'] == notebook_id]
+        df = df[df['figure_id'] == fig_id]
+        if len(df) != 1:
+            if not df_warning_silencer:
+                print("  WARNING: the following are missing metadata in " + FIGURES_META_FILE)
+                df_warning_silencer = True
+            print(notebook_id + "," + fig_id + ",,,,")
+        else:
+            fig_title = str(df['title'].iloc[0])
+            fig_short = df['commentary'].iloc[0]
+            fig_scopes = df['scopes'].iloc[0]
+            fig_tags = df['tags'].iloc[0]
 
         # append one component
         frontend_components.append(
             '<EmbeddedChart src={' + fig_img_src + '}' +
             ' title="' + fig_title + '"' +
-            ' comment="' + fig_comment + '"' +
+            ' short="' + fig_short + '"' +
             ' notebook_id="' + notebook_id + '"' +
-            ' notebook_scopes={' + json.dumps(notebook_scopes) + '}' +
-            ' notebook_tags={' + json.dumps(notebook_tags) + '}' +
+            ' scopes={' + json.dumps(fig_scopes.split(',')) + '}' +
+            ' tags={' + json.dumps(fig_tags.split(',')) + '}' +
             ' updated="' + fig_updated + '"' +
             '/>,')
 

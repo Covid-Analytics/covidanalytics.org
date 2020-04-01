@@ -69,7 +69,7 @@ const embeddedChartStyles = {
 const useStyles = makeStyles(embeddedChartStyles);
 
 export function EmbeddedChart(props) {
-  const {src, title, comment, notebook_id, notebook_scopes, notebook_tags, updated} = props;
+  const {src, title, short, notebook_id, /*scopes, tags,*/ updated} = props;
   const folder = "/" + notebook_id;
   const classes = useStyles();
   return (
@@ -86,10 +86,10 @@ export function EmbeddedChart(props) {
           </a>
         </h4>
         <p className={classes.cardCategory}>
-          <span className={classes.successText}>
-            <ArrowUpward className={classes.upArrowCardCategory}/> 55%
-          </span>{" "}
-          {comment}
+          {/*<span className={classes.successText}>*/}
+          {/*  <ArrowUpward className={classes.upArrowCardCategory}/> 55%*/}
+          {/*</span>{" "}*/}
+          {short}
         </p>
       </CardBody>
       <CardFooter chart>
