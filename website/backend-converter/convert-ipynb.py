@@ -4,7 +4,7 @@
 import glob
 import os
 import nbformat
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from nbconvert import HTMLExporter
 from nbconvert.preprocessors import ExecutePreprocessor, ClearOutputPreprocessor
 from traitlets.config import Config
@@ -200,7 +200,9 @@ export const MetaDataGlue = {
 
 
 def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
-    update_utc = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    # whether to compensate for the build time - so that the UTC refresh date is now + X minutes
+    compensate_build_time = 2
+    update_utc = (datetime.now(timezone.utc) + timedelta(minutes=compensate_build_time)).strftime('%Y-%m-%dT%H:%M:%SZ')
     fig_count = len(figures)
     print('Generating Fronted Glue JS for ' + str(fig_count) + ' Figures ...')
 
@@ -221,7 +223,11 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
         frontend_glue_relative_file = fig_file.replace(output_prefix + '/', '')
 
         # append one import
-        frontend_imports.append('import ' + var_name + ' from "./' + frontend_glue_relative_file + '";')
+        # frontend_imports.append('import ' + var_name + ' from "./' + frontend_glue_relative_file + '";')
+
+        # Method 2: /public folder referencing
+        var_name = "process.env.PUBLIC_URL + '/" + frontend_glue_relative_file + "'"
+
         # append one component
         frontend_components.append(
             '<EmbeddedChart imageResource={' + var_name + '} folder="' + fig_notebook + '" title="' + fig_title + '" comment="' + fig_comment + '" updated="' + update_utc + '"/>,')
