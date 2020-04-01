@@ -24,6 +24,7 @@ import CardFooter from "components/Card/CardFooter.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
 import {ChartsGlue} from "data/DataGlue"
+// import Viewer from 'react-viewer';
 
 // react plugin for creating vector maps
 // import {VectorMap} from "react-jvectormap";
@@ -43,6 +44,7 @@ const useStyles = makeStyles(styles);
 
 export default function SimpleDashboard() {
   const classes = useStyles();
+  // const [imageViewOpen, setImageViewOpen] = React.useState(false);
   return (
     <div>
       {/* row: Global Stats and diffs */}
@@ -107,8 +109,8 @@ export default function SimpleDashboard() {
             {embeddedChart}
           </GridItem>
         ))}
-        <Viewer visible={imageViewOpen} onClose={() => setImageViewOpen(false)}
-                images={[{src: process.env.PUBLIC_URL + '/placeholder.png'}]}/>
+        {/*<Viewer visible={imageViewOpen} onClose={() => setImageViewOpen(false)}*/}
+        {/*        images={[{src: process.env.PUBLIC_URL + '/placeholder.png'}]}/>*/}
       </GridContainer>
 
 
