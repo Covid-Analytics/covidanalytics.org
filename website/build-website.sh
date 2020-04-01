@@ -21,7 +21,8 @@ for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONV_CONTAINER":
 
 echo "> Converting Notebooks (and copying the output to $LOCAL_CONVERTER_OUTPUT)..."
 rm -fr "$LOCAL_CONVERTER_OUTPUT"
-time docker exec -t "$CONV_CONTAINER" python3 /app/convert-ipynb.py
+mkdir -p "$LOCAL_CONVERTER_OUTPUT"
+time docker exec -t "$CONV_CONTAINER" python3 /app/convert-ipynb.py > "$LOCAL_CONVERTER_OUTPUT"/converter.out 2> "$LOCAL_CONVERTER_OUTPUT"/converter.err
 docker cp "$CONV_CONTAINER":/app/output/. "$LOCAL_CONVERTER_OUTPUT"
 
 echo -n "> Removing container... "

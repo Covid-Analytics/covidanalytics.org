@@ -2,6 +2,7 @@
 # a bundle of pics and html ready for frontend compiling into our react UI.
 
 import glob
+import hashlib
 import json
 import os
 import nbformat
