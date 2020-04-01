@@ -11,3 +11,4 @@ RUN pip install -r requirements.txt
 
 # copy the conversion program
 COPY ./backend-converter/convert-ipynb.py .
+COPY ./backend-converter/figures-meta.csv .
