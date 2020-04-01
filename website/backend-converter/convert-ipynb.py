@@ -231,13 +231,15 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
         fig_updated = figure['convert_time']
 
         # figure: relative URL of the PNG (/public folder referencing in React) - example: '/covid19_world/output_5_0.png'
-        fig_img_src = "process.env.PUBLIC_URL + '/" + fig_file.replace(output_prefix + '/', '') + "'"
+        fig_img_src = "/" + fig_file.replace(output_prefix + '/', '')
 
         # figure: metadata: default values - to NEVER show(!)
         fig_title = fig_id
         fig_short = "short commentary"
         fig_scopes = ",".join([scope for scope in ['global', 'us', 'italy'] if random.random() < 0.3])
         fig_tags = ",".join([scope for scope in ['mortality', 'cases', 'trends'] if random.random() < 0.3])
+        fig_highlight = 1 if random.random() < 0.3 else ''
+        fig_priority = fig_index
 
         # figure: metadata: replace with editorial values from the local 'CSV' database
         df = df_figures
@@ -253,17 +255,21 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
             fig_short = df['commentary'].iloc[0]
             fig_scopes = df['scopes'].iloc[0]
             fig_tags = df['tags'].iloc[0]
+            fig_highlight = df['highlight'].iloc[0]
+            fig_priority = int(df['priority'].iloc[0]) if df['priority'].iloc[0] else 99
 
         # append one component
         frontend_components.append(
-            '<EmbeddedChart src={' + fig_img_src + '}' +
-            ' title="' + fig_title + '"' +
-            ' short="' + fig_short + '"' +
-            ' notebook_id="' + notebook_id + '"' +
-            ' scopes={' + json.dumps(fig_scopes.split(',')) + '}' +
-            ' tags={' + json.dumps(fig_tags.split(',')) + '}' +
-            ' updated="' + fig_updated + '"' +
-            '/>,')
+            '{src: "' + fig_img_src + '"' +
+            ', title: "' + fig_title + '"' +
+            ', short: "' + fig_short + '"' +
+            ', notebook_id: "' + notebook_id + '"' +
+            ', scopes: ' + json.dumps(fig_scopes.split(',')) + '' +
+            ', tags: ' + json.dumps(fig_tags.split(',')) + '' +
+            ', highlight: ' + ('true' if fig_highlight else 'false') + '' +
+            ', priority: ' + str(int(fig_priority)) + '' +
+            ', updated: "' + fig_updated + '"' +
+            '},')
 
     # Notebooks
     page_data = []

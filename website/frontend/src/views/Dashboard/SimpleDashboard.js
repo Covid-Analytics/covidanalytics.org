@@ -1,50 +1,36 @@
 import React from "react";
-// react plugin for creating charts
-// @material-ui/core components
-import {makeStyles} from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
-// @material-ui/icons
-// import ContentCopy from "@material-ui/icons/ContentCopy";
 import Store from "@material-ui/icons/Store";
 import Warning from "@material-ui/icons/Warning";
 import DateRange from "@material-ui/icons/DateRange";
 import LocalOffer from "@material-ui/icons/LocalOffer";
-// import Place from "@material-ui/icons/Place";
-// import ArtTrack from "@material-ui/icons/ArtTrack";
 import Language from "@material-ui/icons/Language";
+import {makeStyles} from "@material-ui/core/styles";
+
 // core components
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-// import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import dashboardStyles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle";
 
-import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
-import {ChartsGlue} from "data/DataGlue"
-// import Viewer from 'react-viewer';
+// our components
+import Viewer from 'react-viewer';
+import {EmbeddedChartContainer} from "data/EmbeddedChartContainer";
 
-// react plugin for creating vector maps
-// import {VectorMap} from "react-jvectormap";
-
-// import priceImage1 from "assets/img/card-2.jpeg";
-// import priceImage2 from "assets/img/card-3.jpeg";
-// import priceImage3 from "assets/img/card-1.jpeg";
-
-const us_flag = require("assets/img/flags/US.png");
-const de_flag = require("assets/img/flags/DE.png");
-const au_flag = require("assets/img/flags/AU.png");
-const gb_flag = require("assets/img/flags/GB.png");
-const ro_flag = require("assets/img/flags/RO.png");
-const br_flag = require("assets/img/flags/BR.png");
-
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(dashboardStyles);
 
 export default function SimpleDashboard() {
   const classes = useStyles();
-  // const [imageViewOpen, setImageViewOpen] = React.useState(false);
+  const [chartViewerOpen, setChartViewerOpen] = React.useState(false);
+  const [chartViewerSrc, setChartViewerSrc] = React.useState('');
+  const viewChart = (src) => {
+    setChartViewerOpen(true);
+    setChartViewerSrc(src);
+  };
   return (
     <div>
       {/* row: Global Stats and diffs */}
@@ -103,16 +89,7 @@ export default function SimpleDashboard() {
       {/*</Hidden>*/}
 
       {/* row: Import all the Charts */}
-      <GridContainer>
-        {ChartsGlue.map((embeddedChart, idx) => (
-          <GridItem xs={12} sm={12} md={6} lg={3} key={idx}>
-            {embeddedChart}
-          </GridItem>
-        ))}
-        {/*<Viewer visible={imageViewOpen} onClose={() => setImageViewOpen(false)}*/}
-        {/*        images={[{src: process.env.PUBLIC_URL + '/placeholder.png'}]}/>*/}
-      </GridContainer>
-
+      <EmbeddedChartContainer onViewImage={viewChart}/>
 
       {/* row: Geo Table */}
       <GridContainer>
@@ -139,6 +116,13 @@ export default function SimpleDashboard() {
           </Card>
         </GridItem>
       </GridContainer>
+
+      {/* Chart viewer */}
+      <Viewer visible={chartViewerOpen} images={[{src: chartViewerSrc, downloadUrl: chartViewerSrc}]}
+              attribute={false} rotatable={false} downloadable={true} changeable={false} scalable={false}
+              noClose={true} noNavbar={true} zoomSpeed={0.10}
+              onMaskClick={() => setChartViewerOpen(false)}
+              onClose={() => setChartViewerOpen(false)}/>
     </div>
   );
 }

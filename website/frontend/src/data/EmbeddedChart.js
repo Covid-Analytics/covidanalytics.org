@@ -4,7 +4,6 @@ import CardHeader from "../components/Card/CardHeader";
 import CardBody from "../components/Card/CardBody";
 import CardFooter from "../components/Card/CardFooter";
 import {makeStyles} from "@material-ui/core/styles";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
 
 import TimeAgo from 'react-timeago'
@@ -33,6 +32,15 @@ const embeddedChartStyles = {
     transition: "all 300ms cubic-bezier(0.34, 1.61, 0.7, 1)",
     background: 'white',
   },
+  // cardHoverUnder: {
+  //   position: "absolute",
+  //   zIndex: "1",
+  //   top: "-50px",
+  //   width: "calc(100% - 30px)",
+  //   left: "17px",
+  //   right: "17px",
+  //   textAlign: "center"
+  // },
   cardImagePreview: {
     width: '100%',
   },
@@ -73,27 +81,44 @@ const embeddedChartStyles = {
 };
 const useStyles = makeStyles(embeddedChartStyles);
 
+// Example from DataGlue.js
+// const chart = {
+//   src: "/placeholder.png",
+//   title: "Chart",
+//   short: "short comment",
+//   notebook_id: "covid19_world",
+//   scopes: ["us", "it"],
+//   tags: ["deaths"],
+//   highlight: false,
+//   priority: 2,
+//   updated: "2020-04-01T17:52:13Z"
+// };
+
 export function EmbeddedChart(props) {
-  const {src, title, short, notebook_id, scopes, /*tags,*/ updated} = props;
-  const folder = "/" + notebook_id;
+  const {chart, onViewImage} = props;
   const classes = useStyles();
+
+  // unpack chart attributes
+  const {src, title, short, notebook_id, scopes, /*highlight,*/ /*priority,*/ updated} = chart;
+  const img_src = process.env.PUBLIC_URL + src;
+  const folder = "/" + notebook_id;
+
   const handleImageClick = (e) => {
     e.preventDefault();
+    onViewImage(img_src);
   };
   return (
     <Card chart className={classes.cardHover}>
-      <CardHeader color="rose" className={classes.cardHeaderHover} style={{padding: 0, background: 'white'}}>
-        <a href={folder}>
-          <img src={src} alt={title} className={classes.cardImagePreview}/>
+      <CardHeader color="rose" className={classes.cardHeaderHover} style={{padding: 6, background: 'white'}}>
+        <a href={folder} onClick={e => handleImageClick(e)}>
+          <img src={img_src} alt={title} className={classes.cardImagePreview}/>
         </a>
       </CardHeader>
       <CardBody>
         <GridContainer>
           <GridItem xs={9}>
             <h4 className={classes.cardTitle}>
-              <a href={folder} onClick={e => handleImageClick(e)}>
-                {title}
-              </a>
+              <a href={folder}>{title}</a>
             </h4>
           </GridItem>
           <GridItem xs={3} style={{textAlign: 'right'}}>
