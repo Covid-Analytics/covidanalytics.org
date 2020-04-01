@@ -66,6 +66,12 @@ module.exports = function(props) {
 """
 
 
+def current_utc_time():
+    # whether to compensate for the build time - so that the UTC refresh date is now + X minutes
+    compensate_build_time = 2
+    return (datetime.now(timezone.utc) + timedelta(minutes=compensate_build_time)).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
 def input_file_to_folder(basename):
     return basename.lower().replace(' ', '_').replace('.', '_')
 
@@ -128,6 +134,7 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
     exporter = HTMLExporter(config=cleaner_config, extra_loaders=[local_templates])
     exporter.template_file = 'our-html.tpl'
     (html_body, html_resources) = exporter.from_notebook_node(nb)
+    notebook_convert_time = current_utc_time()
 
     # save html output file, with local reference to the pictures
     local_html = []
@@ -137,7 +144,8 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
         the_file.write(html_body)
     local_html.append({
         'notebook': base_name,
-        'html_notebook': output_html_file_name,
+        'notebook_html': output_html_file_name,
+        'convert_time': notebook_convert_time,
     })
 
     # save js file for react inclusion (local ref to the pictures)
@@ -165,7 +173,8 @@ def convert_notebook_to_assets(notebook_file_name, base_name, output_prefix):
             'figure': figure_file,
             'file': output_figure_file_name,
             'notebook': base_name,
-            'html_notebook': output_html_file_name,
+            'notebook_html': output_html_file_name,
+            'convert_time': notebook_convert_time,
         })
 
     # create an empty 'custom.css'
@@ -202,9 +211,6 @@ export const MetaDataGlue = {
 
 
 def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
-    # whether to compensate for the build time - so that the UTC refresh date is now + X minutes
-    compensate_build_time = 2
-    update_utc = (datetime.now(timezone.utc) + timedelta(minutes=compensate_build_time)).strftime('%Y-%m-%dT%H:%M:%SZ')
     fig_count = len(figures)
     print('Generating Fronted Glue JS for ' + str(fig_count) + ' Figures ...')
 
@@ -222,7 +228,7 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
         notebook_id = figure['notebook']
         notebook_scopes = [scope for scope in ['global', 'us', 'italy'] if random.random() < 0.3]  # TODO: FIX THIS
         notebook_tags = [scope for scope in ['mortality', 'cases', 'trends'] if random.random() < 0.3]  # TODO: FIX THIS
-        notebook_updated = update_utc  # TODO: FIX THIS
+        notebook_updated = figure['convert_time']  # TODO: FIX THIS
 
         frontend_glue_relative_file = fig_file.replace(output_prefix + '/', '')
 
@@ -249,20 +255,26 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
     for page in pages:
         page_name = page['notebook']
         page_title = page_name.replace('_', ' ').title()
-        page_file = page['html_notebook'].replace(output_prefix + '/', '')
+        page_file = page['notebook_html'].replace(output_prefix + '/', '')
+        page_updated = page['convert_time']
         # append one JSON descriptor
-        page_def = '{id: "' + page_name + '", title: "' + page_title + '", href: "/' + page_file + '"}'
+        page_def = '{id: "' + page_name + '"' + \
+                   ', title: "' + page_title + '"' + \
+                   ', href: "/' + page_file + '"' + \
+                   ', updated: "' + page_updated + '"' + \
+                   '},'
         page_data.append(page_def)
 
     # Metadata
-    meta_strings = ["convert_iso8601: '" + update_utc + "'"]
+    meta_strings = ["convert_iso8601: '" + current_utc_time() + "',"]
+
+    # write the JS file
     glue_string = glue_frontend_template \
         .replace('%CHART_IMPORTS%', "\n".join(frontend_imports)) \
         .replace('%COMPONENTS%', "\n".join(["  " + fc for fc in frontend_components])) \
-        .replace('%NOTEBOOKS%', ",\n".join(["  " + pd for pd in page_data])) \
-        .replace('%METADATA%', ",\n".join(["  " + ms for ms in meta_strings]))
+        .replace('%NOTEBOOKS%', "\n".join(["  " + pd for pd in page_data])) \
+        .replace('%METADATA%', "\n".join(["  " + ms for ms in meta_strings]))
 
-    # write the JS file
     output_frontend_glue_name = output_prefix + '/' + frontend_glue_file_name
     print(" - saving frontend glue JS: " + output_frontend_glue_name)
     with open(output_frontend_glue_name, 'wt') as the_file:

@@ -9,16 +9,16 @@ import {EmbeddedChart} from "./EmbeddedChart";
 
 // List the EmbeddedChart(s)
 export const ChartsGlue = [
-  <EmbeddedChart src={process.env.PUBLIC_URL + '/placeholder.png'} title="output_5_0.png" comment="short commentary" notebook_id="covid19_world" notebook_scopes={["italy"]} notebook_tags={["mortality", "trends"]} updated="2020-04-01T03:21:44Z"/>,
+  <EmbeddedChart src={process.env.PUBLIC_URL + '/placeholder.png'} title="output_5_0.png" comment="short commentary" notebook_id="covid19_world" notebook_scopes={["italy"]} notebook_tags={["mortality", "trends"]} updated="2020-04-01T07:45:23Z"/>,
 ];
 
 // List the Notebooks
 export const NotebooksGlue = [
-  {id: "covid19_world", title: "Covid19 World", href: "/covid19_world/index.html"},
-  {id: "us_data", title: "Us Data", href: "/us_data/index.html"}
+  {id: "covid19_world", title: "Covid19 World", href: "/covid19_world/index.html", updated: "2020-04-01T07:45:23Z"},
+  {id: "us_data", title: "Us Data", href: "/us_data/index.html", updated: "2020-04-01T07:45:28Z"},
 ];
 
 // Metadata
 export const MetaDataGlue = {
-  convert_iso8601: '2020-03-30T17:25:13Z'
+  convert_iso8601: '2020-04-01T07:45:28Z',
 };
