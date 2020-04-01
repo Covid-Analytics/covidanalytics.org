@@ -9,7 +9,7 @@ import {EmbeddedChart} from "./EmbeddedChart";
 
 // List the EmbeddedChart(s)
 export const ChartsGlue = [
-  <EmbeddedChart imageResource={process.env.PUBLIC_URL + '/placeholder.png'} folder="covid19_world" title="output_5_0.png" comment="in today's cases." updated="2020-03-31T21:58:29Z"/>,
+  <EmbeddedChart src={process.env.PUBLIC_URL + '/placeholder.png'} title="output_5_0.png" comment="short commentary" notebook_id="covid19_world" notebook_scopes={["italy"]} notebook_tags={["mortality", "trends"]} updated="2020-04-01T03:21:44Z"/>,
 ];
 
 // List the Notebooks

@@ -69,18 +69,19 @@ const embeddedChartStyles = {
 const useStyles = makeStyles(embeddedChartStyles);
 
 export function EmbeddedChart(props) {
-  const {imageResource, folder, title, comment, updated} = props;
+  const {src, title, comment, notebook_id, notebook_scopes, notebook_tags, updated} = props;
+  const folder = "/" + notebook_id;
   const classes = useStyles();
   return (
     <Card chart className={classes.cardHover}>
       <CardHeader color="rose" className={classes.cardHeaderHover} style={{padding: 0, background: 'white'}}>
-        <a href={"/" + folder}>
-          <img src={imageResource} alt={"Chart for " + folder} className={classes.cardImagePreview}/>
+        <a href={folder}>
+          <img src={src} alt={title} className={classes.cardImagePreview}/>
         </a>
       </CardHeader>
       <CardBody>
         <h4 className={classes.cardTitle}>
-          <a href={"/" + folder}>
+          <a href={folder}>
             {title}
           </a>
         </h4>

@@ -2,8 +2,10 @@
 # a bundle of pics and html ready for frontend compiling into our react UI.
 
 import glob
+import json
 import os
 import nbformat
+import random
 from datetime import datetime, timedelta, timezone
 from nbconvert import HTMLExporter
 from nbconvert.preprocessors import ExecutePreprocessor, ClearOutputPreprocessor
@@ -211,26 +213,36 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
     frontend_components = []
     fig_index = 0
     for figure in figures:
+        fig_index = fig_index + 1
+
         fig_alt = figure['figure']
         fig_file = figure['file']
-        fig_notebook = figure['notebook']
-        fig_title = fig_alt
-        fig_comment = "in today's cases."
-
-        fig_index = fig_index + 1
-        var_name = 'figure' + str(fig_index)
+        fig_title = fig_alt  # TODO: FIX THIS
+        fig_comment = "short commentary"  # TODO: FIX THIS
+        notebook_id = figure['notebook']
+        notebook_scopes = [scope for scope in ['global', 'us', 'italy'] if random.random() < 0.3]  # TODO: FIX THIS
+        notebook_tags = [scope for scope in ['mortality', 'cases', 'trends'] if random.random() < 0.3]  # TODO: FIX THIS
+        notebook_updated = update_utc  # TODO: FIX THIS
 
         frontend_glue_relative_file = fig_file.replace(output_prefix + '/', '')
 
-        # append one import
-        # frontend_imports.append('import ' + var_name + ' from "./' + frontend_glue_relative_file + '";')
+        # Method 1: (disabled for proliferation of assets) append one import
+        # img_src = 'figure' + str(fig_index)
+        # frontend_imports.append('import ' + img_src + ' from "./' + frontend_glue_relative_file + '";')
 
         # Method 2: /public folder referencing
-        var_name = "process.env.PUBLIC_URL + '/" + frontend_glue_relative_file + "'"
+        img_src = "process.env.PUBLIC_URL + '/" + frontend_glue_relative_file + "'"
 
         # append one component
         frontend_components.append(
-            '<EmbeddedChart imageResource={' + var_name + '} folder="' + fig_notebook + '" title="' + fig_title + '" comment="' + fig_comment + '" updated="' + update_utc + '"/>,')
+            '<EmbeddedChart src={' + img_src + '}' +
+            ' title="' + fig_title + '"' +
+            ' comment="' + fig_comment + '"' +
+            ' notebook_id="' + notebook_id + '"' +
+            ' notebook_scopes={' + json.dumps(notebook_scopes) + '}' +
+            ' notebook_tags={' + json.dumps(notebook_tags) + '}' +
+            ' updated="' + notebook_updated + '"' +
+            '/>,')
 
     # Notebooks
     page_data = []
