@@ -102,11 +102,13 @@ export default function SimpleDashboard() {
 
       {/* row: Import all the Charts */}
       <GridContainer>
-        {ChartsGlue.map((e, idx) => (
+        {ChartsGlue.map((embeddedChart, idx) => (
           <GridItem xs={12} sm={12} md={6} lg={3} key={idx}>
-            {e}
+            {embeddedChart}
           </GridItem>
         ))}
+        <Viewer visible={imageViewOpen} onClose={() => setImageViewOpen(false)}
+                images={[{src: process.env.PUBLIC_URL + '/placeholder.png'}]}/>
       </GridContainer>
 
 

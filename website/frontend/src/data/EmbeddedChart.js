@@ -10,6 +10,11 @@ import AccessTime from "@material-ui/icons/AccessTime";
 import TimeAgo from 'react-timeago'
 
 import {cardTitle, grayColor, successColor} from "assets/jss/material-dashboard-pro-react";
+import GridContainer from "../components/Grid/GridContainer";
+import GridItem from "../components/Grid/GridItem";
+
+const us_flag = require("assets/img/flags/US.png");
+const it_flag = require("assets/img/flags/IT.png");
 
 const embeddedChartStyles = {
   cardTitle: {
@@ -69,9 +74,12 @@ const embeddedChartStyles = {
 const useStyles = makeStyles(embeddedChartStyles);
 
 export function EmbeddedChart(props) {
-  const {src, title, short, notebook_id, /*scopes, tags,*/ updated} = props;
+  const {src, title, short, notebook_id, scopes, /*tags,*/ updated} = props;
   const folder = "/" + notebook_id;
   const classes = useStyles();
+  const handleImageClick = (e) => {
+    e.preventDefault();
+  };
   return (
     <Card chart className={classes.cardHover}>
       <CardHeader color="rose" className={classes.cardHeaderHover} style={{padding: 0, background: 'white'}}>
@@ -80,17 +88,29 @@ export function EmbeddedChart(props) {
         </a>
       </CardHeader>
       <CardBody>
-        <h4 className={classes.cardTitle}>
-          <a href={folder}>
-            {title}
-          </a>
-        </h4>
-        <p className={classes.cardCategory}>
-          {/*<span className={classes.successText}>*/}
-          {/*  <ArrowUpward className={classes.upArrowCardCategory}/> 55%*/}
-          {/*</span>{" "}*/}
-          {short}
-        </p>
+        <GridContainer>
+          <GridItem xs={9}>
+            <h4 className={classes.cardTitle}>
+              <a href={folder} onClick={e => handleImageClick(e)}>
+                {title}
+              </a>
+            </h4>
+          </GridItem>
+          <GridItem xs={3} style={{textAlign: 'right'}}>
+            {scopes.map(scope => {
+              if (scope === "us") return <img src={us_flag} alt="USA" key={scope}/>;
+              if (scope === "it") return <img src={it_flag} alt="Italy" key={scope}/>;
+            })}
+          </GridItem>
+          <GridItem xs={12}>
+            <p className={classes.cardCategory}>
+              {/*<span className={classes.successText}>*/}
+              {/*  <ArrowUpward className={classes.upArrowCardCategory}/> 55%*/}
+              {/*</span>{" "}*/}
+              {short}
+            </p>
+          </GridItem>
+        </GridContainer>
       </CardBody>
       <CardFooter chart>
         <div className={classes.stats}><AccessTime/> {<TimeAgo date={updated}/>}.</div>
