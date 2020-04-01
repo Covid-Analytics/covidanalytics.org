@@ -191,9 +191,6 @@ glue_frontend_template = """// MACHINE GENERATED CODE, by convert-ipynb.py
 import React from "react";
 import {EmbeddedChart} from "./EmbeddedChart";
 
-// Import all Figures (path is relative to the src/data folder in the Frontend)
-%CHART_IMPORTS%
-
 // List the EmbeddedChart(s)
 export const ChartsGlue = [
 %COMPONENTS%
@@ -215,40 +212,36 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
     fig_count = len(figures)
     print('Generating Fronted Glue JS for ' + str(fig_count) + ' Figures ...')
 
-    # Figures: generate JS statements for every figure (2 statements, for importing and showing)
-    frontend_imports = []
+    # Figures: generate JS statements for every figure
     frontend_components = []
     fig_index = 0
     for figure in figures:
         fig_index = fig_index + 1
 
-        fig_alt = figure['figure']
+        # from the conversion
+        fig_id = figure['figure']
         fig_file = figure['file']
-        fig_title = fig_alt  # TODO: FIX THIS
-        fig_comment = "short commentary"  # TODO: FIX THIS
         notebook_id = figure['notebook']
+        fig_updated = figure['convert_time']
+
+        # relative URL to the image (/public folder referencing in React) - example of the replace: '/covid19_world/output_5_0.png'
+        fig_img_src = "process.env.PUBLIC_URL + '/" + fig_file.replace(output_prefix + '/', '') + "'"
+
+        # add manual metadata
+        fig_title = fig_id  # TODO: FIX THIS
+        fig_comment = "short commentary"  # TODO: FIX THIS
         notebook_scopes = [scope for scope in ['global', 'us', 'italy'] if random.random() < 0.3]  # TODO: FIX THIS
         notebook_tags = [scope for scope in ['mortality', 'cases', 'trends'] if random.random() < 0.3]  # TODO: FIX THIS
-        notebook_updated = figure['convert_time']  # TODO: FIX THIS
-
-        frontend_glue_relative_file = fig_file.replace(output_prefix + '/', '')
-
-        # Method 1: (disabled for proliferation of assets) append one import
-        # img_src = 'figure' + str(fig_index)
-        # frontend_imports.append('import ' + img_src + ' from "./' + frontend_glue_relative_file + '";')
-
-        # Method 2: /public folder referencing
-        img_src = "process.env.PUBLIC_URL + '/" + frontend_glue_relative_file + "'"
 
         # append one component
         frontend_components.append(
-            '<EmbeddedChart src={' + img_src + '}' +
+            '<EmbeddedChart src={' + fig_img_src + '}' +
             ' title="' + fig_title + '"' +
             ' comment="' + fig_comment + '"' +
             ' notebook_id="' + notebook_id + '"' +
             ' notebook_scopes={' + json.dumps(notebook_scopes) + '}' +
             ' notebook_tags={' + json.dumps(notebook_tags) + '}' +
-            ' updated="' + notebook_updated + '"' +
+            ' updated="' + fig_updated + '"' +
             '/>,')
 
     # Notebooks
@@ -271,7 +264,6 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
 
     # write the JS file
     glue_string = glue_frontend_template \
-        .replace('%CHART_IMPORTS%', "\n".join(frontend_imports)) \
         .replace('%COMPONENTS%', "\n".join(["  " + fc for fc in frontend_components])) \
         .replace('%NOTEBOOKS%', "\n".join(["  " + pd for pd in page_data])) \
         .replace('%METADATA%', "\n".join(["  " + ms for ms in meta_strings]))
