@@ -12,7 +12,6 @@ export function EmbeddedChartContainer(props) {
       {sortedCharts.map((chart, idx) => (
         <GridItem xs={12} sm={12} md={6} lg={3} key={idx}>
           <EmbeddedChart chart={chart} onViewImage={onViewImage}/>
-          {chart.priority}
         </GridItem>
       ))}
     </GridContainer>

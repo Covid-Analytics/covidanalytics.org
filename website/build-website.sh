@@ -4,6 +4,7 @@
 # it not in a parameter yet for risk management
 INSTALL_DIR="/srv/org.covidanalytics/static"
 LOCAL_CONVERTER_OUTPUT="out_converter"
+LOCAL_CONVERTER_LOG="$LOCAL_FRONTEND_OUTPUT"/coverter.out.html
 LOCAL_FRONTEND_OUTPUT="out_frontend"
 
 # == CONVERTER ==
@@ -22,8 +23,10 @@ for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONV_CONTAINER":
 echo "> Converting Notebooks (and copying the output to $LOCAL_CONVERTER_OUTPUT)..."
 rm -fr "$LOCAL_CONVERTER_OUTPUT"
 mkdir -p "$LOCAL_CONVERTER_OUTPUT"
-time docker exec -t "$CONV_CONTAINER" python3 /app/convert-ipynb.py |& tee "$LOCAL_CONVERTER_OUTPUT"/converter.out
+echo "<html><body><pre>" >> "$LOCAL_CONVERTER_LOG"
+time docker exec -t "$CONV_CONTAINER" python3 /app/convert-ipynb.py |& tee "$LOCAL_CONVERTER_LOG"
 docker cp "$CONV_CONTAINER":/app/output/. "$LOCAL_CONVERTER_OUTPUT"
+echo "</pre></body></html>" >> "$LOCAL_CONVERTER_LOG"
 
 echo -n "> Removing container... "
 docker kill "$CONV_CONTAINER" > /dev/null

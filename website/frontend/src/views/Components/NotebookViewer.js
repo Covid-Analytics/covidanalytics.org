@@ -27,9 +27,9 @@ export default function NotebookViewer(props) {
 
   return (
     <GridContainer>
-       <GridItem xs={12}>
-    <iframe src={nb_src} className={classes.iframe}/>
-     </GridItem>
-     </GridContainer>
+      <GridItem xs={12}>
+        <iframe src={nb_src} className={classes.iframe}/>
+      </GridItem>
+    </GridContainer>
   )
 }
