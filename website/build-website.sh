@@ -4,7 +4,7 @@
 # it not in a parameter yet for risk management
 INSTALL_DIR="/srv/org.covidanalytics/static"
 LOCAL_CONVERTER_OUTPUT="out_converter"
-LOCAL_CONVERTER_LOG="$LOCAL_FRONTEND_OUTPUT"/coverter.out.html
+LOCAL_CONVERTER_LOG="LOCAL_CONVERTER_OUTPUT"/coverter.out.html
 LOCAL_FRONTEND_OUTPUT="out_frontend"
 
 # == CONVERTER ==
