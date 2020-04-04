@@ -1,7 +1,7 @@
 notebook_id,figure_id,title,commentary,scopes,tags,highlight,priority
 covid19_world,output_5_0.png,Global Death Rate,should be constant,"it,us",deaths,1,1
-covid19_world,output_5_1.png,Trend in Global Cases,how different cultures handle it,"it,us","cases,log,shifted",,2
-covid19_world,output_5_2.png,Global Cases,most countries are just shifted,"it,us","cases,log",,6
-us_data,output_3_0.png,Trend in US Cases,how states are behaving,us,"cases,log,shifted",1,3
-us_data,output_3_1.png,US Cases by State,most States are just shifted,us,"cases,log",,5
+covid19_world,output_5_1.png,Trend in Global Cases,how different cultures handle it,"it,us",cases,,2
+covid19_world,output_5_2.png,Global Cases,most countries are just shifted,"it,us",cases,,6
+us_data,output_3_0.png,Trend in US Cases,how states are behaving,us,cases,1,3
+us_data,output_3_1.png,US Cases by State,most States are just shifted,us,cases,,5
 us_data,output_3_2.png,US Death Rate,"currently between 1 and 4%, as nominal",us,deaths,,4

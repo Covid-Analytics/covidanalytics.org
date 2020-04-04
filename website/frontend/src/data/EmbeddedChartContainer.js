@@ -17,12 +17,12 @@ export function EmbeddedChartContainer(props) {
   };
 
   // find all scopes
-  const allScopes = ChartsGlue.reduce((acc, chart) => {
+  const allScopes = ['global'].concat(ChartsGlue.reduce((acc, chart) => {
     chart.scopes.forEach(tag => {
       if (!acc.includes(tag)) acc.push(tag);
     });
     return acc;
-  }, []).sort();
+  }, []).sort());
 
   // find all tags
   const allTags = ChartsGlue.reduce((acc, chart) => {
