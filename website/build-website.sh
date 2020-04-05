@@ -19,6 +19,7 @@ CONV_CONTAINER=$(docker run --rm -d -t covana-converter:latest /bin/bash)
 
 echo "> Copying notebooks from '../analysis' to the container 'input/' folder"
 for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONV_CONTAINER":/app/input/; done
+for NOTEBOOK in ../analysis/*.py; do docker cp "$NOTEBOOK" "$CONV_CONTAINER":/app/input/; done
 
 echo "> Converting Notebooks (and copying the output to $LOCAL_CONVERTER_OUTPUT)..."
 rm -fr "$LOCAL_CONVERTER_OUTPUT"
