@@ -18,6 +18,7 @@ NOTEBOOK_PATHS = ['.', './input', '../../analysis']
 OUTPUT_FOLDER = 'output'
 FRONTEND_GLUE_FILE = 'DataGlue.js'
 FIGURES_META_FILE = 'figures-meta.csv'
+PYTHON_EXTRA_PATHS = ';../;../../;../input;../../input/;../../../analysis;../../../../analysis'
 
 # This is the inline'd template
 stand_alone_tpl = """
@@ -303,6 +304,8 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
 
 # Main
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+# make sure the modules loaded by the notebook can be found in a relative-to-the-notebook search path
+os.environ['PYTHONPATH'] += PYTHON_EXTRA_PATHS
 notebooks = scan_for_notebooks(NOTEBOOK_PATHS)
 all_pages = []
 all_figures = []
