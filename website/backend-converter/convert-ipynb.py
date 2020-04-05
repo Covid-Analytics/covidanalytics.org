@@ -305,6 +305,7 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
 # Main
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 # make sure the modules loaded by the notebook can be found in a relative-to-the-notebook search path
+if 'PYTHONPATH' not in os.environ: os.environ['PYTHONPATH'] = ''
 os.environ['PYTHONPATH'] += PYTHON_EXTRA_PATHS
 notebooks = scan_for_notebooks(NOTEBOOK_PATHS)
 all_pages = []
