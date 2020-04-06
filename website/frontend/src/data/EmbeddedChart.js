@@ -122,12 +122,12 @@ export function EmbeddedChart(props) {
             </h4>
           </GridItem>
           <GridItem xs={3} style={{textAlign: 'right'}}>
+            {tags.map(tag => {
+              if (tag === "deaths") return <span key={tag}>💀</span>;
+            })}
             {scopes.map(scope => {
               if (scope === "us") return <img src={us_flag} alt="USA" key={scope}/>;
               if (scope === "it") return <img src={it_flag} alt="Italy" key={scope}/>;
-            })}
-            {tags.map(tag => {
-              if (tag === "deaths") return <span>💀</span>;
             })}
           </GridItem>
           <GridItem xs={12}>
