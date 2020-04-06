@@ -72,12 +72,18 @@ def post_process_entries(filename: str, df, set_country_code: str = None, set_co
     # TODO: add Population (regional, national) so we can have these stats
     if 'Population' not in df.columns:
         # HACK: set US data sets which miss 'Population' to a constant here
-        if 'CountryName' in df.columns and df['CountryName'].all() == 'United States of America' and 'RegionCode' not in df.columns:
+        if 'CountryName' in df.columns and 'RegionCode' not in df.columns:
             # NOTE: this number comes from the OpenCovid-19 data set - here a constant; TODO: merge it dynamically
-            us_population = 329064917
-            print(filename + ': hack: setting the US population count to ' + str(us_population))
-            df['Population'] = us_population
+            df_population = None
+            if df['CountryName'].all() == 'United States of America':
+                df_population = 329064917
+            elif df['CountryName'].all() == 'Italy':
+                df_population = 60550075
+            if df_population:
+                # print(filename + ': hack: setting ' + df['CountryName'].any() + ' population to ' + str(df_population))
+                df['Population'] = df_population
 
+    # more ratios
     # df['Confirmed_pct'] = 100 * df['Confirmed'] / df['Population']
     # df['Deaths_pct'] = 100 * df['Deaths'] / df['Population']
 
@@ -233,6 +239,22 @@ def load_latest_johnhopkins_daily():
     return load_last_day()
 
 
+# fuse data to get the latest-and-greatest
+def fuse_daily_sources(df_world, df_us, df_it):
+    # start from Country-wide world data from OpenCovid-19, removing regional data (only country data is left)
+    df = df_world[df_world['RegionCode'].isna()]
+    df = df.drop(columns=['RegionCode', 'RegionName'])
+
+    # overwrite the latest US data from the Covid Tracking Project (US daily)
+    df = df[df['CountryCode'] != 'US']  # remove US data
+    df = pd.concat([df, df_us])  # add daily US data from Covid Tracking
+
+    # overwrite the latest IT data from the PCM-DPC italian source
+    df = df[df['CountryCode'] != 'IT']  # remove IT data
+    df = pd.concat([df, df_it])  # add daily IT data PCM-DPC
+    return df
+
+
 def test_load_all():
     (df_world_daily) = load_opencovid19_data()
     (df_world_last_day) = load_latest_johnhopkins_daily()
@@ -241,6 +263,7 @@ def test_load_all():
     print('Loaded data summary:')
     for df in [df_world_daily, df_world_last_day, df_it_daily, df_it_regional_daily, df_us_daily, df_us_states_daily, df_us_states_latest]:
         print(' - ' + str(len(df)) + ' rows, ' + str(len(df.columns)) + ' columns: ' + ', '.join(list(df)))
+    fuse_daily_sources(df_world_daily, df_us_daily, df_it_daily)
 
 
 if __name__ == "__main__":
