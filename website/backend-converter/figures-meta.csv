@@ -4,6 +4,6 @@ covid19_world,output_5_1.png,Trend in Global Cases,how different cultures handle
 covid19_world,output_5_2.png,Global Cases,most countries are just shifted,,cases,,25
 us_data,output_4_0.png,US Cases,The US took the lead,us,cases,,41
 us_data,output_6_0.png,US Deaths,About to overtake Italy,us,deaths,,42
-us_data,output_11_0.png,Trend in US Cases,how states are behaving,us,cases,1,43
+us_data,output_11_0.png,Trends in US States,how states are behaving,us,cases,1,43
 us_data,output_13_0.png,US Cases by State,most States are just shifted,us,cases,,44
 us_data,output_15_0.png,US Death rate by State,"currently between 1 and 4%, as nominal",us,deaths,,45
