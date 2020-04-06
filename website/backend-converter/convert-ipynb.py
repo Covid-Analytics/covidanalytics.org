@@ -265,8 +265,8 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
             ', title: "' + fig_title + '"' +
             ', short: "' + fig_short + '"' +
             ', notebook_id: "' + notebook_id + '"' +
-            ', scopes: ' + json.dumps(fig_scopes.split(',')) + '' +
-            ', tags: ' + json.dumps(fig_tags.split(',')) + '' +
+            ', scopes: ' + json.dumps(fig_scopes.split(',') if fig_scopes else []) + '' +
+            ', tags: ' + json.dumps(fig_tags.split(',') if fig_tags else []) + '' +
             ', highlight: ' + ('true' if fig_highlight else 'false') + '' +
             ', priority: ' + str(int(fig_priority)) + '' +
             ', updated: "' + fig_updated + '"' +
