@@ -6,6 +6,7 @@ import dateutil.parser as du_parser
 import pandas as pd
 
 CANONICAL_COLS = ['Date', 'X', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Negative', 'Infectious', 'Deaths', 'Recovered', 'Hospitalized', 'Tampons', 'Population', 'dConfirmed', 'dNegative', 'dInfectious', 'dDeaths', 'dRecovered', 'dHospitalized', 'dTampons', 'Death_rate', 'Tampon_hit_rate', 'dateChecked']
+DATE_FORMAT = '%Y-%m-%d'
 
 # MISC functions
 reference_day = datetime(2020, 1, 1)
@@ -20,7 +21,7 @@ def day_of_year_to_date(day_of_year):
 
 
 def also_print_df(df, name, date=datetime.now()):
-    print("📈 loaded " + name + " dataset (" + date.strftime("%Y-%m-%d") + "): [" + str(len(df)) + " rows x " + str(len(df.columns)) + " columns]: " + ", ".join(list(df)) + "\n")
+    print("📈 loaded " + name + " dataset (" + date.strftime(DATE_FORMAT) + "): [" + str(len(df)) + " rows x " + str(len(df.columns)) + " columns]: " + ", ".join(list(df)) + "\n")
     return df
 
 
@@ -64,7 +65,7 @@ def post_process_entries(filename: str, df, set_country_code: str = None, set_co
         df['RegionName'] = df.join(df_regions.set_index('RegionCode'), on='RegionCode', how='left')['RegionName']
 
     # add other canonical values
-    df['X'] = df['Date'].map(lambda d: date_to_day_of_year(datetime.strptime(d, '%Y-%m-%d')))
+    df['X'] = df['Date'].map(lambda d: date_to_day_of_year(datetime.strptime(d, DATE_FORMAT)))
     if 'Confirmed' in df.columns:
         if 'Deaths' in df.columns: df['Death_rate'] = 100 * df['Deaths'] / df['Confirmed']
         if 'Tampons' in df.columns: df['Tampon_hit_rate'] = 100 * df['Confirmed'] / df['Tampons']
@@ -89,7 +90,7 @@ def post_process_entries(filename: str, df, set_country_code: str = None, set_co
 
     # add the current date if the data didn't contain it
     if 'dateChecked' not in df.columns:
-        df['dateChecked'] = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        df['dateChecked'] = datetime.now(timezone.utc).strftime(DATE_FORMAT + 'T%H:%M:%SZ')
 
     # check if some columns are not in the canonical list
     extra_canonical_cols = list(set(df.columns) - set(CANONICAL_COLS))
@@ -147,7 +148,7 @@ def load_covidtracking_us_data():
                       keep_cols_map={'dateModified': 'Date', 'state': 'RegionCode', 'positive': 'Confirmed', 'negative': 'Negative', 'hospitalizedCurrently': 'Hospitalized', 'hospitalizedCumulative': 'HospitalizedTotal', 'inIcuCurrently': 'InICU', 'inIcuCumulative': 'InICUTotal', 'onVentilatorCurrently': 'OnVentilator', 'onVentilatorCumulative': 'OnVentilatorTotal', 'recovered': 'Recovered', 'death': 'Deaths', 'totalTestResults': 'Tampons', 'dateChecked': 'dateChecked'},
                       drop_cols=['pending', 'hash', 'hospitalized', 'total', 'posNeg', 'fips',
                                  'positiveScore', 'negativeScore', 'negativeRegularScore', 'commercialScore', 'grade', 'score', 'checkTimeEt', 'lastUpdateEt', 'notes'])
-        df['Date'] = df['Date'].map(lambda d: du_parser.parse(d).strftime('%Y-%m-%d'))
+        df['Date'] = df['Date'].map(lambda d: du_parser.parse(d).strftime(DATE_FORMAT))
         return post_process_covidtracking(loc_states_latest, df, df_regions)
 
     # load the 4 APIs
@@ -194,13 +195,22 @@ def load_pcmdpc_it_data():
 def load_opencovid19_data():
     loc_world_daily = 'https://open-covid-19.github.io/data/data.csv'
 
+    def apply_date_offset_to_country(df, country_code, days):
+        df_old_date = df.loc[(df['RegionCode'].isna()) & (df['CountryCode'] == country_code), 'Date']
+        df_new_date = df_old_date.map(lambda date: (datetime.strptime(date, DATE_FORMAT) + timedelta(days=days)).strftime(DATE_FORMAT))
+        df.update(df_new_date)
+
     # Countries by day
-    #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Deaths, Death_rate, dateChecked
-    return post_process_entries(
-        loc_world_daily,
-        load_csv(loc_world_daily,
-                 keep_cols_map=['Date', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Deaths', 'Population', 'Latitude', 'Longitude'],
-                 drop_cols=['Key']))
+    def load_countries_daily():
+        #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Deaths, Death_rate, dateChecked
+        df = load_csv(loc_world_daily,
+                      keep_cols_map=['Date', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Deaths', 'Population', 'Latitude', 'Longitude'],
+                      drop_cols=['Key'])
+        # ES data is 1 day ahead of the pack, bring it back
+        apply_date_offset_to_country(df, country_code='ES', days=-1)
+        return post_process_entries(loc_world_daily, df)
+
+    return load_countries_daily()
 
 
 # https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
@@ -234,7 +244,7 @@ def load_latest_johnhopkins_daily():
             load_csv(loc_jh,
                      keep_cols_map={'Admin2': 'City', 'Province_State': 'RegionName', 'Country_Region': 'CountryName', 'Lat': 'Latitude', 'Long_': 'Longitude', 'Confirmed': 'Confirmed', 'Deaths': 'Deaths', 'Recovered': 'Recovered', 'Active': 'Infectious'},
                      drop_cols=['FIPS', 'Last_Update', 'Combined_Key'],
-                     set_cols_map={'Date': date_jh.strftime('%Y-%m-%d')}))
+                     set_cols_map={'Date': date_jh.strftime(DATE_FORMAT)}))
 
     return load_last_day()
 
