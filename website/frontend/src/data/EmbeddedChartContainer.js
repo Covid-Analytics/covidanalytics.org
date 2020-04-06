@@ -74,7 +74,7 @@ export function EmbeddedChartContainer(props) {
             <Button color={activeTags.includes(tagId) ? "primary" : undefined}
                     onClick={() => toggleTag(tagId)}
                     size="sm" round key={tagId}>
-              {tagId}
+              {tagId.replace('deaths', '💀')}
             </Button>)}
         </GridItem>
       </GridContainer>
