@@ -99,7 +99,7 @@ export function EmbeddedChart(props) {
   const classes = useStyles();
 
   // unpack chart attributes
-  const {src, title, short, notebook_id, scopes, /*highlight,*/ /*priority,*/ updated} = chart;
+  const {src, title, short, notebook_id, scopes, tags, /*highlight,*/ /*priority,*/ updated} = chart;
   const img_src = process.env.PUBLIC_URL + src;
   const folder = "/" + notebook_id;
 
@@ -125,6 +125,9 @@ export function EmbeddedChart(props) {
             {scopes.map(scope => {
               if (scope === "us") return <img src={us_flag} alt="USA" key={scope}/>;
               if (scope === "it") return <img src={it_flag} alt="Italy" key={scope}/>;
+            })}
+            {tags.map(tag => {
+              if (tag === "deaths") return <span>💀</span>;
             })}
           </GridItem>
           <GridItem xs={12}>

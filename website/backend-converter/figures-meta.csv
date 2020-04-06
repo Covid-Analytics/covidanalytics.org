@@ -1,9 +1,9 @@
 notebook_id,figure_id,title,commentary,scopes,tags,highlight,priority
-covid19_world,output_5_0.png,Global Death Rate,should be constant,"it,us",deaths,1,10
-covid19_world,output_5_1.png,Trend in Global Cases,how different cultures handle it,"it,us",cases,,20
-covid19_world,output_5_2.png,Global Cases,most countries are just shifted,"it,us",cases,,25
-us_data,output_4_0.png,US Confirmed Cases,The US took the lead,us,cases,,41
-us_data,output_6_0.png,US confirmed Deaths,About to overtake Italy,us,deaths,,42
+covid19_world,output_5_0.png,Global Death rates,should get flatter,it,deaths,1,10
+covid19_world,output_5_1.png,Trend in Global Cases,how different cultures handle it,,cases,,20
+covid19_world,output_5_2.png,Global Cases,most countries are just shifted,,cases,,25
+us_data,output_4_0.png,US Cases,The US took the lead,us,cases,,41
+us_data,output_6_0.png,US Deaths,About to overtake Italy,us,deaths,,42
 us_data,output_11_0.png,Trend in US Cases,how states are behaving,us,cases,1,40
 us_data,output_13_0.png,US Cases by State,most States are just shifted,us,cases,,45
-us_data,output_15_0.png,US Death Rate by State,"currently between 1 and 4%, as nominal",us,deaths,,46
+us_data,output_15_0.png,US Death rate by State,"currently between 1 and 4%, as nominal",us,deaths,,46
