@@ -4,6 +4,7 @@
 from datetime import datetime, timedelta, timezone
 import dateutil.parser as du_parser
 import pandas as pd
+import numpy as np
 
 CANONICAL_COLS = ['Date', 'X', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Negative', 'Infectious', 'Deaths', 'Recovered', 'Hospitalized', 'Tampons', 'Population', 'dConfirmed', 'dNegative', 'dInfectious', 'dDeaths', 'dRecovered', 'dHospitalized', 'dTampons', 'Death_rate', 'Tampon_hit_rate', 'dateChecked']
 DATE_FORMAT = '%Y-%m-%d'
@@ -20,9 +21,17 @@ def day_of_year_to_date(day_of_year):
     return reference_day + timedelta(days=(day_of_year - 1))
 
 
-def also_print_df(df, name, date=datetime.now()):
-    print("📈 loaded " + name + " dataset (" + date.strftime(DATE_FORMAT) + "): [" + str(len(df)) + " rows x " + str(len(df.columns)) + " columns]: " + ", ".join(list(df)) + "\n")
-    return df
+def cleanup_canonical(df, warning_prefix='', drop_na_columns=True):
+    # check if some columns are not in the canonical list
+    extra_canonical_cols = list(set(df.columns) - set(CANONICAL_COLS))
+    extra_canonical_cols.sort()
+    if extra_canonical_cols: print(warning_prefix + ': non-canonical cols: ' + ', '.join(extra_canonical_cols))
+
+    # return the nominal columns: excess columns are discarded, missing columns are NaN
+    df = df.reindex(columns=CANONICAL_COLS)
+
+    # remove empty columns
+    return df.dropna(axis=1, how='all') if drop_na_columns else df
 
 
 def load_csv(filename: str, keep_cols_map: list or dict, drop_cols: list, set_cols_map: dict = None):
@@ -92,16 +101,8 @@ def post_process_entries(filename: str, df, set_country_code: str = None, set_co
     if 'dateChecked' not in df.columns:
         df['dateChecked'] = datetime.now(timezone.utc).strftime(DATE_FORMAT + 'T%H:%M:%SZ')
 
-    # check if some columns are not in the canonical list
-    extra_canonical_cols = list(set(df.columns) - set(CANONICAL_COLS))
-    extra_canonical_cols.sort()
-    if extra_canonical_cols: print(filename + ': non-canonical cols: ' + ', '.join(extra_canonical_cols))
-
-    # return the nominal columns: excess columns are discarded, missing columns are NaN
-    df = df.reindex(columns=CANONICAL_COLS)
-
-    # remove empty columns
-    return df.dropna(axis=1, how='all')
+    # cleanup (reorder columns and drop full na's)
+    return cleanup_canonical(df, filename)
 
 
 # https://covidtracking.com/
@@ -256,24 +257,55 @@ def fuse_daily_sources(df_world, df_us, df_it):
     df = df.drop(columns=['RegionCode', 'RegionName'])
 
     # overwrite the latest US data from the Covid Tracking Project (US daily)
-    df = df[df['CountryCode'] != 'US']  # remove US data
-    df = pd.concat([df, df_us])  # add daily US data from Covid Tracking
-
     # overwrite the latest IT data from the PCM-DPC italian source
+    df = df[df['CountryCode'] != 'US']  # remove US data
     df = df[df['CountryCode'] != 'IT']  # remove IT data
-    df = pd.concat([df, df_it])  # add daily IT data PCM-DPC
+    df = pd.concat([df, df_us, df_it], ignore_index=True)  # add daily US and IT data
     return df
 
 
+def add_canonical_differentials(df_src, series_column='CountryName', order_column='Date'):
+    print('Computing canonical differentials... ', end='')
+    diff_cols = ['Confirmed', 'Negative', 'Infectious', 'Deaths', 'Recovered', 'Hospitalized', 'Tampons']
+
+    # select only country (not regional) data
+    df_countries = df_src
+    if 'RegionCode' in df_countries.columns:
+        df_countries = df_countries[df_countries['RegionCode'].isna()]
+
+    # update each series x each differential
+    for country_name in df_countries[series_column].unique():
+        df_country = df_countries[df_countries[series_column] == country_name]
+        df_country = df_country.sort_values(order_column)
+        for src_col in diff_cols:
+            diff_col = 'd' + src_col
+            if src_col not in df_country.columns: continue
+            if df_country[src_col].isna().all(): continue
+            if diff_col in df_country.columns:
+                if df_country[diff_col].notna().all(): continue
+            # compute 'row_n - row_(n-1)'
+            df_country[diff_col] = df_country[src_col].diff()
+            # add the column to the source if missing (update won't do it)
+            if diff_col not in df_src.columns:
+                df_src[diff_col] = np.nan
+        # merge the updated series data with the source
+        df_src.update(df_country)
+    print('done.')
+
+
 def test_load_all():
+    # load all
     (df_world_daily) = load_opencovid19_data()
     (df_world_last_day) = load_latest_johnhopkins_daily()
     (df_it_daily, df_it_regional_daily) = load_pcmdpc_it_data()
     (df_us_daily, df_us_states_daily, df_us_states_latest) = load_covidtracking_us_data()
+    # test data manipulation
+    df_countries_daily = fuse_daily_sources(df_world_daily, df_us_daily, df_it_daily)
+    add_canonical_differentials(df_countries_daily)
+    # print summary
     print('Loaded data summary:')
-    for df in [df_world_daily, df_world_last_day, df_it_daily, df_it_regional_daily, df_us_daily, df_us_states_daily, df_us_states_latest]:
+    for df in [df_world_daily, df_world_last_day, df_it_daily, df_it_regional_daily, df_us_daily, df_us_states_daily, df_us_states_latest, df_countries_daily]:
         print(' - ' + str(len(df)) + ' rows, ' + str(len(df.columns)) + ' columns: ' + ', '.join(list(df)))
-    fuse_daily_sources(df_world_daily, df_us_daily, df_it_daily)
 
 
 if __name__ == "__main__":
