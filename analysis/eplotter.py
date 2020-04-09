@@ -22,7 +22,8 @@ def scatter_plot_by_series(_df,
                            title=None, title_align='left', label_x=None, label_y=None, stamp_1=None, stamp_2=None):
     # label the plot
     plt.rc('font', size=14)
-    plt.figure(figsize=(14, 10))
+    fig = plt.figure(figsize=(14, 10))
+    fig.patch.set_facecolor('white')
     plt.title(title if title else "'" + y_key + "' over '" + x_key + "', by '" + series_key + "'", loc=title_align)
     if not label_x:
         label_x = x_key
