@@ -218,7 +218,7 @@ def load_opencovid19_data():
     pop_cols = REGION_INDEX_COLS + ['Population']
     df_region_population = df_regions_daily.drop_duplicates(subset=REGION_INDEX_COLS, keep='last')[pop_cols]
     df_countries_population = df_region_population[df_region_population['RegionCode'].isna()]
-    return df_regions_daily, df_countries_population, df_region_population
+    return df_regions_daily, df_countries_population
 
 
 # https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
