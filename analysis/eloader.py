@@ -309,6 +309,7 @@ def test_load_all():
     # test data manipulation
     df_countries_daily = fuse_daily_sources(df_world_daily, df_us_daily, df_it_daily)
     add_canonical_differentials(df_countries_daily)
+    # df_countries_daily = cleanup_canonical(df_countries_daily)
     # print summary
     print('Loaded data summary:')
     for df in [df_world_daily, df_world_last_day, df_it_daily, df_it_regional_daily, df_us_daily, df_us_states_daily, df_us_states_latest, df_countries_daily]:
