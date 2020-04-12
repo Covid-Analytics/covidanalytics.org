@@ -14,6 +14,8 @@ import GridItem from "../components/Grid/GridItem";
 
 const us_flag = require("assets/img/flags/US.png");
 const it_flag = require("assets/img/flags/IT.png");
+const kr_flag = require("assets/img/flags/KR.png");
+const cn_flag = require("assets/img/flags/CN.png");
 
 const embeddedChartStyles = {
   cardTitle: {
@@ -128,6 +130,8 @@ export function EmbeddedChart(props) {
             {scopes.map(scope => {
               if (scope === "us") return <img src={us_flag} alt="USA" key={scope}/>;
               if (scope === "it") return <img src={it_flag} alt="Italy" key={scope}/>;
+              if (scope === "kr") return <img src={kr_flag} alt="South Korea" key={scope}/>;
+              if (scope === "cn") return <img src={cn_flag} alt="China" key={scope}/>;
             })}
           </GridItem>
           <GridItem xs={12}>
