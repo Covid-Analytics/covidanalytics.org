@@ -32,7 +32,12 @@ def cleanup_canonical(df, warning_prefix='', drop_na_columns=True):
     df = df.reindex(columns=CANONICAL_COLS)
 
     # remove empty columns
-    return df.dropna(axis=1, how='all') if drop_na_columns else df
+    if drop_na_columns:
+        df = df.dropna(axis=1, how='all')
+
+    # use integers where appropriate
+    df = df.astype({'X': int})
+    return df
 
 
 def load_csv(filename: str, keep_cols_map: list or dict, drop_cols: list, set_cols_map: dict = None):

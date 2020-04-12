@@ -116,7 +116,9 @@ def scatter_plot_by_series(_df,
         bounds[2] = shift_x_to_intersect_y
     if y_log:
         plt.yscale('log')
-        plt.gca().yaxis.set_major_formatter(ScalarFormatter())
+        formatter = ScalarFormatter(useOffset=False)
+        formatter.set_powerlimits((-3, 10))
+        plt.gca().yaxis.set_major_formatter(formatter)
         bounds[3] = 2 * bounds[3]
     plt.xlim(bounds[0], bounds[1])
     plt.ylim(bounds[2], bounds[3])
