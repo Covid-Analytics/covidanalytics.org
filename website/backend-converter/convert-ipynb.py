@@ -239,8 +239,9 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
         fig_short = "short commentary"
         fig_scopes = ",".join([scope for scope in ['global', 'us', 'italy'] if random.random() < 0.3])
         fig_tags = ",".join([scope for scope in ['mortality', 'cases', 'trends'] if random.random() < 0.3])
-        fig_highlight = 1 if random.random() < 0.3 else ''
         fig_priority = fig_index
+        fig_highlight = 1 if random.random() < 0.3 else ''
+        fig_hide = random.random() < 0.9
 
         # figure: metadata: replace with editorial values from the local 'CSV' database
         df = df_figures
@@ -250,14 +251,15 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
             if not df_warning_silencer:
                 print("  WARNING: the following are missing metadata in " + FIGURES_META_FILE)
                 df_warning_silencer = True
-            print(notebook_id + "," + fig_id + ",,,,")
+            print(notebook_id + "," + fig_id + ",,,,,,,")
         else:
             fig_title = str(df['title'].iloc[0])
             fig_short = df['commentary'].iloc[0]
             fig_scopes = df['scopes'].iloc[0]
             fig_tags = df['tags'].iloc[0]
-            fig_highlight = df['highlight'].iloc[0]
             fig_priority = int(df['priority'].iloc[0]) if df['priority'].iloc[0] else 99
+            fig_highlight = df['highlight'].iloc[0]
+            fig_hide = df['hide'].iloc[0]
 
         # append one component
         frontend_components.append(
@@ -267,8 +269,9 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
             ', notebook_id: "' + notebook_id + '"' +
             ', scopes: ' + json.dumps(fig_scopes.split(',') if fig_scopes else []) + '' +
             ', tags: ' + json.dumps(fig_tags.split(',') if fig_tags else []) + '' +
-            ', highlight: ' + ('true' if fig_highlight else 'false') + '' +
             ', priority: ' + str(int(fig_priority)) + '' +
+            ', highlight: ' + ('true' if fig_highlight else 'false') + '' +
+            ', hide: ' + ('true' if fig_hide else 'false') + '' +
             ', updated: "' + fig_updated + '"' +
             '},')
 
