@@ -12,7 +12,7 @@ import {cardTitle, grayColor, successColor} from "assets/jss/material-dashboard-
 import GridContainer from "../components/Grid/GridContainer";
 import GridItem from "../components/Grid/GridItem";
 
-import {scope2flag} from "./EmbeddedChartContainer";
+import {scope2flag} from "./DataUtils";
 
 const embeddedChartStyles = {
   cardTitle: {
