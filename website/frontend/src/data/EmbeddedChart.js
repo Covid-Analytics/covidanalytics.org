@@ -12,10 +12,7 @@ import {cardTitle, grayColor, successColor} from "assets/jss/material-dashboard-
 import GridContainer from "../components/Grid/GridContainer";
 import GridItem from "../components/Grid/GridItem";
 
-const us_flag = require("assets/img/flags/US.png");
-const it_flag = require("assets/img/flags/IT.png");
-const kr_flag = require("assets/img/flags/KR.png");
-const cn_flag = require("assets/img/flags/CN.png");
+import {scope2flag} from "./EmbeddedChartContainer";
 
 const embeddedChartStyles = {
   cardTitle: {
@@ -127,12 +124,7 @@ export function EmbeddedChart(props) {
             {tags.map(tag => {
               if (tag === "deaths") return <span key={tag}>💀</span>;
             })}
-            {scopes.map(scope => {
-              if (scope === "us") return <img src={us_flag} alt="USA" key={scope}/>;
-              if (scope === "it") return <img src={it_flag} alt="Italy" key={scope}/>;
-              if (scope === "kr") return <img src={kr_flag} alt="South Korea" key={scope}/>;
-              if (scope === "cn") return <img src={cn_flag} alt="China" key={scope}/>;
-            })}
+            {scopes.map(scope => scope2flag(scope))}
           </GridItem>
           <GridItem xs={12}>
             <p className={classes.cardCategory}>
