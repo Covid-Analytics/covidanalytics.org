@@ -3,18 +3,27 @@ import Card from "../components/Card/Card";
 import CardHeader from "../components/Card/CardHeader";
 import CardBody from "../components/Card/CardBody";
 import CardFooter from "../components/Card/CardFooter";
-import {makeStyles} from "@material-ui/core/styles";
+import Hidden from "@material-ui/core/Hidden";
 import AccessTime from "@material-ui/icons/AccessTime";
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import Tooltip from "@material-ui/core/Tooltip";
+import {makeStyles} from "@material-ui/core/styles";
 
 import TimeAgo from 'react-timeago'
 
-import {cardTitle, grayColor, successColor} from "assets/jss/material-dashboard-pro-react";
+import {cardTitle, tooltip, successColor} from "assets/jss/material-dashboard-pro-react";
+import dashboardStyle from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
+import hoverCardStyle from "assets/jss/material-dashboard-pro-react/hoverCardStyle.js";
 import GridContainer from "../components/Grid/GridContainer";
 import GridItem from "../components/Grid/GridItem";
+import Button from "../components/CustomButtons/Button";
 
-import {scope2flag} from "./DataUtils";
+import {scope2flag, tag2emoji} from "./DataUtils";
 
 const embeddedChartStyles = {
+  ...hoverCardStyle,
+  tooltip,
   cardTitle: {
     ...cardTitle,
     marginTop: "0px",
@@ -23,23 +32,21 @@ const embeddedChartStyles = {
   cardHover: {
     "&:hover": {
       "& $cardHeaderHover": {
-        transform: "translate3d(0, -10px, 0)"
+        transform: "translate3d(0, -40px, 0)"
       }
     }
   },
   cardHeaderHover: {
-    transition: "all 300ms cubic-bezier(0.34, 1.61, 0.7, 1)",
-    background: 'white',
+    ...hoverCardStyle.cardHeaderHover,
+    zIndex: 5, // make sure the header covers the buttons underneath
   },
-  // cardHoverUnder: {
-  //   position: "absolute",
-  //   zIndex: "1",
-  //   top: "-50px",
-  //   width: "calc(100% - 30px)",
-  //   left: "17px",
-  //   right: "17px",
-  //   textAlign: "center"
-  // },
+  cardHoverUnder: {
+    ...hoverCardStyle.cardHoverUnder,
+    top: '-40px',
+  },
+  underButton: {
+    padding: '6px 30px',
+  },
   cardImagePreview: {
     width: '100%',
   },
@@ -47,35 +54,14 @@ const embeddedChartStyles = {
     color: successColor[0]
   },
   cardCategory: {
-    color: grayColor[0],
-    fontSize: "14px",
-    paddingTop: "10px",
-    marginBottom: "0",
-    marginTop: "0",
-    margin: "0"
+    ...dashboardStyle.cardCategory,
   },
-  upArrowCardCategory: {
-    width: 14,
-    height: 14
-  },
-  stats: {
-    color: grayColor[0],
-    fontSize: "12px",
-    lineHeight: "22px",
-    display: "inline-flex",
-    "& svg": {
-      position: "relative",
-      top: "4px",
-      width: "16px",
-      height: "16px",
-      marginRight: "3px"
-    },
-    "& .fab,& .fas,& .far,& .fal,& .material-icons": {
-      position: "relative",
-      top: "4px",
-      fontSize: "16px",
-      marginRight: "3px"
-    }
+  // cardCategoryArrow: {
+  //   width: 14,
+  //   height: 14
+  // },
+  cardStats: {
+    ...dashboardStyle.stats,
   },
 };
 const useStyles = makeStyles(embeddedChartStyles);
@@ -114,6 +100,20 @@ export function EmbeddedChart(props) {
         </a>
       </CardHeader>
       <CardBody>
+        <Hidden smDown implementation="css">
+          <div className={classes.cardHoverUnder}>
+            <Tooltip id="tooltip-top" title="View Chart" placement="bottom" classes={{tooltip: classes.tooltip}}>
+              <Button color="rose" simple onClick={e => handleImageClick(e)} className={classes.underButton}>
+                <TimelineIcon/>
+              </Button>
+            </Tooltip>
+            <Tooltip id="tooltip-top" title="View Notebook" placement="bottom" classes={{tooltip: classes.tooltip}}>
+              <Button color="rose" simple href={folder} className={classes.underButton}>
+                <LibraryBooksIcon/>
+              </Button>
+            </Tooltip>
+          </div>
+        </Hidden>
         <GridContainer>
           <GridItem xs={9}>
             <h4 className={classes.cardTitle}>
@@ -121,15 +121,13 @@ export function EmbeddedChart(props) {
             </h4>
           </GridItem>
           <GridItem xs={3} style={{textAlign: 'right'}}>
-            {tags.map(tag => {
-              if (tag === "deaths") return <span key={tag}>💀</span>;
-            })}
+            {tags.map(tagId => <span key={tagId}>{tag2emoji(tagId, true)}</span>)}
             {scopes.map(scope => scope2flag(scope))}
           </GridItem>
           <GridItem xs={12}>
             <p className={classes.cardCategory}>
               {/*<span className={classes.successText}>*/}
-              {/*  <ArrowUpward className={classes.upArrowCardCategory}/> 55%*/}
+              {/*  <ArrowUpward className={classes.cardCategoryArrow}/> 55%*/}
               {/*</span>{" "}*/}
               {short}
             </p>
@@ -137,7 +135,7 @@ export function EmbeddedChart(props) {
         </GridContainer>
       </CardBody>
       <CardFooter chart>
-        <div className={classes.stats}><AccessTime/> {<TimeAgo date={updated}/>}.</div>
+        <div className={classes.cardStats}><AccessTime/> {<TimeAgo date={updated}/>}.</div>
       </CardFooter>
     </Card>
   );

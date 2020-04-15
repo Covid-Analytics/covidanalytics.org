@@ -20,3 +20,9 @@ export function scope2emoji(scopeId) {
   if (scopeId === "cn") return "🇨🇳";
   return scopeId;
 }
+
+export function tag2emoji(tagId, skipName = false) {
+  if (tagId === 'deaths') return '💀';
+  if (tagId === 'forecast') return '📈';
+  return skipName ? '' : tagId;
+}

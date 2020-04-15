@@ -5,7 +5,7 @@ import Button from "components/CustomButtons/Button";
 
 import {ChartsGlue} from "./DataGlue"
 import {EmbeddedChart} from "./EmbeddedChart";
-import {scope2emoji} from "./DataUtils";
+import {scope2emoji, tag2emoji} from "./DataUtils";
 
 
 export function EmbeddedChartContainer(props) {
@@ -65,19 +65,19 @@ export function EmbeddedChartContainer(props) {
             <Button color={activeScope === scopeId ? "rose" : undefined}
                     onClick={() => setActiveScope(scopeId)}
                     size="sm" round
-                    // style={{paddingLeft: '10px', paddingRight: '10px'}}
+              // style={{paddingLeft: '10px', paddingRight: '10px'}}
                     key={scopeId}>
               {scope2emoji(scopeId)}
             </Button>)}
         </GridItem>
         {/* Tags: any can be active */}
         <GridItem sm={12} md={6}>
-          <h6 style={{display: 'inline', marginRight: '1.1em'}}>Types:</h6>
+          <h6 style={{display: 'inline', marginRight: '1.1em'}}>Tags:&nbsp;&nbsp;</h6>
           {allTags.map(tagId =>
             <Button color={activeTags.includes(tagId) ? "primary" : undefined}
                     onClick={() => toggleTag(tagId)}
                     size="sm" round key={tagId}>
-              {tagId.replace('deaths', '💀').replace('forecast', '📈')}
+              {tag2emoji(tagId)}
             </Button>)}
         </GridItem>
       </GridContainer>
@@ -85,7 +85,7 @@ export function EmbeddedChartContainer(props) {
       {/* Charts */}
       <GridContainer>
         {charts.map((chart, idx) => (
-          <GridItem xs={12} sm={12} md={6} lg={3} key={idx}>
+          <GridItem xs={12} sm={12} md={6} lg={4} xl={3} key={idx}>
             <EmbeddedChart chart={chart} onViewImage={onViewImage}/>
           </GridItem>
         ))}
