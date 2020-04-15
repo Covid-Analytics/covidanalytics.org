@@ -18,3 +18,7 @@ predictions,output_6_4.png,Projection: Chinese Cases,simplified,cn,"cases,foreca
 predictions,output_6_5.png,Projection: Chinese Deaths,simplified,cn,"deaths,forecast",87,,
 predictions,output_6_6.png,Projection: US Cases,simplified,us,"cases,forecast",81,,
 predictions,output_6_7.png,Projection: US Deaths,simplified,us,"deaths,forecast",86,,
+predictions,output_6_8.png,Projection: India Cases,simplified,in,"cases,forecast",87,,
+predictions,output_6_9.png,Projection: India Deaths,simplified,in,"deaths,forecast",88,,
+predictions,output_6_10.png,Projection: Brazil Cases,simplified,br,"cases,forecast",89,,
+predictions,output_6_11.png,Projection: Brazil Deaths,simplified,br,"deaths,forecast",90,,
