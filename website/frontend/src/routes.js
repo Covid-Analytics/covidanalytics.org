@@ -51,7 +51,7 @@ const dashRoutes = [
   // Enrico mod
   {
     path: '/charts',
-    name: "Latest Charts",
+    name: "Live Charts",
     icon: DashboardIcon,
     component: SimpleDashboard,
     layout: ""
