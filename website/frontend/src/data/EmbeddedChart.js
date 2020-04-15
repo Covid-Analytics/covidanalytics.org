@@ -86,7 +86,7 @@ export function EmbeddedChart(props) {
   // unpack chart attributes
   const {src, title, short, notebook_id, scopes, tags, /*highlight,*/ /*priority,*/ updated} = chart;
   const img_src = process.env.PUBLIC_URL + src;
-  const folder = "/" + notebook_id;
+  const route_notebook = "/notebook/" + notebook_id;
 
   const handleImageClick = (e) => {
     e.preventDefault();
@@ -95,7 +95,7 @@ export function EmbeddedChart(props) {
   return (
     <Card chart className={classes.cardHover}>
       <CardHeader color="rose" className={classes.cardHeaderHover} style={{padding: 6, background: 'white'}}>
-        <a href={folder} onClick={e => handleImageClick(e)}>
+        <a href={route_notebook} onClick={e => handleImageClick(e)}>
           <img src={img_src} alt={title} className={classes.cardImagePreview}/>
         </a>
       </CardHeader>
@@ -108,7 +108,7 @@ export function EmbeddedChart(props) {
               </Button>
             </Tooltip>
             <Tooltip id="tooltip-top" title="View Notebook" placement="bottom" classes={{tooltip: classes.tooltip}}>
-              <Button color="rose" simple href={folder} className={classes.underButton}>
+              <Button color="rose" simple href={route_notebook} className={classes.underButton}>
                 <LibraryBooksIcon/>
               </Button>
             </Tooltip>
@@ -117,7 +117,7 @@ export function EmbeddedChart(props) {
         <GridContainer>
           <GridItem xs={9}>
             <h4 className={classes.cardTitle}>
-              <a href={folder}>{title}</a>
+              <a href={route_notebook}>{title}</a>
             </h4>
           </GridItem>
           <GridItem xs={3} style={{textAlign: 'right'}}>

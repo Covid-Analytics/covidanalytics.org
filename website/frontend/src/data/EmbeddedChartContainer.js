@@ -80,6 +80,10 @@ export function EmbeddedChartContainer(props) {
               {tag2emoji(tagId)}
             </Button>)}
         </GridItem>
+        {/* Spacer for Desktop versions */}
+        <GridItem xs={12}>
+          &nbsp;
+        </GridItem>
       </GridContainer>
 
       {/* Charts */}
