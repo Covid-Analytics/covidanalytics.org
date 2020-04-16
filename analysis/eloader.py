@@ -40,7 +40,7 @@ def cleanup_canonical(df, warning_prefix='', drop_na_columns=True):
     return df
 
 
-def load_csv(filename: str, keep_cols_map: list or dict, drop_cols: list, set_cols_map: dict = None):
+def load_csv(filename: str, keep_cols_map: list or dict, drop_cols: list):
     df = pd.read_csv(filename)
     original_cols = set(df.columns)
 
@@ -56,12 +56,6 @@ def load_csv(filename: str, keep_cols_map: list or dict, drop_cols: list, set_co
     # safe drop (if a column doesn't exist anymore, don't break)
     df = df.drop(columns=original_cols.intersection(drop_cols))
 
-    # set columns, if requested
-    if set_cols_map:
-        for item in set_cols_map.items():
-            df[item[0]] = item[1]
-            new_data.add(item[0])
-
     # safe reorder + add leftovers. if a column doesn't exist anymore, don't break - although you will have missing data (warned about it already)
     final_columns = [col for col in keep_cols if col in df.columns] + list(new_data)
     df = df.loc[:, final_columns]
@@ -72,18 +66,18 @@ def load_csv(filename: str, keep_cols_map: list or dict, drop_cols: list, set_co
     return df
 
 
-def post_process_entries(filename: str, df, set_country_code: str = None, set_country_name: str = None, df_regions=None):
-    # add Regional (State) names and set the country as US, if requested
-    if set_country_code and 'CountryCode' not in df.columns: df['CountryCode'] = set_country_code
-    if set_country_name and 'CountryName' not in df.columns: df['CountryName'] = set_country_name
+def post_process_entries(filename: str, df: pd.DataFrame, set_cols_map: dict = None, df_regions=None):
+    # set columns, if requested
+    if set_cols_map:
+        for item in set_cols_map.items():
+            if item[0] in df.columns:
+                print('W: requested to set "' + item[0] + '", but column is already present. Skipping.')
+            else:
+                df[item[0]] = item[1]
+
+    # join RegionName(s) if we only have the RegionCode and a set to join
     if (df_regions is not None) and ('RegionName' not in df.columns) and ('RegionCode' in df.columns):
         df['RegionName'] = df.join(df_regions.set_index('RegionCode'), on='RegionCode', how='left')['RegionName']
-
-    # add other canonical values
-    df['X'] = df['Date'].map(lambda d: date_to_day_of_year(datetime.strptime(d, DATE_FORMAT)))
-    if 'Confirmed' in df.columns:
-        if 'Deaths' in df.columns: df['Death_rate'] = 100 * df['Deaths'] / df['Confirmed']
-        if 'Tampons' in df.columns: df['Tampon_hit_rate'] = 100 * df['Confirmed'] / df['Tampons']
 
     # TODO: add Population (regional, national) so we can have these stats
     if 'Population' not in df.columns:
@@ -98,6 +92,12 @@ def post_process_entries(filename: str, df, set_country_code: str = None, set_co
             if df_population:
                 # print(filename + ': hack: setting ' + df['CountryName'].any() + ' population to ' + str(df_population))
                 df['Population'] = df_population
+
+    # add other canonical values
+    df['X'] = df['Date'].map(lambda d: date_to_day_of_year(datetime.strptime(d, DATE_FORMAT)))
+    if 'Confirmed' in df.columns:
+        if 'Deaths' in df.columns: df['Death_rate'] = 100 * df['Deaths'] / df['Confirmed']
+        if 'Tampons' in df.columns: df['Tampon_hit_rate'] = 100 * df['Confirmed'] / df['Tampons']
 
     # more ratios
     # df['Confirmed_pct'] = 100 * df['Confirmed'] / df['Population']
@@ -124,11 +124,15 @@ def load_covidtracking_us_data():
         # compute the 'Infections' := Confirmed - Recovered - df['Deaths'], and the daily diff
         df['Infectious'] = df['Confirmed'] - df['Recovered'] - df['Deaths']
         # note: doesn't work with non-uniform daily data: df['dInfectious'] = df['Infectious'].diff(periods=1)
-        return post_process_entries(filename, df, 'US', 'United States of America', df_regions)
+        return post_process_entries(filename, df,
+                                    set_cols_map={'CountryCode': 'US', 'CountryName': 'United States of America'},
+                                    df_regions=df_regions)
 
     # US states Information: useful to join the region name (CA -> California)
     def load_us_regions_info():
-        return load_csv(loc_states_info, keep_cols_map={'state': 'RegionCode', 'name': 'RegionName'}, drop_cols=['covid19SiteSecondary', 'twitter', 'covid19Site', 'covid19SiteOld', 'fips', 'pui', 'pum', 'notes'])
+        return load_csv(loc_states_info,
+                        keep_cols_map={'state': 'RegionCode', 'name': 'RegionName'},
+                        drop_cols=['covid19SiteSecondary', 'twitter', 'covid19Site', 'covid19SiteOld', 'fips', 'pui', 'pum', 'notes'])
 
     # US aggregate, daily values
     #  Date, X, CountryCode, CountryName, Confirmed, Negative, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dNegative, dDeaths, dHospitalized, dTampons, Death_rate, Tampon_hit_rate, dateChecked
@@ -177,7 +181,8 @@ def load_pcmdpc_it_data():
         # Extra: InICU, Infectious, dInfectious, dateModified
         # Relation: totale_casi (Confirmed/d) = totale_positivi (Infectious/d) + dimessi_guariti (Recovered) + deceduti (Deaths)
         # Relation: totale_ospedalizzati (not used) =  ricoverati_con_sintomi (Hospitalized) + terapia_intensiva (InICU)
-        return post_process_entries(filename, df, set_country_code='IT', set_country_name='Italy')
+        return post_process_entries(filename, df,
+                                    set_cols_map={'CountryCode': 'IT', 'CountryName': 'Italy'})
 
     # Italy country-wide, per day
     #  Date, X, CountryCode, CountryName, Confirmed, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dInfectious, Death_rate, Tampon_hit_rate, dateChecked
@@ -256,13 +261,29 @@ def load_latest_johnhopkins_daily():
             loc_jh,
             load_csv(loc_jh,
                      keep_cols_map={'Admin2': 'City', 'Province_State': 'RegionName', 'Country_Region': 'CountryName', 'Lat': 'Latitude', 'Long_': 'Longitude', 'Confirmed': 'Confirmed', 'Deaths': 'Deaths', 'Recovered': 'Recovered', 'Active': 'Infectious'},
-                     drop_cols=['FIPS', 'Last_Update', 'Combined_Key'],
-                     set_cols_map={'Date': date_jh.strftime(DATE_FORMAT)}))
+                     drop_cols=['FIPS', 'Last_Update', 'Combined_Key']),
+            set_cols_map={'Date': date_jh.strftime(DATE_FORMAT)})
 
     return load_last_day()
 
 
 # fuse data to get the latest-and-greatest
+# def fuse_sources(df_base: pd.DataFrame, df_replace_country: dict, drop_regions=True):
+#     # remove Regional data, if requested
+#     df = df_base
+#     if drop_regions:
+#         df = df[df['RegionCode'].isna()]
+#         df = df.drop(columns=['RegionCode', 'RegionName'])
+#
+#     # remove by CountryCode and then concatenate data
+#     concat = []
+#     for item in df_replace_country.items():
+#         df = df[df['CountryCode'] != item[0]]
+#         concat.append(item[1])
+#     df = pd.concat([df] + concat, ignore_index=True)
+#     return df
+
+
 def fuse_daily_sources(df_world, df_us, df_it):
     # start from Country-wide world data from OpenCovid-19, removing regional data (only country data is left)
     df = df_world[df_world['RegionCode'].isna()]
@@ -314,7 +335,7 @@ def test_load_all():
     # test data manipulation
     df_countries_daily = fuse_daily_sources(df_world_daily, df_us_daily, df_it_daily)
     add_canonical_differentials(df_countries_daily)
-    # df_countries_daily = cleanup_canonical(df_countries_daily)
+    df_countries_daily = cleanup_canonical(df_countries_daily)
     # print summary
     print('Loaded data summary:')
     for df in [df_world_daily, df_world_last_day, df_it_daily, df_it_regional_daily, df_us_daily, df_us_states_daily, df_us_states_latest, df_countries_daily]:
