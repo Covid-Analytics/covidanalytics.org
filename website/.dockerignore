@@ -1,0 +1,10 @@
+.git
+node_modules
+.dockerignore
+Dockerfile.*
+
+build
+dashboard-*
+conf-nginx/
+out_*/
+Readme.md
