@@ -205,7 +205,7 @@ def load_pcmdpc_it_data():
 
 # https://github.com/open-covid-19
 def load_opencovid19_data():
-    loc_world_daily = 'https://open-covid-19.github.io/data/data.csv'
+    loc_regions_daily = 'https://open-covid-19.github.io/data/data.csv'
 
     def apply_date_offset_to_country(df, country_code, days):
         df_old_date = df.loc[(df['RegionCode'].isna()) & (df['CountryCode'] == country_code), 'Date']
@@ -215,20 +215,20 @@ def load_opencovid19_data():
     # Countries by day
     def load_regions_daily():
         #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Deaths, Death_rate, dateChecked
-        df = load_csv(loc_world_daily,
+        df = load_csv(loc_regions_daily,
                       keep_cols_map=['Date', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Deaths', 'Population', 'Latitude', 'Longitude'],
                       drop_cols=['Key'])
         # ES data is 1 day ahead of the pack, bring it back
         apply_date_offset_to_country(df, country_code='ES', days=-1)
-        return post_process_entries(loc_world_daily, df)
+        return post_process_entries(loc_regions_daily, df)
 
     # as a sub-table, extract the world population
     #  CountryCode, CountryName, RegionCode, RegionName, Population
     df_regions_daily = load_regions_daily()
     pop_cols = REGION_INDEX_COLS + ['Population']
-    df_region_population = df_regions_daily.drop_duplicates(subset=REGION_INDEX_COLS, keep='last')[pop_cols]
-    df_countries_population = df_region_population[df_region_population['RegionCode'].isna()]
-    return df_regions_daily, df_countries_population
+    df_regions_population = df_regions_daily.drop_duplicates(subset=REGION_INDEX_COLS, keep='last')[pop_cols]
+    # df_countries_population = df_regions_population[df_regions_population['RegionCode'].isna()]
+    return df_regions_daily, df_regions_population
 
 
 # https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
@@ -328,17 +328,17 @@ def add_canonical_differentials(df_src, series_column='CountryName', order_colum
 
 def test_load_all():
     # load all
-    (df_world_daily, df_population) = load_opencovid19_data()
-    (df_world_last_day) = load_latest_johnhopkins_daily()
+    (df_regions_daily, df_regions_population) = load_opencovid19_data()
     (df_it_daily, df_it_regional_daily) = load_pcmdpc_it_data()
     (df_us_daily, df_us_states_daily, df_us_states_latest) = load_covidtracking_us_data()
+    (df_world_last_day) = load_latest_johnhopkins_daily()
     # test data manipulation
-    df_countries_daily = fuse_daily_sources(df_world_daily, df_us_daily, df_it_daily)
+    df_countries_daily = fuse_daily_sources(df_regions_daily, df_us_daily, df_it_daily)
     add_canonical_differentials(df_countries_daily)
     df_countries_daily = cleanup_canonical(df_countries_daily)
     # print summary
     print('Loaded data summary:')
-    for df in [df_world_daily, df_world_last_day, df_it_daily, df_it_regional_daily, df_us_daily, df_us_states_daily, df_us_states_latest, df_countries_daily]:
+    for df in [df_regions_daily, df_world_last_day, df_it_daily, df_it_regional_daily, df_us_daily, df_us_states_daily, df_us_states_latest, df_countries_daily]:
         print(' - ' + str(len(df)) + ' rows, ' + str(len(df.columns)) + ' columns: ' + ', '.join(list(df)))
 
 
