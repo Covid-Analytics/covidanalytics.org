@@ -1,7 +1,9 @@
 import React from "react";
 
-import {Switch, Route, Redirect} from "react-router-dom";
+import {Switch, Redirect, useLocation} from "react-router-dom";
 import cx from "classnames";
+
+import GoogleAnalytics from "react-ga";
 
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -23,6 +25,17 @@ import register from "assets/img/register.jpeg";
 // style={{ backgroundImage: "url(" + getBgImage() + ")" }}
 
 var ps; // perfect scrollbar
+
+// Analytics
+GoogleAnalytics.initialize('UA-65634159-7', {debug: false});
+
+function Analytics() {
+  const location = useLocation();
+  React.useEffect(() => {
+    GoogleAnalytics.pageview(window.location.pathname + window.location.search);
+  }, [location]);
+  return <React.Fragment/>
+}
 
 const useStyles = makeStyles(styles);
 
@@ -76,6 +89,7 @@ export default function SimpleLayout(props) {
   const handleSidebarMinimize = () => setMiniActive(!miniActive);
   return (
     <div className={classes.wrapper}>
+      <Analytics/>
       <SimpleSidebar
         routes={dashRoutes}
         logoText={"Covid-19 Live"}
