@@ -106,7 +106,7 @@ export function EmbeddedChartContainer(props) {
       {chartGroups.map(chartGroup =>
         <GridContainer key={chartGroup.id}>
           <GridItem xs={12}>
-            <h4>{chartGroup.name}</h4>
+            <h3>{chartGroup.name}</h3>
           </GridItem>
           {chartGroup.charts.map((chart, idx) => (
             <GridItem xs={12} sm={12} md={6} lg={4} xl={3} key={idx}>
