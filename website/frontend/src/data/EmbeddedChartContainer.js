@@ -5,7 +5,7 @@ import Button from "components/CustomButtons/Button";
 
 import {ChartsGlue} from "./DataGlue"
 import {EmbeddedChart} from "./EmbeddedChart";
-import {scope2emoji, tag2emoji} from "./DataUtils";
+import {notebookIdToTitle, scope2emoji, tag2emoji} from "./DataUtils";
 
 
 export function EmbeddedChartContainer(props) {
@@ -54,6 +54,22 @@ export function EmbeddedChartContainer(props) {
       return false;
     });
 
+  // group by Notebook
+  const chartGroups = [];
+  charts.forEach(chart => {
+    const nb_id = chart.notebook_id;
+    let group = chartGroups.find(g => g.id === nb_id);
+    if (!group) {
+      group = {
+        name: notebookIdToTitle(nb_id),
+        id: nb_id,
+        charts: [],
+      };
+      chartGroups.push(group);
+    }
+    group.charts.push(chart);
+  });
+
   return (
     <React.Fragment>
       {/* Filters */}
@@ -87,18 +103,23 @@ export function EmbeddedChartContainer(props) {
       </GridContainer>
 
       {/* Charts */}
-      <GridContainer>
-        {charts.map((chart, idx) => (
-          <GridItem xs={12} sm={12} md={6} lg={4} xl={3} key={idx}>
-            <EmbeddedChart chart={chart} onViewImage={onViewImage}/>
+      {chartGroups.map(chartGroup =>
+        <GridContainer key={chartGroup.id}>
+          <GridItem xs={12}>
+            <h4>{chartGroup.name}</h4>
           </GridItem>
-        ))}
-        {charts.length === 0 && <GridItem sm={12}>
-          <h4 style={{textAlign: 'center'}}>
-            There are no charts matching the filter criteria.
-          </h4>
-        </GridItem>}
-      </GridContainer>
+          {chartGroup.charts.map((chart, idx) => (
+            <GridItem xs={12} sm={12} md={6} lg={4} xl={3} key={idx}>
+              <EmbeddedChart chart={chart} onViewImage={onViewImage}/>
+            </GridItem>
+          ))}
+          {charts.length === 0 && <GridItem sm={12}>
+            <h4 style={{textAlign: 'center'}}>
+              There are no charts matching the filter criteria.
+            </h4>
+          </GridItem>}
+        </GridContainer>
+      )}
     </React.Fragment>
   );
 }

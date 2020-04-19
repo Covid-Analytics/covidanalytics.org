@@ -7,6 +7,13 @@ const cn_flag = require("assets/img/flags/CN.png");
 const in_flag = require("assets/img/flags/IN.png");
 const br_flag = require("assets/img/flags/BR.png");
 
+export function notebookIdToTitle(notebookId) {
+  if (notebookId === "covid19_world") return "World Analysis";
+  if (notebookId === "us_data") return "United States Analysis";
+  if (notebookId === "predictions") return "Predictions";
+  return "Others";
+}
+
 export function scope2flag(scopeId) {
   if (scopeId === "us") return <img src={us_flag} alt="USA" key={scopeId}/>;
   if (scopeId === "it") return <img src={it_flag} alt="Italy" key={scopeId}/>;
