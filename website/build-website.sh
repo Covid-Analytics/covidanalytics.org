@@ -33,6 +33,9 @@ echo -n "> Removing container... "
 docker kill "$CONV_CONTAINER" > /dev/null
 echo "done."
 
+# Check if the build was successful before continuing
+[ ! -f "$LOCAL_CONVERTER_OUTPUT/DataGlue.js" ] && echo "Build ERROR: $LOCAL_CONVERTER_OUTPUT/DataGlue.js missing. Exiting." && exit 1
+
 # == Frontend ==
 
 # build the container
