@@ -10,8 +10,22 @@ const br_flag = require("assets/img/flags/BR.png");
 export function notebookIdToTitle(notebookId) {
   if (notebookId === "covid19_world") return "World Analysis";
   if (notebookId === "us_data") return "United States Analysis";
-  if (notebookId === "predictions") return "Predictions";
+  if (notebookId === "predictions") return "Modeling";
   return "Others";
+}
+
+export function notebookIdToShort(notebookId) {
+  if (notebookId === "covid19_world") return "World";
+  if (notebookId === "us_data") return "United States";
+  if (notebookId === "predictions") return "Modeling";
+  return "Others";
+}
+
+export function notebookIdGateMessage(notebookId) {
+  if (notebookId === "predictions") return "I understand the following are simple fits of the Confirmed Cases and " +
+    "Deaths to logistic curves. Multiple factors make reality more complex, but this is a first order approximation " +
+    "that offers a common ground for idiosyncratic behaviors.";
+  return "";
 }
 
 export function scope2flag(scopeId) {
@@ -35,6 +49,7 @@ export function scope2emoji(scopeId) {
 }
 
 export function tag2emoji(tagId, skipName = false) {
+  if (tagId === 'cases') return '🌡';
   if (tagId === 'deaths') return '💀';
   if (tagId === 'forecast') return '📈';
   return skipName ? '' : tagId;

@@ -1,11 +1,45 @@
 import React from "react";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Button from "components/CustomButtons/Button";
 import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
-import Button from "components/CustomButtons/Button";
 
 import {ChartsGlue} from "./DataGlue"
 import {EmbeddedChart} from "./EmbeddedChart";
-import {notebookIdToTitle, scope2emoji, tag2emoji} from "./DataUtils";
+import {notebookIdGateMessage, notebookIdToShort, notebookIdToTitle, scope2emoji, tag2emoji} from "./DataUtils";
+import Link from "@material-ui/core/Link";
+
+/**
+ * This component is here to provide Gating (checkbox) capability.
+ */
+function ChartGroup({name, notebookId, charts, onViewImage}) {
+  const [gateChecked, setGateChecked] = React.useState(false);
+  const gatingMessage = notebookIdGateMessage(notebookId);
+  const isGated = gatingMessage.length > 0;
+  const showCharts = !isGated || gateChecked;
+  return (
+    <React.Fragment>
+      {isGated && <GridItem xs={12}>
+        <h5>Click on the following to see the logistic charts.</h5>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={gateChecked}
+              disabled={false}
+              color="primary"
+              onChange={e => setGateChecked(e.target.checked)}/>}
+          label={gatingMessage}
+          style={{color: '#888'}}/>
+      </GridItem>}
+      {showCharts && charts.map(chart => (
+        <GridItem xs={12} sm={12} md={6} lg={4} xl={3} key={chart.src}>
+          <EmbeddedChart chart={chart} onViewImage={onViewImage}/>
+        </GridItem>
+      ))}
+    </React.Fragment>
+  )
+}
 
 
 export function EmbeddedChartContainer(props) {
@@ -26,6 +60,7 @@ export function EmbeddedChartContainer(props) {
     });
     return acc;
   }, []).sort());
+  const showScopes = false;
 
   // find all tags
   const allTags = ChartsGlue.reduce((acc, chart) => {
@@ -57,12 +92,13 @@ export function EmbeddedChartContainer(props) {
   // group by Notebook
   const chartGroups = [];
   charts.forEach(chart => {
-    const nb_id = chart.notebook_id;
-    let group = chartGroups.find(g => g.id === nb_id);
+    const notebookId = chart.notebook_id;
+    let group = chartGroups.find(g => g.notebookId === notebookId);
     if (!group) {
       group = {
-        name: notebookIdToTitle(nb_id),
-        id: nb_id,
+        name: notebookIdToTitle(notebookId),
+        short: notebookIdToShort(notebookId),
+        notebookId: notebookId,
         charts: [],
       };
       chartGroups.push(group);
@@ -72,23 +108,31 @@ export function EmbeddedChartContainer(props) {
 
   return (
     <React.Fragment>
-      {/* Filters */}
+      {/* Header (incl. filters) */}
       <GridContainer>
+        <GridItem xs={12} sm={6} style={{marginTop: 'auto', marginBottom: 'auto'}}>
+          <h6 style={{display: 'inline', marginRight: '1.1em'}}>Section:&nbsp;</h6>
+          {chartGroups.map((group, idx) =>
+            <span key={group.notebookId}>
+              <Link href={'#' + group.notebookId}>{group.short}</Link>
+              {idx === chartGroups.length - 1 ? '.' : ', '}
+            </span>)}
+        </GridItem>
+
         {/* Scopes: exclusive selector */}
-        <GridItem sm={12} md={6}>
+        {showScopes && <GridItem xs={12} sm={6}>
           <h6 style={{display: 'inline', marginRight: '1em'}}>Scope:</h6>
           {allScopes.map(scopeId =>
             <Button color={activeScope === scopeId ? "rose" : undefined}
                     onClick={() => setActiveScope(scopeId)}
                     size="sm" round
-              // style={{paddingLeft: '10px', paddingRight: '10px'}}
                     key={scopeId}>
               {scope2emoji(scopeId)}
             </Button>)}
-        </GridItem>
+        </GridItem>}
         {/* Tags: any can be active */}
-        <GridItem sm={12} md={6}>
-          <h6 style={{display: 'inline', marginRight: '1.1em'}}>Tags:&nbsp;&nbsp;</h6>
+        <GridItem xs={12} sm={6}>
+          <h6 style={{display: 'inline', marginRight: '1.1em'}}>Filter:&nbsp;&nbsp;&nbsp;&nbsp;</h6>
           {allTags.map(tagId =>
             <Button color={activeTags.includes(tagId) ? "primary" : undefined}
                     onClick={() => toggleTag(tagId)}
@@ -102,24 +146,23 @@ export function EmbeddedChartContainer(props) {
         </GridItem>
       </GridContainer>
 
-      {/* Charts */}
+      {/* Chart Groups (by Notebook basically) */}
       {chartGroups.map(chartGroup =>
-        <GridContainer key={chartGroup.id}>
+        <GridContainer key={chartGroup.notebookId} id={chartGroup.notebookId}>
           <GridItem xs={12}>
             <h3>{chartGroup.name}</h3>
           </GridItem>
-          {chartGroup.charts.map((chart, idx) => (
-            <GridItem xs={12} sm={12} md={6} lg={4} xl={3} key={idx}>
-              <EmbeddedChart chart={chart} onViewImage={onViewImage}/>
-            </GridItem>
-          ))}
-          {charts.length === 0 && <GridItem sm={12}>
-            <h4 style={{textAlign: 'center'}}>
-              There are no charts matching the filter criteria.
-            </h4>
-          </GridItem>}
-        </GridContainer>
-      )}
+          <ChartGroup {...chartGroup} onViewImage={onViewImage}/>
+        </GridContainer>)}
+
+      {/* Missing Charts */}
+      {charts.length === 0 && <GridContainer>
+        <GridItem sm={12}>
+          <h4 style={{textAlign: 'center'}}>
+            There are no charts matching the filter criteria.
+          </h4>
+        </GridItem>
+      </GridContainer>}
     </React.Fragment>
   );
 }
