@@ -17,7 +17,8 @@ from traitlets.config import Config
 NOTEBOOK_PATHS = ['.', './input', '../../analysis']
 OUTPUT_FOLDER = 'output'
 FRONTEND_GLUE_FILE = 'DataGlue.js'
-FIGURES_META_FILE = 'figures-meta.csv'
+FIGURES_META_FILE = 'meta-figures.csv'
+NOTEBOOKS_META_FILE = 'meta-notebooks.csv'
 PYTHON_EXTRA_PATHS = ['/app/input', '../../../../analysis']
 
 # This is the inline'd template
@@ -272,21 +273,35 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
                 ', tags: ' + json.dumps(fig_tags.split(',') if fig_tags else []) + '' +
                 ', priority: ' + str(int(fig_priority)) + '' +
                 ', highlight: ' + ('true' if fig_highlight else 'false') + '' +
-                ', hide: ' + ('true' if fig_hide else 'false') + '' +
                 ', updated: "' + fig_updated + '"' +
                 '},')
 
     # Notebooks
+    df_notebooks = pandas.read_csv(NOTEBOOKS_META_FILE, sep=',').fillna('')
     page_data = []
     for page in pages:
         page_name = page['notebook']
         page_title = page_name.replace('_', ' ').title()
         page_file = page['notebook_html'].replace(output_prefix + '/', '')
         page_updated = page['convert_time']
+
+        # default meta options
+        page_priority = len(page_data)
+
+        # get extra options from the Meta
+        df = df_notebooks
+        df = df[df['notebook_id'] == page_name]
+        if len(df) != 1:
+            print("  WARNING: the following are missing metadata in " + FIGURES_META_FILE)
+            print(page_name + ",")
+        else:
+            page_priority = int(df['priority'].iloc[0]) if df['priority'].iloc[0] else 99
+
         # append one JSON descriptor
         page_def = '{id: "' + page_name + '"' + \
                    ', title: "' + page_title + '"' + \
                    ', href: "/' + page_file + '"' + \
+                   ', priority: ' + str(int(page_priority)) + '' + \
                    ', updated: "' + page_updated + '"' + \
                    '},'
         page_data.append(page_def)
