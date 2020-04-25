@@ -6,7 +6,7 @@ import dateutil.parser as du_parser
 import pandas as pd
 import numpy as np
 
-CANONICAL_COLS = ['Date', 'X', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Negative', 'Infectious', 'Deaths', 'Recovered', 'Hospitalized', 'Tampons', 'Population', 'dConfirmed', 'dNegative', 'dInfectious', 'dDeaths', 'dRecovered', 'dHospitalized', 'dTampons', 'Death_rate', 'Tampon_hit_rate', 'dateChecked']
+CANONICAL_COLS = ['Date', 'X', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Negative', 'Infectious', 'Deaths', 'Recovered', 'Hospitalized', 'Tampons', 'PeopleTested', 'Population', 'dConfirmed', 'dNegative', 'dInfectious', 'dDeaths', 'dRecovered', 'dHospitalized', 'dTampons', 'dPeopleTested', 'Death_rate', 'dateChecked']
 REGION_INDEX_COLS = ['CountryCode', 'CountryName', 'RegionCode', 'RegionName']
 DATE_FORMAT = '%Y-%m-%d'
 
@@ -38,6 +38,18 @@ def cleanup_canonical(df, warning_prefix='', drop_na_columns=True):
     # use integers where appropriate
     df = df.astype({'X': int})
     return df
+
+
+# def split_column_into_posneg(df, col_name, pos_neg_names=['Positives', 'Negatives']):
+#     df_col = df[col_name]
+#     # columns: create 2 extra columns with the values
+#     df_pos_neg = pd.concat([df_col[df_col >= 0], df_col[df_col < 0]], axis=1)
+#     df_pos_neg.columns = pos_neg_names
+#     return pd.concat([df, df_pos_neg], axis=1)
+
+
+# def label_by_value(df, value_col, label_col, label_fn):
+#     df[label_col] = df[value_col].apply(label_fn)
 
 
 def load_csv(filename: str, keep_cols_map: list or dict, drop_cols: list):
@@ -87,8 +99,6 @@ def post_process_entries(filename: str, df: pd.DataFrame, set_cols_map: dict = N
             df_population = None
             if df['CountryName'].all() == 'United States of America':
                 df_population = 329064917
-            elif df['CountryName'].all() == 'Italy':
-                df_population = 60550075
             if df_population:
                 # print(filename + ': hack: setting ' + df['CountryName'].any() + ' population to ' + str(df_population))
                 df['Population'] = df_population
@@ -97,7 +107,6 @@ def post_process_entries(filename: str, df: pd.DataFrame, set_cols_map: dict = N
     df['X'] = df['Date'].map(lambda d: date_to_day_of_year(datetime.strptime(d, DATE_FORMAT)))
     if 'Confirmed' in df.columns:
         if 'Deaths' in df.columns: df['Death_rate'] = 100 * df['Deaths'] / df['Confirmed']
-        if 'Tampons' in df.columns: df['Tampon_hit_rate'] = 100 * df['Confirmed'] / df['Tampons']
 
     # more ratios
     # df['Confirmed_pct'] = 100 * df['Confirmed'] / df['Population']
@@ -135,7 +144,7 @@ def load_covidtracking_us_data():
                         drop_cols=['covid19SiteSecondary', 'twitter', 'covid19Site', 'covid19SiteOld', 'fips', 'pui', 'pum', 'notes'])
 
     # US aggregate, daily values
-    #  Date, X, CountryCode, CountryName, Confirmed, Negative, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dNegative, dDeaths, dHospitalized, dTampons, Death_rate, Tampon_hit_rate, dateChecked
+    #  Date, X, CountryCode, CountryName, Confirmed, Negative, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dNegative, dDeaths, dHospitalized, dTampons, Death_rate, dateChecked
     def load_us_daily(df_regions):
         df = load_csv(loc_us_daily,
                       keep_cols_map={'date': 'Date', 'positive': 'Confirmed', 'negative': 'Negative', 'hospitalizedCurrently': 'Hospitalized', 'hospitalizedCumulative': 'HospitalizedTotal', 'inIcuCurrently': 'InICU', 'inIcuCumulative': 'InICUTotal', 'onVentilatorCurrently': 'OnVentilator', 'onVentilatorCumulative': 'OnVentilatorTotal', 'recovered': 'Recovered', 'death': 'Deaths', 'totalTestResults': 'Tampons', 'positiveIncrease': 'dConfirmed', 'negativeIncrease': 'dNegative', 'deathIncrease': 'dDeaths', 'totalTestResultsIncrease': 'dTampons', 'hospitalizedIncrease': 'dHospitalized', 'dateChecked': 'dateChecked'},
@@ -144,7 +153,7 @@ def load_covidtracking_us_data():
         return post_process_covidtracking(loc_us_daily, df, df_regions)
 
     # US states, daily values
-    #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Negative, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dNegative, dDeaths, dHospitalized, dTampons, Death_rate, Tampon_hit_rate, dateChecked
+    #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Negative, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dNegative, dDeaths, dHospitalized, dTampons, Death_rate, dateChecked
     def load_us_regions_daily(df_regions):
         df = load_csv(loc_states_daily,
                       keep_cols_map={'date': 'Date', 'state': 'RegionCode', 'positive': 'Confirmed', 'negative': 'Negative', 'hospitalizedCurrently': 'Hospitalized', 'hospitalizedCumulative': 'HospitalizedTotal', 'inIcuCurrently': 'InICU', 'inIcuCumulative': 'InICUTotal', 'onVentilatorCurrently': 'OnVentilator', 'onVentilatorCumulative': 'OnVentilatorTotal', 'recovered': 'Recovered', 'death': 'Deaths', 'totalTestResults': 'Tampons', 'positiveIncrease': 'dConfirmed', 'negativeIncrease': 'dNegative', 'deathIncrease': 'dDeaths', 'totalTestResultsIncrease': 'dTampons', 'hospitalizedIncrease': 'dHospitalized', 'dateChecked': 'dateChecked'},
@@ -153,7 +162,7 @@ def load_covidtracking_us_data():
         return post_process_covidtracking(loc_states_daily, df, df_regions)
 
     # US states, latest values (Not very useful, as this is a subset (both rows and columns) of the daily values)
-    #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Negative, Infectious, Deaths, Recovered, Hospitalized, Tampons, Death_rate, Tampon_hit_rate, dateChecked
+    #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Negative, Infectious, Deaths, Recovered, Hospitalized, Tampons, Death_rate, dateChecked
     def load_us_regions_latest(df_regions):
         df = load_csv(loc_states_latest,
                       keep_cols_map={'dateModified': 'Date', 'state': 'RegionCode', 'positive': 'Confirmed', 'negative': 'Negative', 'hospitalizedCurrently': 'Hospitalized', 'hospitalizedCumulative': 'HospitalizedTotal', 'inIcuCurrently': 'InICU', 'inIcuCumulative': 'InICUTotal', 'onVentilatorCurrently': 'OnVentilator', 'onVentilatorCumulative': 'OnVentilatorTotal', 'recovered': 'Recovered', 'death': 'Deaths', 'totalTestResults': 'Tampons', 'dateChecked': 'dateChecked'},
@@ -175,9 +184,24 @@ def load_pcmdpc_it_data():
     loc_it_daily = "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv"
     loc_regional_daily = "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni.csv"
 
+    it_region_names = ['Abruzzo', 'Basilicata', 'P.A. Bolzano', 'Calabria', 'Campania',
+                       'Emilia-Romagna', 'Friuli Venezia Giulia', 'Lazio', 'Liguria',
+                       'Lombardia', 'Marche', 'Molise', 'Piemonte', 'Puglia', 'Sardegna',
+                       'Sicilia', 'Toscana', 'P.A. Trento', 'Umbria', "Valle d'Aosta",
+                       'Veneto']
+    it_regions_pop = [1311580, 562869, 531178, 1947131, 5801692, 4459477, 1215220,
+                      5879082, 1550640, 10060574, 1525271, 305617, 4356406, 4029053,
+                      1639591, 4999891, 3729641, 541098, 882015, 125666, 4905854]
+    it_population = 60359546
+    df_it_reg_pop = pd.DataFrame(data={'RegionName': it_region_names, 'Population': it_regions_pop})
+
     def post_process_pcmdpc(filename, df):
         df['dateModified'] = df['Date'].map(lambda d: d + 'Z')
         df['Date'] = df['Date'].str[0:10]
+        if filename == loc_it_daily:
+            df['Population'] = it_population
+        elif filename == loc_regional_daily:
+            df = df.join(df_it_reg_pop.set_index(['RegionName']), on=['RegionName'])
         # Extra: InICU, Infectious, dInfectious, dateModified
         # Relation: totale_casi (Confirmed/d) = totale_positivi (Infectious/d) + dimessi_guariti (Recovered) + deceduti (Deaths)
         # Relation: totale_ospedalizzati (not used) =  ricoverati_con_sintomi (Hospitalized) + terapia_intensiva (InICU)
@@ -185,19 +209,19 @@ def load_pcmdpc_it_data():
                                     set_cols_map={'CountryCode': 'IT', 'CountryName': 'Italy'})
 
     # Italy country-wide, per day
-    #  Date, X, CountryCode, CountryName, Confirmed, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dInfectious, Death_rate, Tampon_hit_rate, dateChecked
+    #  Date, X, CountryCode, CountryName, Confirmed, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dInfectious, Death_rate, dateChecked
     df_daily = post_process_pcmdpc(
         loc_it_daily,
         load_csv(loc_it_daily,
-                 keep_cols_map={'data': 'Date', 'ricoverati_con_sintomi': 'Hospitalized', 'terapia_intensiva': 'InICU', 'totale_positivi': 'Infectious', 'variazione_totale_positivi': 'dInfectious', 'nuovi_positivi': 'dConfirmed', 'dimessi_guariti': 'Recovered', 'deceduti': 'Deaths', 'totale_casi': 'Confirmed', 'tamponi': 'Tampons'},
+                 keep_cols_map={'data': 'Date', 'ricoverati_con_sintomi': 'Hospitalized', 'terapia_intensiva': 'InICU', 'totale_positivi': 'Infectious', 'variazione_totale_positivi': 'dInfectious', 'nuovi_positivi': 'dConfirmed', 'dimessi_guariti': 'Recovered', 'deceduti': 'Deaths', 'totale_casi': 'Confirmed', 'tamponi': 'Tampons', 'casi_testati': 'PeopleTested'},
                  drop_cols=['stato', 'totale_ospedalizzati', 'isolamento_domiciliare', 'note_it', 'note_en']))
 
     # Italy regional, latest
-    #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dInfectious, Death_rate, Tampon_hit_rate, dateChecked
+    #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dInfectious, Death_rate, dateChecked
     df_regional_daily = post_process_pcmdpc(
         loc_regional_daily,
         load_csv(loc_regional_daily,
-                 keep_cols_map={'data': 'Date', 'codice_regione': 'RegionCode', 'denominazione_regione': 'RegionName', 'ricoverati_con_sintomi': 'Hospitalized', 'terapia_intensiva': 'InICU', 'totale_positivi': 'Infectious', 'variazione_totale_positivi': 'dInfectious', 'nuovi_positivi': 'dConfirmed', 'dimessi_guariti': 'Recovered', 'deceduti': 'Deaths', 'totale_casi': 'Confirmed', 'tamponi': 'Tampons'},
+                 keep_cols_map={'data': 'Date', 'codice_regione': 'RegionCode', 'denominazione_regione': 'RegionName', 'ricoverati_con_sintomi': 'Hospitalized', 'terapia_intensiva': 'InICU', 'totale_positivi': 'Infectious', 'variazione_totale_positivi': 'dInfectious', 'nuovi_positivi': 'dConfirmed', 'dimessi_guariti': 'Recovered', 'deceduti': 'Deaths', 'totale_casi': 'Confirmed', 'tamponi': 'Tampons', 'casi_testati': 'PeopleTested'},
                  drop_cols=['stato', 'lat', 'long', 'totale_ospedalizzati', 'isolamento_domiciliare', 'note_it', 'note_en']))
 
     return df_daily, df_regional_daily
@@ -297,18 +321,18 @@ def fuse_daily_sources(df_world, df_us, df_it):
     return df
 
 
-def add_canonical_differentials(df_src, series_column='CountryName', order_column='Date'):
+def add_canonical_differentials(df_src, daily_series_col='CountryName', order_column='Date'):
     print('Computing canonical differentials... ', end='')
-    diff_cols = ['Confirmed', 'Negative', 'Infectious', 'Deaths', 'Recovered', 'Hospitalized', 'Tampons']
+    diff_cols = ['Confirmed', 'Negative', 'Infectious', 'Deaths', 'Recovered', 'Hospitalized', 'Tampons', 'PeopleTested']
 
     # select only country (not regional) data
     df_countries = df_src
-    if 'RegionCode' in df_countries.columns:
+    if daily_series_col == 'CountryName' and 'RegionCode' in df_countries.columns:
         df_countries = df_countries[df_countries['RegionCode'].isna()]
 
     # update each series x each differential
-    for country_name in df_countries[series_column].unique():
-        df_country = df_countries[df_countries[series_column] == country_name]
+    for country_name in df_countries[daily_series_col].unique():
+        df_country = df_countries[df_countries[daily_series_col] == country_name]
         df_country = df_country.sort_values(order_column)
         for src_col in diff_cols:
             diff_col = 'd' + src_col

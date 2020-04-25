@@ -7,7 +7,8 @@ import numpy as np
 
 def scatter_plot_by_series(_df,
                            x_key, y_key,                        # [data] keys (column names for X's and Y's)
-                           series_key, series_names,            # [series] the key in the df, and all the names
+                           series_key,                          # [series] the series key (column) in the df
+                           series_names=None,                   # [series] the ranked names to use; defaults to col.unique()
                            series_is_secondary=None,            # [series] function: True -> gray line
                            series_secondary_width=None,         # [series] the width of the line, if secondary
                            shift_x_to_intersect_y=None,         # [transform] translate Series to intersect a point
@@ -34,6 +35,10 @@ def scatter_plot_by_series(_df,
     # if not stamp_1: stamp_1 = ""
     if not stamp_2: stamp_2 = "" + datetime.now().strftime("%Y-%m-%d (%H:%M UTC)")
 
+    # if the series values are missing, enumerate them all
+    if series_names is None:
+        series_names = _df[series_key].unique()
+
     # add the lines for all the 'countries to chart'
     all_x = []
     all_y = []
@@ -44,6 +49,9 @@ def scatter_plot_by_series(_df,
 
         # [cleanup] remove metric <= 0 , as they don't play well with log
         if y_log: df = df[df[y_key] > 0]
+
+        # [cleanup] remove NaNs
+        df = df[df[y_key].notna()]
 
         # skip empty series
         if df.empty: continue
