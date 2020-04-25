@@ -10,6 +10,7 @@ const br_flag = require("assets/img/flags/BR.png");
 export function notebookIdToTitle(notebookId) {
   if (notebookId === "covid19_world") return "World Analysis";
   if (notebookId === "us_data") return "United States Analysis";
+  if (notebookId === "italy_analysis") return "Italy Analysis";
   if (notebookId === "predictions") return "Modeling";
   return "Others";
 }
@@ -17,6 +18,7 @@ export function notebookIdToTitle(notebookId) {
 export function notebookIdToShort(notebookId) {
   if (notebookId === "covid19_world") return "World";
   if (notebookId === "us_data") return "United States";
+  if (notebookId === "italy_analysis") return "Italy";
   if (notebookId === "predictions") return "Modeling";
   return "Others";
 }

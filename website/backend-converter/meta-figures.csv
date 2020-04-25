@@ -13,51 +13,51 @@ us_data,output_17_0.png,US States Death Rate,Independent of state population,us,
 us_data,output_20_0.png,Trends in US States,how states are behaving,us,cases,47,1,
 us_data,output_22_0.png,US State Cases,most States are just shifted,us,cases,48,,
 us_data,output_24_0.png,US State Deaths,most States are just shifted,us,deaths,49,,
-predictions,output_6_0.png,Projection: Italy Cases,simplified,it,"cases,forecast",80,,
-predictions,output_6_1.png,Projection: Italy Deaths,simplified,it,"deaths,forecast",86,,
-predictions,output_6_2.png,Projection: South Korea Cases,simplified,kr,"cases,forecast",83,,
-predictions,output_6_3.png,Projection: South Korea Deaths,simplified,kr,"deaths,forecast",89,,
-predictions,output_6_4.png,Projection: Chinese Cases,simplified,cn,"cases,forecast",82,,
-predictions,output_6_5.png,Projection: Chinese Deaths,simplified,cn,"deaths,forecast",88,,
-predictions,output_6_6.png,Projection: US Cases,simplified,us,"cases,forecast",81,,
-predictions,output_6_7.png,Projection: US Deaths,simplified,us,"deaths,forecast",87,,
-predictions,output_6_8.png,Projection: India Cases,simplified,in,"cases,forecast",84,,
-predictions,output_6_9.png,Projection: India Deaths,simplified,in,"deaths,forecast",90,,
-predictions,output_6_10.png,Projection: Brazil Cases,simplified,br,"cases,forecast",85,,
-predictions,output_6_11.png,Projection: Brazil Deaths,simplified,br,"deaths,forecast",91,,
-italy_analysis,output_3_0.png,,,,,,,
-italy_analysis,output_4_0.png,,,,,,,
-italy_analysis,output_5_0.png,,,,,,,
-italy_analysis,output_7_0.png,,,,,,,
-italy_analysis,output_7_1.png,,,,,,,
-italy_analysis,output_7_2.png,,,,,,,
-italy_analysis,output_7_3.png,,,,,,,
-italy_analysis,output_7_4.png,,,,,,,
-italy_analysis,output_7_5.png,,,,,,,
-italy_analysis,output_7_6.png,,,,,,,
-italy_analysis,output_9_0.png,,,,,,,
-italy_analysis,output_9_1.png,,,,,,,
-italy_analysis,output_9_2.png,,,,,,,
-italy_analysis,output_9_3.png,,,,,,,
-italy_analysis,output_9_4.png,,,,,,,
-italy_analysis,output_9_5.png,,,,,,,
-italy_analysis,output_9_6.png,,,,,,,
-italy_analysis,output_9_7.png,,,,,,,
-italy_analysis,output_9_8.png,,,,,,,
-italy_analysis,output_9_9.png,,,,,,,
-italy_analysis,output_9_10.png,,,,,,,
-italy_analysis,output_9_11.png,,,,,,,
-italy_analysis,output_9_12.png,,,,,,,
-italy_analysis,output_11_0.png,,,,,,,
-italy_analysis,output_11_1.png,,,,,,,
-italy_analysis,output_11_2.png,,,,,,,
-italy_analysis,output_11_3.png,,,,,,,
-italy_analysis,output_11_4.png,,,,,,,
-italy_analysis,output_11_5.png,,,,,,,
-italy_analysis,output_11_6.png,,,,,,,
-italy_analysis,output_11_7.png,,,,,,,
-italy_analysis,output_11_8.png,,,,,,,
-italy_analysis,output_11_9.png,,,,,,,
-italy_analysis,output_11_10.png,,,,,,,
-italy_analysis,output_11_11.png,,,,,,,
-italy_analysis,output_11_12.png,,,,,,,
+italy_analysis,output_3_0.png,Daily increase in the Infected population,Negative = cleaning,it,cases,130,,
+italy_analysis,output_4_0.png,Current Hospitalization by day,Decreasing,it,hospital,140,,
+italy_analysis,output_5_0.png,Death rate by Region,"Flattening, slightly raising",it,deaths,150,,
+italy_analysis,output_7_0.png,"Confirmed Cases per 100,000",,it,cases,170,,
+italy_analysis,output_7_1.png,Infectious / 100k,,it,,171,,1
+italy_analysis,output_7_2.png,Deaths / 100k,,it,,172,,1
+italy_analysis,output_7_3.png,"Hospitalized per 100,000",Reducing substantially,it,hospital,173,,
+italy_analysis,output_7_4.png,Tampons / 100k,,it,,174,,1
+italy_analysis,output_7_5.png,dHospitalized / 100k,,it,,175,,1
+italy_analysis,output_7_6.png,dDeaths / 100k,,it,,176,,1
+italy_analysis,output_9_0.png,,,it,,190,,1
+italy_analysis,output_9_1.png,,,it,,191,,1
+italy_analysis,output_9_2.png,,,it,,192,,1
+italy_analysis,output_9_3.png,,,it,,193,,1
+italy_analysis,output_9_4.png,,,it,,194,,1
+italy_analysis,output_9_5.png,,,it,,195,,1
+italy_analysis,output_9_6.png,,,it,,196,,1
+italy_analysis,output_9_7.png,,,it,,197,,1
+italy_analysis,output_9_8.png,,,it,,198,,1
+italy_analysis,output_9_9.png,,,it,,199,,1
+italy_analysis,output_9_10.png,,,it,,200,,1
+italy_analysis,output_9_11.png,,,it,,201,,1
+italy_analysis,output_9_12.png,,,it,,202,,1
+italy_analysis,output_11_0.png,,,it,,210,,1
+italy_analysis,output_11_1.png,,,it,,211,,1
+italy_analysis,output_11_2.png,,,it,,212,,1
+italy_analysis,output_11_3.png,,,it,,213,,1
+italy_analysis,output_11_4.png,,,it,,214,,1
+italy_analysis,output_11_5.png,,,it,,215,,1
+italy_analysis,output_11_6.png,,,it,,216,,1
+italy_analysis,output_11_7.png,Daily new Cases,,it,cases,217,,
+italy_analysis,output_11_8.png,,,it,,218,,1
+italy_analysis,output_11_9.png,Daily new Deaths,,it,deaths,219,,
+italy_analysis,output_11_10.png,,,it,,220,,1
+italy_analysis,output_11_11.png,Daily new Hospitalized,,it,hospital,221,,
+italy_analysis,output_11_12.png,Daily new Tampons,,it,,222,,
+predictions,output_6_0.png,Projection: Italy Cases,simplified,it,"cases,forecast",580,,
+predictions,output_6_1.png,Projection: Italy Deaths,simplified,it,"deaths,forecast",586,,
+predictions,output_6_2.png,Projection: South Korea Cases,simplified,kr,"cases,forecast",583,,
+predictions,output_6_3.png,Projection: South Korea Deaths,simplified,kr,"deaths,forecast",589,,
+predictions,output_6_4.png,Projection: Chinese Cases,simplified,cn,"cases,forecast",582,,
+predictions,output_6_5.png,Projection: Chinese Deaths,simplified,cn,"deaths,forecast",588,,
+predictions,output_6_6.png,Projection: US Cases,simplified,us,"cases,forecast",581,,
+predictions,output_6_7.png,Projection: US Deaths,simplified,us,"deaths,forecast",587,,
+predictions,output_6_8.png,Projection: India Cases,simplified,in,"cases,forecast",584,,
+predictions,output_6_9.png,Projection: India Deaths,simplified,in,"deaths,forecast",590,,
+predictions,output_6_10.png,Projection: Brazil Cases,simplified,br,"cases,forecast",585,,
+predictions,output_6_11.png,Projection: Brazil Deaths,simplified,br,"deaths,forecast",591,,
