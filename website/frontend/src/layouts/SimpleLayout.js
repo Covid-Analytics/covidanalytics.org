@@ -5,8 +5,8 @@ import cx from "classnames";
 
 import GoogleAnalytics from "react-ga";
 
-import PerfectScrollbar from "perfect-scrollbar";
-import "perfect-scrollbar/css/perfect-scrollbar.css";
+// import PerfectScrollbar from "perfect-scrollbar";
+// import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 // @material-ui/core components
 import {makeStyles} from "@material-ui/core/styles";
@@ -24,7 +24,7 @@ import register from "assets/img/register.jpeg";
 // import lock from "assets/img/lock.jpeg";
 // style={{ backgroundImage: "url(" + getBgImage() + ")" }}
 
-var ps; // perfect scrollbar
+// let ps; // perfect scrollbar
 
 // Analytics
 GoogleAnalytics.initialize('UA-65634159-7', {debug: false});
@@ -55,8 +55,8 @@ export default function SimpleLayout(props) {
     " " +
     cx({
       [classes.mainPanelSidebarMini]: miniActive,
-      [classes.mainPanelWithPerfectScrollbar]:
-      navigator.platform.indexOf("Win") > -1
+      // [classes.mainPanelWithPerfectScrollbar]:
+      // navigator.platform.indexOf("Win") > -1
     });
 
   // ref for main panel div
@@ -67,20 +67,20 @@ export default function SimpleLayout(props) {
       setMobileOpen(false);
   };
   React.useEffect(() => {
-    if (navigator.platform.indexOf("Win") > -1) {
+    /*if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
         suppressScrollY: false
       });
       document.body.style.overflow = "hidden";
-    }
+    }*/
     window.addEventListener("resize", resizeFunction);
 
     // Specify how to clean up after this effect:
     return function cleanup() {
-      if (navigator.platform.indexOf("Win") > -1) {
+      /*if (navigator.platform.indexOf("Win") > -1) {
         ps.destroy();
-      }
+      }*/
       window.removeEventListener("resize", resizeFunction);
     };
   });

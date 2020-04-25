@@ -1,6 +1,7 @@
 import React from "react";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import MuiLink from "@material-ui/core/Link";
 import Button from "components/CustomButtons/Button";
 import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
@@ -8,7 +9,6 @@ import GridItem from "components/Grid/GridItem";
 import {ChartsGlue} from "./DataGlue"
 import {EmbeddedChart} from "./EmbeddedChart";
 import {notebookIdGateMessage, notebookIdToShort, notebookIdToTitle, scope2emoji, tag2emoji} from "./DataUtils";
-import Link from "@material-ui/core/Link";
 
 /**
  * This component is here to provide Gating (checkbox) capability.
@@ -51,6 +51,10 @@ export function EmbeddedChartContainer(props) {
       setActiveTags(activeTags.filter(tag => tag !== tagId));
     else
       setActiveTags(activeTags.concat(tagId));
+  };
+  const smoothScrollTo = (event, selector) => {
+    event.preventDefault();
+    document.querySelector(selector).scrollIntoView({behavior: 'smooth'});
   };
 
   // find all scopes
@@ -108,13 +112,16 @@ export function EmbeddedChartContainer(props) {
 
   return (
     <React.Fragment>
-      {/* Header (incl. filters) */}
-      <GridContainer>
+      {/* Header: section selector, ...filters */}
+      <GridContainer id="charts-top">
         <GridItem xs={12} sm={6} style={{marginTop: 'auto', marginBottom: 'auto'}}>
           <h6 style={{display: 'inline', marginRight: '1.1em'}}>Section:&nbsp;</h6>
           {chartGroups.map((group, idx) =>
             <span key={group.notebookId}>
-              <Link href={'#' + group.notebookId}>{group.short}</Link>
+              <MuiLink href={'#' + group.notebookId}
+                       onClick={(e) => smoothScrollTo(e, '#' + group.notebookId)}>
+                {group.short}
+              </MuiLink>
               {idx === chartGroups.length - 1 ? '.' : ', '}
             </span>)}
         </GridItem>
@@ -147,10 +154,16 @@ export function EmbeddedChartContainer(props) {
       </GridContainer>
 
       {/* Chart Groups (by Notebook basically) */}
-      {chartGroups.map(chartGroup =>
+      {chartGroups.map((chartGroup, groupIdx) =>
         <GridContainer key={chartGroup.notebookId} id={chartGroup.notebookId}>
           <GridItem xs={12}>
-            <h3>{chartGroup.name}</h3>
+            <h3>
+              {chartGroup.name}
+              {groupIdx > 0 && <MuiLink href={'#'} style={{float: 'right'}}
+                                        onClick={e => smoothScrollTo(e, '#charts-top')}>
+                &#94;
+              </MuiLink>}
+            </h3>
           </GridItem>
           <ChartGroup {...chartGroup} onViewImage={onViewImage}/>
         </GridContainer>)}
