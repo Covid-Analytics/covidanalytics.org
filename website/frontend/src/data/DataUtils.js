@@ -54,5 +54,6 @@ export function tag2emoji(tagId, skipName = false) {
   if (tagId === 'cases') return '🌡';
   if (tagId === 'deaths') return '💀';
   if (tagId === 'forecast') return '📈';
+  if (tagId === 'hospital') return '🏥';
   return skipName ? '' : tagId;
 }
