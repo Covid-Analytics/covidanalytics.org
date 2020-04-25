@@ -261,19 +261,20 @@ def write_assets_loader(pages, figures, output_prefix, frontend_glue_file_name):
             fig_highlight = df['highlight'].iloc[0]
             fig_hide = df['hide'].iloc[0]
 
-        # append one component
-        frontend_components.append(
-            '{src: "' + fig_img_src + '"' +
-            ', title: "' + fig_title + '"' +
-            ', short: "' + fig_short + '"' +
-            ', notebook_id: "' + notebook_id + '"' +
-            ', scopes: ' + json.dumps(fig_scopes.split(',') if fig_scopes else []) + '' +
-            ', tags: ' + json.dumps(fig_tags.split(',') if fig_tags else []) + '' +
-            ', priority: ' + str(int(fig_priority)) + '' +
-            ', highlight: ' + ('true' if fig_highlight else 'false') + '' +
-            ', hide: ' + ('true' if fig_hide else 'false') + '' +
-            ', updated: "' + fig_updated + '"' +
-            '},')
+        # append one component (only if not hidden)
+        if not fig_hide:
+            frontend_components.append(
+                '{src: "' + fig_img_src + '"' +
+                ', title: "' + fig_title + '"' +
+                ', short: "' + fig_short + '"' +
+                ', notebook_id: "' + notebook_id + '"' +
+                ', scopes: ' + json.dumps(fig_scopes.split(',') if fig_scopes else []) + '' +
+                ', tags: ' + json.dumps(fig_tags.split(',') if fig_tags else []) + '' +
+                ', priority: ' + str(int(fig_priority)) + '' +
+                ', highlight: ' + ('true' if fig_highlight else 'false') + '' +
+                ', hide: ' + ('true' if fig_hide else 'false') + '' +
+                ', updated: "' + fig_updated + '"' +
+                '},')
 
     # Notebooks
     page_data = []
