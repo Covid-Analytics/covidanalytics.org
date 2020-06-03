@@ -14,6 +14,10 @@ DATE_FORMAT = '%Y-%m-%d'
 reference_day = datetime(2020, 1, 1)
 
 
+def current_day_of_year():
+    return date_to_day_of_year(datetime.now())
+
+
 def date_to_day_of_year(date):
     return (date - reference_day).days + 1
 

@@ -15,6 +15,7 @@ def scatter_plot_by_series(_df,
                            y_filter=None,                       # [transform] filter the y values. valid: 'expo'
                            y_log=False,                         # [axis] make the Y axis logarithmic
                            bounds=[None, None, None, None],     # [axis] x_min, x_max,  y_min, y_max
+                           legend_off=False,                    # [legend] disable if True
                            legend_decimals=0,                   # [legend] how many decimals
                            legend_suffix=None,                  # [legend] whether to append a suffix (e.g. '%')
                            data_labels=None,                    # [data labels] text: legend, series, value
@@ -134,8 +135,9 @@ def scatter_plot_by_series(_df,
     # add grid
     plt.gca().grid(axis='both', color=(0.4, 0.4, 0.4), alpha=0.2)
 
-    # add legend
-    plt.legend()
+    # add
+    if not legend_off:
+        plt.legend()
 
     # add any decorative text boxes
     if stamp_1:
