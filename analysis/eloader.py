@@ -26,6 +26,11 @@ def day_of_year_to_date(day_of_year):
     return reference_day + timedelta(days=(day_of_year - 1))
 
 
+def filter_rows_remove_equals(df, column_name, column_value):
+    print('Removing data where ', column_name, ' is ', column_value)
+    return df[df[column_name] != column_value]
+
+
 def cleanup_canonical(df, warning_prefix='', drop_na_columns=True):
     # check if some columns are not in the canonical list
     extra_canonical_cols = list(set(df.columns) - set(CANONICAL_COLS))
