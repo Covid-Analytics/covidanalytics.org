@@ -35,7 +35,8 @@ def cleanup_canonical(df, warning_prefix='', drop_na_columns=True):
     # check if some columns are not in the canonical list
     extra_canonical_cols = list(set(df.columns) - set(CANONICAL_COLS))
     extra_canonical_cols.sort()
-    if extra_canonical_cols: print(warning_prefix + ': non-canonical cols: ' + ', '.join(extra_canonical_cols))
+    if extra_canonical_cols:
+        print(warning_prefix + ': non-canonical cols: ' + ', '.join(extra_canonical_cols))
 
     # return the nominal columns: excess columns are discarded, missing columns are NaN
     df = df.reindex(columns=CANONICAL_COLS)
@@ -282,7 +283,7 @@ def load_latest_johnhopkins_daily():
             except:
                 try_date_utc = try_date_utc - timedelta(days=1)
                 tries = tries - 1
-                if tries is 0:
+                if tries == 0:
                     print("Out of tries looking for John Hopkins' data (walking back 1 day at a time)")
                     exit(1)
 
