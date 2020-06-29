@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+# noinspection PyDefaultArgument
 def scatter_plot_by_series(_df,
                            x_key, y_key,                        # [data] keys (column names for X's and Y's)
                            series_key,                          # [series] the series key (column) in the df
@@ -86,6 +87,9 @@ def scatter_plot_by_series(_df,
         y = df[y_key].tolist()
         y_plotted = y
         if y_filter == 'expo': y_plotted = df[y_key].rolling(window=(7, 20), win_type='exponential').mean(tau=20)
+        if y_filter == 'sma3': y_plotted = df[y_key].rolling(window=3).mean()
+        if y_filter == 'sma7': y_plotted = df[y_key].rolling(window=7).mean()
+        if y_filter == 'sma30': y_plotted = df[y_key].rolling(window=30).mean()
         plt.plot(x, y_plotted, label=legend_label, color=line_color, linewidth=line_width, linestyle=line_style)
         # plt.plot(x, y, color=(0.8, 0.8, 0.8, 0.4), linewidth=1)
         # plt.scatter(x, y, color=line_color, linewidth=1, alpha=1)
