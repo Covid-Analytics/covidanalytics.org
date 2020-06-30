@@ -26,8 +26,8 @@ def day_of_year_to_date(day_of_year):
     return reference_day + timedelta(days=(day_of_year - 1))
 
 
-def filter_rows_remove_equals(df, column_name, column_value):
-    print('Removing data where ', column_name, ' is ', column_value)
+def filter_rows_remove_equals(df, column_name, column_value, reason):
+    print('Removing data where ', column_name, ' is ', column_value, ' because:', reason)
     return df[df[column_name] != column_value]
 
 
@@ -224,7 +224,7 @@ def load_pcmdpc_it_data():
         loc_it_daily,
         load_csv(loc_it_daily,
                  keep_cols_map={'data': 'Date', 'ricoverati_con_sintomi': 'Hospitalized', 'terapia_intensiva': 'InICU', 'totale_positivi': 'Infectious', 'variazione_totale_positivi': 'dInfectious', 'nuovi_positivi': 'dConfirmed', 'dimessi_guariti': 'Recovered', 'deceduti': 'Deaths', 'totale_casi': 'Confirmed', 'tamponi': 'Tampons', 'casi_testati': 'PeopleTested'},
-                 drop_cols=['stato', 'totale_ospedalizzati', 'isolamento_domiciliare', 'note_it', 'note_en']))
+                 drop_cols=['stato', 'totale_ospedalizzati', 'isolamento_domiciliare', 'note', 'casi_da_sospetto_diagnostico', 'casi_da_screening']))
 
     # Italy regional, latest
     #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dInfectious, Death_rate, dateChecked
@@ -232,7 +232,7 @@ def load_pcmdpc_it_data():
         loc_regional_daily,
         load_csv(loc_regional_daily,
                  keep_cols_map={'data': 'Date', 'codice_regione': 'RegionCode', 'denominazione_regione': 'RegionName', 'ricoverati_con_sintomi': 'Hospitalized', 'terapia_intensiva': 'InICU', 'totale_positivi': 'Infectious', 'variazione_totale_positivi': 'dInfectious', 'nuovi_positivi': 'dConfirmed', 'dimessi_guariti': 'Recovered', 'deceduti': 'Deaths', 'totale_casi': 'Confirmed', 'tamponi': 'Tampons', 'casi_testati': 'PeopleTested'},
-                 drop_cols=['stato', 'lat', 'long', 'totale_ospedalizzati', 'isolamento_domiciliare', 'note_it', 'note_en']))
+                 drop_cols=['stato', 'lat', 'long', 'totale_ospedalizzati', 'isolamento_domiciliare', 'note', 'casi_da_sospetto_diagnostico', 'casi_da_screening']))
 
     return df_daily, df_regional_daily
 
