@@ -1,11 +1,11 @@
 notebook_id,figure_id,title,commentary,scopes,tags,priority,highlight,hide
-covid19_world,output_3_0.png,Global Death rates,should get flatter,,deaths,15,1,
+covid19_world,output_11_0.png,Infection Trends,rate of infection for different countries,,cases,10,,
+covid19_world,output_3_0.png,Global Deaths rates,countries flatten over time,,deaths,11,1,
+covid19_world,output_13_0.png,Cases per Million,(normalized) largest infection shares,,cases,12,,
+covid19_world,output_15_0.png,Deaths per Million,(normalized) differences in rate of deaths,,deaths,13,,
+covid19_world,output_17_0.png,Deaths per Million,(normalized) largest death shares,,deaths,14,,1
 covid19_world,output_5_0.png,Trend in Global Cases,how different cultures handle it,,cases,20,,
 covid19_world,output_6_0.png,Global Cases,most countries are just shifted,,cases,25,,
-covid19_world,output_11_0.png,Trends in Infection Rates,differences in share of infection,,cases,10,,
-covid19_world,output_13_0.png,Cases per 1M people,largest infection shares,,cases,11,,
-covid19_world,output_15_0.png,Trends in Deaths,differences in rate of deaths,,deaths,12,,
-covid19_world,output_17_0.png,Deaths per 1M people,largest death shares,,deaths,13,,
 us_data,output_4_0.png,US Cases,Sadly #1,us,cases,41,,
 us_data,output_6_0.png,US Deaths,Sadly #1,us,deaths,42,,
 us_data,output_13_0.png,US States Cases per Million,Normalizing states,us,cases,44,,
