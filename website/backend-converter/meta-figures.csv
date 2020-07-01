@@ -23,6 +23,10 @@ us_data,output_28_1.png,States Focus: daily new Deaths,Slowly going down,us,deat
 us_data,output_28_2.png,States Focus: daily new Tampons,Healthy increase,us,,72,,
 us_data,output_28_3.png,States Focus: current hospitalized,Should go down,us,hospital,73,,
 us_data,output_28_4.png,States Focus: Cases/Tests,Should go down as tests increase,us,,74,,
+us_data,output_30_0.png,Normalized States: daily new Cases,Daily new Cases per Million - should go down,us,cases,80,,
+us_data,output_30_1.png,Normalized States: daily new Deaths,,us,deaths,81,,1
+us_data,output_30_2.png,Normalized States: daily new Tampons,,us,,82,,1
+us_data,output_30_3.png,Normalized States: current hospitalized,Current Hospitalized per Million - should go down,us,hospital,84,,
 italy_analysis,output_3_0.png,Daily increase in the Infected population,Negative = cleaning,it,cases,130,,
 italy_analysis,output_4_0.png,Current Hospitalization by day,Decreasing,it,hospital,140,,
 italy_analysis,output_5_0.png,Death rate by Region,"Flattening, slightly raising",it,deaths,150,,
