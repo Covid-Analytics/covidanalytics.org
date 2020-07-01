@@ -17,7 +17,7 @@ docker build . -f Dockerfile.converter --tag=covana-converter
 echo "> Start Notebooks Converter container"
 CONV_CONTAINER=$(docker run --rm -d -t covana-converter:latest /bin/bash)
 
-echo "> Copying notebooks from '../analysis' to the container 'input/' folder"
+echo "> Copying notebooks, helpers and csv from '../analysis' to the container 'input/' folder"
 for NOTEBOOK in ../analysis/*.ipynb; do docker cp "$NOTEBOOK" "$CONV_CONTAINER":/app/input/; done
 for HELPER in ../analysis/*.py; do docker cp "$HELPER" "$CONV_CONTAINER":/app/input/; done
 for HELPER in ../analysis/*.csv; do docker cp "$HELPER" "$CONV_CONTAINER":/app/input/; done
