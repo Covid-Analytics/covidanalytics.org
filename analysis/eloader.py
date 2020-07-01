@@ -98,8 +98,12 @@ def post_process_entries(filename: str, df: pd.DataFrame, set_cols_map: dict = N
                 df[item[0]] = item[1]
 
     # join RegionName(s) if we only have the RegionCode and a set to join
-    if (df_regions is not None) and ('RegionName' not in df.columns) and ('RegionCode' in df.columns):
-        df['RegionName'] = df.join(df_regions.set_index('RegionCode'), on='RegionCode', how='left')['RegionName']
+    if (df_regions is not None) and ('RegionCode' in df.columns):
+        df_joined = df.join(df_regions.set_index('RegionCode'), on='RegionCode', how='left')
+        if 'RegionName' not in df.columns:
+            df['RegionName'] = df_joined['RegionName']
+        if 'Population' not in df.columns:
+            df['Population'] = df_joined['Population']
 
     # TODO: add Population (regional, national) so we can have these stats
     if 'Population' not in df.columns:
@@ -132,6 +136,7 @@ def post_process_entries(filename: str, df: pd.DataFrame, set_cols_map: dict = N
 
 # https://covidtracking.com/
 def load_covidtracking_us_data():
+    loc_states_population = "eloader-us-states-population-2019.csv"
     loc_states_info = "https://covidtracking.com/api/states/info.csv"
     loc_states_daily = "https://covidtracking.com/api/states/daily.csv"
     loc_states_latest = "https://covidtracking.com/api/states.csv"  # BARELY USEFUL
@@ -149,9 +154,12 @@ def load_covidtracking_us_data():
 
     # US states Information: useful to join the region name (CA -> California)
     def load_us_regions_info():
-        return load_csv(loc_states_info,
-                        keep_cols_map={'state': 'RegionCode', 'name': 'RegionName'},
-                        drop_cols=['covid19SiteSecondary', 'twitter', 'covid19Site', 'covid19SiteOld', 'fips', 'pui', 'pum', 'notes'])
+        df_population = pd.read_csv(loc_states_population)
+        df = load_csv(loc_states_info,
+                      keep_cols_map={'state': 'RegionCode', 'name': 'RegionName'},
+                      drop_cols=['covid19SiteTertiary', 'covid19SiteSecondary', 'twitter', 'covid19Site', 'covid19SiteOld', 'fips', 'pui', 'pum', 'notes'])
+        df['Population'] = df.join(df_population.set_index('StateName'), on='RegionName', how='left')['Population2019']
+        return df
 
     # US aggregate, daily values
     #  Date, X, CountryCode, CountryName, Confirmed, Negative, Infectious, Deaths, Recovered, Hospitalized, Tampons, dConfirmed, dNegative, dDeaths, dHospitalized, dTampons, Death_rate, dateChecked
