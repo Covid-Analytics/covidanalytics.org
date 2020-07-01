@@ -136,7 +136,7 @@ def post_process_entries(filename: str, df: pd.DataFrame, set_cols_map: dict = N
 
 # https://covidtracking.com/
 def load_covidtracking_us_data():
-    loc_states_population = "https://raw.githubusercontent.com/Covid-Analytics/covidanalytics.org/master/analysis/eloader-us-states-population-2019.csv"
+    loc_states_population = "https://raw.githubusercontent.com/Covid-Analytics/covidanalytics.org/master/analysis/us-states-population-2019.csv"
     loc_states_info = "https://covidtracking.com/api/states/info.csv"
     loc_states_daily = "https://covidtracking.com/api/states/daily.csv"
     loc_states_latest = "https://covidtracking.com/api/states.csv"  # BARELY USEFUL
