@@ -1,6 +1,6 @@
 # Utility functions to plot data frames
 from datetime import datetime
-from matplotlib.ticker import ScalarFormatter
+from matplotlib.ticker import MultipleLocator, ScalarFormatter
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -139,7 +139,10 @@ def scatter_plot_by_series(_df,
     # add grid
     plt.gca().grid(axis='both', color=(0.4, 0.4, 0.4), alpha=0.2)
 
-    # add
+    # set x grid to 'weekly'
+    plt.gca().xaxis.set_major_locator(MultipleLocator(base=7.0))
+
+    # add legend
     if not legend_off:
         plt.legend()
 
