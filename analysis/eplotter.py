@@ -1,5 +1,7 @@
 # Utility functions to plot data frames
 from datetime import datetime
+
+from matplotlib.dates import WeekdayLocator, FR
 from matplotlib.ticker import MultipleLocator, ScalarFormatter
 import matplotlib.pyplot as plt
 import numpy as np
@@ -140,7 +142,11 @@ def scatter_plot_by_series(_df,
     plt.gca().grid(axis='both', color=(0.4, 0.4, 0.4), alpha=0.2)
 
     # set x grid to 'weekly'
-    plt.gca().xaxis.set_major_locator(MultipleLocator(base=7.0))
+    if shift_x_to_intersect_y:
+        x_locator = MultipleLocator(base=7.0)
+    else:
+        x_locator = WeekdayLocator(byweekday=FR)
+    plt.gca().xaxis.set_major_locator(x_locator)
 
     # add legend
     if not legend_off:
