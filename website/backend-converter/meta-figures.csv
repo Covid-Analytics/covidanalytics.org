@@ -57,12 +57,12 @@ italy_analysis,output_11_3.png,,,it,,213,,1
 italy_analysis,output_11_4.png,,,it,,214,,1
 italy_analysis,output_11_5.png,,,it,,215,,1
 italy_analysis,output_11_6.png,,,it,,216,,1
-italy_analysis,output_11_7.png,Daily new Cases,,it,cases,217,,
-italy_analysis,output_11_8.png,,,it,,218,,1
-italy_analysis,output_11_9.png,Daily new Deaths,,it,deaths,219,,
-italy_analysis,output_11_10.png,,,it,,220,,1
-italy_analysis,output_11_11.png,Daily new Hospitalized,,it,hospital,221,,
-italy_analysis,output_11_12.png,Daily new Tampons,,it,,222,,
+italy_analysis,output_11_7.png,Daily new Cases,,it,cases,117,,
+italy_analysis,output_11_8.png,,,it,,118,,1
+italy_analysis,output_11_9.png,Daily new Deaths,,it,deaths,119,,
+italy_analysis,output_11_10.png,,,it,,120,,1
+italy_analysis,output_11_11.png,Daily new Hospitalized,,it,hospital,121,,
+italy_analysis,output_11_12.png,Daily new Tampons,,it,,122,,
 predictions,output_6_0.png,Projection: Italy Cases,simplified,it,"cases,forecast",580,,
 predictions,output_6_1.png,Projection: Italy Deaths,simplified,it,"deaths,forecast",586,,
 predictions,output_6_2.png,Projection: South Korea Cases,simplified,kr,"cases,forecast",583,,
