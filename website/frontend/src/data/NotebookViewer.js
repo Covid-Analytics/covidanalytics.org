@@ -1,9 +1,9 @@
 import React from "react";
 
-import GridItem from "../../components/Grid/GridItem";
-import GridContainer from "../../components/Grid/GridContainer";
+import GridItem from "../components/Grid/GridItem";
+import GridContainer from "../components/Grid/GridContainer";
 
-import {dashRoutes, getActiveRoute} from "../../routes";
+import {dashRoutes, getActiveRoute} from "../routes";
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function NotebookViewer(props) {
+export default function NotebookViewer() {
   const classes = useStyles();
 
   // find the HREF to the notebook

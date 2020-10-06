@@ -19,9 +19,6 @@ import {dashRoutes, getRoutesForLayout, getActiveRouteTitle} from "routes.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/layouts/adminStyle.js";
 
-import register from "assets/img/register.jpeg";
-// import login from "assets/img/login.jpeg";
-// import lock from "assets/img/lock.jpeg";
 // style={{ backgroundImage: "url(" + getBgImage() + ")" }}
 
 // let ps; // perfect scrollbar
@@ -44,7 +41,7 @@ export default function SimpleLayout(props) {
   // states and functions
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [miniActive, setMiniActive] = React.useState(false);
-  const [image, setImage] = React.useState(null /*require("assets/img/sidebar-2.jpg")*/);
+  const [image, setImage] = React.useState(null /*require("assets/img/sidebar-image-2.jpg")*/);
   const [color, setColor] = React.useState("rose");
   const [bgColor, setBgColor] = React.useState("white");
   const [logo, setLogo] = React.useState(require("assets/img/logo-white.svg"));

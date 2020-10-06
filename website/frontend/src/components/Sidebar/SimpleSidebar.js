@@ -21,7 +21,7 @@ import SimpleNavbarLinks from "components/Navbars/SimpleNavbarLinks";
 
 import sidebarStyle from "assets/jss/material-dashboard-pro-react/components/sidebarStyle.js";
 
-import avatar from "assets/img/faces/avatar.jpg";
+// import avatar from "assets/img/faces/avatar.jpg";
 
 var ps;
 
@@ -48,7 +48,7 @@ class SidebarWrapper extends React.Component {
   }
 
   render() {
-    const {className, user, headerLinks, links} = this.props;
+    const {className, /*user,*/ headerLinks, links} = this.props;
     return (
       <div className={className} ref={this.sidebarWrapper}>
         {/*{user}*/}
@@ -357,7 +357,7 @@ class SimpleSidebar extends React.Component {
     var user = (
       <div className={userWrapperClass}>
         <div className={photo}>
-          <img src={avatar} className={classes.avatarImg} alt="..."/>
+          {/*<img src={avatar} className={classes.avatarImg} alt="..."/>*/}
         </div>
         <List className={classes.list}>
           <ListItem className={classes.item + " " + classes.userItem}>
