@@ -5,7 +5,6 @@ while /bin/true; do
   git pull
   echo
   ./build-website.sh
-  sleep 2h;
-#  sleep 5m;
+  sleep 30m;
   echo
 done

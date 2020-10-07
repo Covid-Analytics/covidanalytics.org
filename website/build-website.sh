@@ -27,6 +27,9 @@ mkdir -p "$LOCAL_CONVERTER_OUTPUT"
 echo "<html><body><pre>" >> "$LOCAL_CONVERTER_LOG"
 time docker exec -t "$CONV_CONTAINER" python3 /app/convert-ipynb.py |& tee "$LOCAL_CONVERTER_LOG"
 docker cp "$CONV_CONTAINER":/app/output/. "$LOCAL_CONVERTER_OUTPUT"
+echo -n Optimizing images...
+find "$LOCAL_CONVERTER_OUTPUT" -name '*.png' -exec optipng {} \; > /dev/null 2> /dev/null
+echo done.
 echo "</pre></body></html>" >> "$LOCAL_CONVERTER_LOG"
 
 echo -n "> Removing container... "
