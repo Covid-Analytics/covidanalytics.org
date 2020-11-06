@@ -186,7 +186,7 @@ def load_covidtracking_us_data():
                       keep_cols_map={'dateModified': 'Date', 'state': 'RegionCode', 'positive': 'Confirmed', 'negative': 'Negative', 'hospitalizedCurrently': 'Hospitalized', 'hospitalizedCumulative': 'HospitalizedTotal', 'inIcuCurrently': 'InICU', 'inIcuCumulative': 'InICUTotal', 'onVentilatorCurrently': 'OnVentilator', 'onVentilatorCumulative': 'OnVentilatorTotal', 'recovered': 'Recovered', 'death': 'Deaths', 'totalTestResults': 'Tampons', 'dateChecked': 'dateChecked'},
                       drop_cols=['pending', 'hash', 'hospitalized', 'total', 'posNeg', 'fips',
                                  'positiveScore', 'negativeScore', 'negativeRegularScore', 'commercialScore', 'grade', 'score', 'checkTimeEt', 'lastUpdateEt', 'notes'])
-        df['Date'] = df['Date'].map(lambda d: du_parser.parse(d).strftime(DATE_FORMAT))
+        df['Date'] = df['Date'].map(lambda d: du_parser.parse(d.replace('T24', 'T00')).strftime(DATE_FORMAT))
         return post_process_covidtracking(loc_states_latest, df, df_regions)
 
     # load the 4 APIs
