@@ -27,16 +27,16 @@ us_data,output_30_0.png,Normalized States: daily new Cases,Daily new Cases per M
 us_data,output_30_1.png,Normalized States: daily new Deaths,,us,deaths,81,,1
 us_data,output_30_2.png,Normalized States: daily new Tampons,,us,,82,,1
 us_data,output_30_3.png,Normalized States: current hospitalized,Current Hospitalized per Million - should go down,us,hospital,84,,
-italy_analysis,output_3_0.png,Daily increase in the Infected population,Negative = cleaning,it,cases,130,,
-italy_analysis,output_4_0.png,Current Hospitalization by day,Decreasing,it,hospital,140,,
-italy_analysis,output_5_0.png,Death rate by Region,"Flattening, slightly raising",it,deaths,150,,
-italy_analysis,output_7_0.png,"Confirmed Cases per 100,000",,it,cases,170,,
-italy_analysis,output_7_1.png,Infectious / 100k,,it,,171,,1
-italy_analysis,output_7_2.png,Deaths / 100k,,it,,172,,1
-italy_analysis,output_7_3.png,"Hospitalized per 100,000",Reducing substantially,it,hospital,173,,
-italy_analysis,output_7_4.png,Tampons / 100k,,it,,174,,1
-italy_analysis,output_7_5.png,dHospitalized / 100k,,it,,175,,1
-italy_analysis,output_7_6.png,dDeaths / 100k,,it,,176,,1
+italy_analysis,output_3_0.png,Daily increase in the Infected population,Negative = cleaning,it,cases,130,,1
+italy_analysis,output_4_0.png,Current Hospitalization by day,Decreasing,it,hospital,122,,
+italy_analysis,output_5_0.png,Death rate by Region,"Flattening, slightly raising",it,deaths,170,,
+italy_analysis,output_7_0.png,"Confirmed Cases per 100,000",,it,cases,150,,
+italy_analysis,output_7_1.png,"Infectious per 100,000",,it,,151,,1
+italy_analysis,output_7_2.png,Deaths / 100k,,it,,173,,1
+italy_analysis,output_7_3.png,"Hospitalized per 100,000",Reducing substantially,it,hospital,175,,
+italy_analysis,output_7_4.png,Tampons / 100k,,it,,178,,1
+italy_analysis,output_7_5.png,"New daily Hospitalized, by region, per 100k",,it,,176,,
+italy_analysis,output_7_6.png,"New daily Deaths, by region, per 100k",,it,,171,,
 italy_analysis,output_9_0.png,,,it,,190,,1
 italy_analysis,output_9_1.png,,,it,,191,,1
 italy_analysis,output_9_2.png,,,it,,192,,1
@@ -62,8 +62,8 @@ italy_analysis,output_11_8.png,,,it,,118,,1
 italy_analysis,output_11_9.png,Daily new Deaths,,it,deaths,119,,
 italy_analysis,output_11_10.png,,,it,,120,,1
 italy_analysis,output_11_11.png,Daily new Hospitalized,,it,hospital,121,,
-italy_analysis,output_11_12.png,Daily new Tampons,,it,,122,,
-italy_analysis,output_13_0.png,Tampons that are positive,,it,,240,,
+italy_analysis,output_11_12.png,Daily new Tampons,,it,,140,,
+italy_analysis,output_13_0.png,Tampons that are positive,,it,,145,,
 predictions,output_6_0.png,Projection: Italy Cases,simplified,it,"cases,forecast",580,,
 predictions,output_6_1.png,Projection: Italy Deaths,simplified,it,"deaths,forecast",586,,
 predictions,output_6_2.png,Projection: South Korea Cases,simplified,kr,"cases,forecast",583,,
