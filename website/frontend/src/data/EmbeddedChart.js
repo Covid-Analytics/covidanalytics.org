@@ -19,7 +19,7 @@ import GridContainer from "../components/Grid/GridContainer";
 import GridItem from "../components/Grid/GridItem";
 import Button from "../components/CustomButtons/Button";
 
-import {scope2flag, tag2emoji} from "./DataUtils";
+import {scope2emoji, tag2emoji} from "./DataUtils";
 
 const embeddedChartStyles = {
   ...hoverCardStyle,
@@ -122,7 +122,7 @@ export function EmbeddedChart(props) {
           </GridItem>
           <GridItem xs={3} style={{textAlign: 'right'}}>
             {tags.map(tagId => <span key={tagId}>{tag2emoji(tagId, true)}</span>)}
-            {scopes.map(scope => scope2flag(scope))}
+            {scopes.map(scope => scope2emoji(scope))}
           </GridItem>
           <GridItem xs={12}>
             <p className={classes.cardCategory}>

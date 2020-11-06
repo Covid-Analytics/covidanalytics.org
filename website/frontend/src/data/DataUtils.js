@@ -1,11 +1,11 @@
 import React from "react";
 
-const us_flag = require("assets/img/flags/US.png");
-const it_flag = require("assets/img/flags/IT.png");
-const kr_flag = require("assets/img/flags/KR.png");
-const cn_flag = require("assets/img/flags/CN.png");
-const in_flag = require("assets/img/flags/IN.png");
-const br_flag = require("assets/img/flags/BR.png");
+// const us_flag = require("assets/img/flags/US.png");
+// const it_flag = require("assets/img/flags/IT.png");
+// const kr_flag = require("assets/img/flags/KR.png");
+// const cn_flag = require("assets/img/flags/CN.png");
+// const in_flag = require("assets/img/flags/IN.png");
+// const br_flag = require("assets/img/flags/BR.png");
 
 export function notebookIdToTitle(notebookId) {
   if (notebookId === "covid19_world") return "World Analysis";
@@ -30,7 +30,7 @@ export function notebookIdGateMessage(notebookId) {
   return "";
 }
 
-export function scope2flag(scopeId) {
+/*export function scope2flag(scopeId) {
   if (scopeId === "us") return <img src={us_flag} alt="USA" key={scopeId}/>;
   if (scopeId === "it") return <img src={it_flag} alt="Italy" key={scopeId}/>;
   if (scopeId === "kr") return <img src={kr_flag} alt="South Korea" key={scopeId}/>;
@@ -38,7 +38,7 @@ export function scope2flag(scopeId) {
   if (scopeId === "in") return <img src={in_flag} alt="India" key={scopeId}/>;
   if (scopeId === "br") return <img src={br_flag} alt="Brazil" key={scopeId}/>;
   return scopeId;
-}
+}*/
 
 export function scope2emoji(scopeId) {
   if (scopeId === "us") return "🇺🇸";
