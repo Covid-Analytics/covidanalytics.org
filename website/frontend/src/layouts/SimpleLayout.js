@@ -39,6 +39,8 @@ const useStyles = makeStyles(styles);
 export default function SimpleLayout(props) {
   const {...rest} = props;
   // states and functions
+  // noinspection JSUnusedLocalSymbols
+  const location = useLocation();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [miniActive, setMiniActive] = React.useState(false);
   const [image] = React.useState(undefined /*require("assets/img/sidebar-image-2.jpg")*/);

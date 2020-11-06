@@ -16,20 +16,21 @@
 */
 import React from "react";
 import ReactDOM from "react-dom";
-import { createBrowserHistory } from "history";
-import { Router, Route, Switch } from "react-router-dom";
+import {BrowserRouter as Router} from "react-router-dom";
 
 import SimpleLayout from "layouts/SimpleLayout.js";
 
 import "assets/scss/material-dashboard-pro-react.scss?v=1.8.0";
 
-const hist = createBrowserHistory();
+// const hist = createBrowserHistory();
 
 ReactDOM.render(
-  <Router history={hist}>
-    <Switch>
-      <Route path="/" component={SimpleLayout} />
-    </Switch>
+  <Router>
+    {/*<Switch>*/}
+    {/*  <Route path="/">*/}
+        <SimpleLayout/>
+    {/*  </Route>*/}
+    {/*</Switch>*/}
   </Router>,
   document.getElementById("root")
 );
