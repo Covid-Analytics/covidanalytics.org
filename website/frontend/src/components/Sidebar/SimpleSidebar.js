@@ -23,7 +23,7 @@ import sidebarStyle from "assets/jss/material-dashboard-pro-react/components/sid
 
 // import avatar from "assets/img/faces/avatar.jpg";
 
-var ps;
+let ps;
 
 // We've created this component so we can have a ref to the wrapper of the links that appears in our sidebar.
 // This was necessary so that we could initialize PerfectScrollbar on the links.
@@ -304,7 +304,7 @@ class SimpleSidebar extends React.Component {
   render() {
     const {
       classes,
-      logo,
+      // logo,
       image,
       logoText,
       routes,
@@ -473,7 +473,7 @@ class SimpleSidebar extends React.Component {
     const brand = (
       <div className={logoClasses}>
         <a href="https://www.covidanalytics.org/" target="_blank" className={logoMini}>
-          <img src={logo} alt="logo" className={classes.img}/>
+        {/*  <img src={logo} alt="logo" className={classes.img}/>*/}
         </a>
         <a href="https://www.covidanalytics.org/" target="_blank" className={logoNormal}>
           {logoText}

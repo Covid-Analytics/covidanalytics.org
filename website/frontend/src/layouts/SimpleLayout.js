@@ -41,10 +41,9 @@ export default function SimpleLayout(props) {
   // states and functions
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [miniActive, setMiniActive] = React.useState(false);
-  const [image, setImage] = React.useState(null /*require("assets/img/sidebar-image-2.jpg")*/);
-  const [color, setColor] = React.useState("rose");
-  const [bgColor, setBgColor] = React.useState("white");
-  const [logo, setLogo] = React.useState(require("assets/img/logo-white.svg"));
+  const [image] = React.useState(undefined /*require("assets/img/sidebar-image-2.jpg")*/);
+  const [color] = React.useState("rose");
+  const [bgColor] = React.useState("white");
   // styles
   const classes = useStyles();
   const mainPanelClasses =
@@ -59,11 +58,11 @@ export default function SimpleLayout(props) {
   // ref for main panel div
   const mainPanel = React.createRef();
 
-  const resizeFunction = () => {
-    if (window.innerWidth >= 960)
-      setMobileOpen(false);
-  };
   React.useEffect(() => {
+    const resizeFunction = () => {
+      if (window.innerWidth >= 960)
+        setMobileOpen(false);
+    };
     /*if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
@@ -80,7 +79,7 @@ export default function SimpleLayout(props) {
       }*/
       window.removeEventListener("resize", resizeFunction);
     };
-  });
+  }, []);
   // functions for changing the states from components
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const handleSidebarMinimize = () => setMiniActive(!miniActive);
@@ -90,7 +89,7 @@ export default function SimpleLayout(props) {
       <SimpleSidebar
         routes={dashRoutes}
         logoText={"Covid-19 Live"}
-        logo={logo}
+        // logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
