@@ -63,6 +63,7 @@ italy_analysis,output_11_9.png,Daily new Deaths,,it,deaths,119,,
 italy_analysis,output_11_10.png,,,it,,120,,1
 italy_analysis,output_11_11.png,Daily new Hospitalized,,it,hospital,121,,
 italy_analysis,output_11_12.png,Daily new Tampons,,it,,122,,
+italy_analysis,output_13_0.png,Tampons that are positive,,it,,240,,
 predictions,output_6_0.png,Projection: Italy Cases,simplified,it,"cases,forecast",580,,
 predictions,output_6_1.png,Projection: Italy Deaths,simplified,it,"deaths,forecast",586,,
 predictions,output_6_2.png,Projection: South Korea Cases,simplified,kr,"cases,forecast",583,,
