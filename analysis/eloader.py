@@ -155,6 +155,8 @@ def load_covidtracking_us_data():
     # US states Information: useful to join the region name (CA -> California)
     def load_us_regions_info():
         df_population = pd.read_csv(loc_states_population)
+        # NOTE: fix an issue where the DoC has a capital 'O'
+        df_population['StateName'].replace('District Of Columbia', 'District of Columbia', inplace=True)
         df = load_csv(loc_states_info,
                       keep_cols_map={'state': 'RegionCode', 'name': 'RegionName'},
                       drop_cols=['covid19SiteTertiary', 'covid19SiteSecondary', 'twitter', 'covid19Site', 'covid19SiteOld', 'fips', 'pui', 'pum', 'notes'])
