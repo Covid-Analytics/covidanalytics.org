@@ -279,6 +279,9 @@ def load_opencovid19_data():
             'subregion1_name': 'RegionName',
         }, drop_cols=['wikidata', 'datacommons', 'subregion2_code', 'subregion2_name', 'locality_code', 'locality_name', '3166-1-alpha-2', '3166-1-alpha-3', 'aggregation_level'])
 
+        # drop metadata for subregion_2s - as the 'CountryCode' + 'RegionCode' key is not unique
+        df_meta = df_meta[df_meta['ocv_key'].str.count('_') < 2]
+
         #  ocv_key, Population, PopulationMale, PopulationFemale, PopulationDensity, Population80
         df_population = load_csv(loc_demographics, keep_cols_map={
             'key': 'ocv_key',
@@ -305,7 +308,7 @@ def load_opencovid19_data():
         df_daily = df_daily[df_daily['dConfirmed'].notna()]
         df_daily = df_daily[df_daily['Confirmed'].notna()]
 
-        # [DISABLED: NEED REGIONS] - remove regions of 2nd level (> 1 underscore contained in the ocv_key) -- total: remove 92% of data
+        # remove regions of 2nd level (> 1 underscore contained in the ocv_key) -- total: remove 92% of data
         #  quantity: 3912316 rows (full), 314628 (region data, SELECTED), 80728 (country data) - at 350 days
         df_daily = df_daily[df_daily['ocv_key'].str.count('_') < 2]
 
