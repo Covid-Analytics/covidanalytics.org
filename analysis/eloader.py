@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 
 CANONICAL_COLS = ['Date', 'X', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Negative', 'Infectious', 'Deaths', 'Recovered', 'Hospitalized', 'Tampons', 'PeopleTested', 'Population', 'dConfirmed', 'dNegative', 'dInfectious', 'dDeaths', 'dRecovered', 'dHospitalized', 'dTampons', 'dPeopleTested', 'Death_rate', 'dateChecked']
-REGION_INDEX_COLS = ['CountryCode', 'CountryName', 'RegionCode', 'RegionName']
 DATE_FORMAT = '%Y-%m-%d'
 
 # MISC functions
@@ -36,9 +35,9 @@ def cleanup_canonical(df, warning_prefix='', drop_na_columns=True):
     extra_canonical_cols = list(set(df.columns) - set(CANONICAL_COLS))
     extra_canonical_cols.sort()
     if extra_canonical_cols:
-        print(warning_prefix + ': non-canonical cols: ' + ', '.join(extra_canonical_cols))
+        print(warning_prefix + ': non-canonical cols: ' + ', '.join(extra_canonical_cols) + '. (Dropped)')
 
-    # return the nominal columns: excess columns are discarded, missing columns are NaN
+    # select canonical cols: excess columns are discarded, missing columns are NaN
     df = df.reindex(columns=CANONICAL_COLS)
 
     # remove empty columns
@@ -88,7 +87,7 @@ def load_csv(filename: str, keep_cols_map: list or dict, drop_cols: list):
     return df
 
 
-def post_process_entries(filename: str, df: pd.DataFrame, set_cols_map: dict = None, df_regions=None):
+def post_process_entries(info_file_name: str, df: pd.DataFrame, set_cols_map: dict = None, df_regions=None):
     # set columns, if requested
     if set_cols_map:
         for item in set_cols_map.items():
@@ -110,17 +109,17 @@ def post_process_entries(filename: str, df: pd.DataFrame, set_cols_map: dict = N
         # HACK: set US data sets which miss 'Population' to a constant here
         if 'CountryName' in df.columns and 'RegionCode' not in df.columns:
             # NOTE: this number comes from the OpenCovid-19 data set - here a constant; TODO: merge it dynamically
-            df_population = None
+            population_value = None
             if df['CountryName'].all() == 'United States of America':
-                df_population = 329064917
-            if df_population:
-                # print(filename + ': hack: setting ' + df['CountryName'].any() + ' population to ' + str(df_population))
-                df['Population'] = df_population
+                population_value = 329064917
+            if population_value:
+                # print(filename + ': hack: setting ' + df['CountryName'].any() + ' population to ' + str(population_value))
+                df['Population'] = population_value
 
-    # add other canonical values
+    # add other canonical values: 'X' and 'Death_rate'
     df['X'] = df['Date'].map(lambda d: date_to_day_of_year(datetime.strptime(d, DATE_FORMAT)))
-    if 'Confirmed' in df.columns:
-        if 'Deaths' in df.columns: df['Death_rate'] = 100 * df['Deaths'] / df['Confirmed']
+    if ('Confirmed' in df.columns) and ('Deaths' in df.columns):
+        df['Death_rate'] = 100 * df['Deaths'] / df['Confirmed']
 
     # more ratios
     # df['Confirmed_pct'] = 100 * df['Confirmed'] / df['Population']
@@ -131,7 +130,7 @@ def post_process_entries(filename: str, df: pd.DataFrame, set_cols_map: dict = N
         df['dateChecked'] = datetime.now(timezone.utc).strftime(DATE_FORMAT + 'T%H:%M:%SZ')
 
     # cleanup (reorder columns and drop full na's)
-    return cleanup_canonical(df, filename)
+    return cleanup_canonical(df, info_file_name)
 
 
 # https://covidtracking.com/
@@ -247,32 +246,80 @@ def load_pcmdpc_it_data():
     return df_daily, df_regional_daily
 
 
-# https://github.com/open-covid-19
+# https://github.com/open-covid-19 - OUTDATED - moved to Google
 def load_opencovid19_data():
-    loc_regions_daily = 'https://open-covid-19.github.io/data/data.csv'
+    # loc_outdated_regions_daily = 'https://open-covid-19.github.io/data/data.csv'
+    loc_metadata = 'https://storage.googleapis.com/covid19-open-data/v2/index.csv'
+    loc_demographics = 'https://storage.googleapis.com/covid19-open-data/v2/demographics.csv'
+    loc_epidemiology_daily = 'https://storage.googleapis.com/covid19-open-data/v2/epidemiology.csv'
 
-    def apply_date_offset_to_country(df, country_code, days):
-        df_old_date = df.loc[(df['RegionCode'].isna()) & (df['CountryCode'] == country_code), 'Date']
-        df_new_date = df_old_date.map(lambda date: (datetime.strptime(date, DATE_FORMAT) + timedelta(days=days)).strftime(DATE_FORMAT))
-        df.update(df_new_date)
+    # def apply_date_offset_to_country(df, country_code, days):
+    #     df_old_date = df.loc[(df['RegionCode'].isna()) & (df['CountryCode'] == country_code), 'Date']
+    #     df_new_date = df_old_date.map(lambda date: (datetime.strptime(date, DATE_FORMAT) + timedelta(days=days)).strftime(DATE_FORMAT))
+    #     df.update(df_new_date)
 
     # Countries by day
-    def load_regions_daily():
-        #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Deaths, Death_rate, dateChecked
-        df = load_csv(loc_regions_daily,
-                      keep_cols_map=['Date', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Deaths', 'Population', 'Latitude', 'Longitude'],
-                      drop_cols=['Key'])
-        # ES data is 1 day ahead of the pack, bring it back
-        apply_date_offset_to_country(df, country_code='ES', days=-1)
-        return post_process_entries(loc_regions_daily, df)
+    # def load_regions_daily():
+    #     #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Deaths, Death_rate, dateChecked
+    #     df = load_csv(loc_outdated_regions_daily,
+    #                   keep_cols_map=['Date', 'CountryCode', 'CountryName', 'RegionCode', 'RegionName', 'Confirmed', 'Deaths', 'Population'],
+    #                   drop_cols=['Key', 'aggregation_level', 'Latitude', 'Longitude'])
+    #     # ES data is 1 day ahead of the pack, bring it back
+    #     apply_date_offset_to_country(df, country_code='ES', days=-1)
+    #     return post_process_entries(loc_outdated_regions_daily, df)
 
-    # as a sub-table, extract the world population
-    #  CountryCode, CountryName, RegionCode, RegionName, Population
-    df_regions_daily = load_regions_daily()
-    pop_cols = REGION_INDEX_COLS + ['Population']
-    df_regions_population = df_regions_daily.drop_duplicates(subset=REGION_INDEX_COLS, keep='last')[pop_cols]
-    # df_countries_population = df_regions_population[df_regions_population['RegionCode'].isna()]
-    return df_regions_daily, df_regions_population
+    # Load metadata, by Keys
+    def load_metadata():
+        #  ocv_key,	CountryCode, CountryName, RegionCode, RegionName
+        df_meta = load_csv(loc_metadata, keep_cols_map={
+            'key': 'ocv_key',
+            'country_code': 'CountryCode',
+            'country_name': 'CountryName',
+            'subregion1_code': 'RegionCode',
+            'subregion1_name': 'RegionName',
+        }, drop_cols=['wikidata', 'datacommons', 'subregion2_code', 'subregion2_name', 'locality_code', 'locality_name', '3166-1-alpha-2', '3166-1-alpha-3', 'aggregation_level'])
+
+        #  ocv_key, Population, PopulationMale, PopulationFemale, PopulationDensity, Population80
+        df_population = load_csv(loc_demographics, keep_cols_map={
+            'key': 'ocv_key',
+            'population': 'Population',
+            'population_male': 'PopulationMale',
+            'population_female': 'PopulationFemale',
+            'population_density': 'PopulationDensity',
+            'population_age_80_and_older': 'Population80',
+        }, drop_cols=['rural_population', 'urban_population', 'largest_city_population', 'clustered_population', 'human_development_index', 'population_age_00_09', 'population_age_10_19', 'population_age_20_29', 'population_age_30_39', 'population_age_40_49', 'population_age_50_59', 'population_age_60_69', 'population_age_70_79', 'population_age_80_89', 'population_age_90_99'])
+
+        #  ocv_key, CountryCode, CountryName, RegionCode, RegionName, Population, PopulationMale, PopulationFemale, PopulationDensity, Population80
+        return df_meta.join(df_population.set_index('ocv_key'), on='ocv_key', how='left')
+
+    # Countries by day
+    def load_epidemiology_daily(df_meta: pd.DataFrame):
+        #  Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Deaths, Death_rate, dateChecked
+        df_daily = load_csv(loc_epidemiology_daily, keep_cols_map={
+            'key': 'ocv_key', 'date': 'Date', 'new_confirmed': 'dConfirmed', 'new_deceased': 'dDeaths', 'new_recovered': 'dRecovered', 'new_tested': 'dTampons',
+            'total_confirmed': 'Confirmed', 'total_deceased': 'Deaths', 'total_recovered': 'Recovered', 'total_tested': 'Tampons'
+        }, drop_cols=[])
+
+        # cleanup: null ocv_key (1/10000), null dConfirmed (1/1000) or Confirmed (1/20000) - total: 0.12% of data pts
+        df_daily = df_daily[df_daily['ocv_key'].notna()]
+        df_daily = df_daily[df_daily['dConfirmed'].notna()]
+        df_daily = df_daily[df_daily['Confirmed'].notna()]
+
+        # [DISABLED: NEED REGIONS] - remove regions of 2nd level (> 1 underscore contained in the ocv_key) -- total: remove 92% of data
+        #  quantity: 3912316 rows (full), 314628 (region data, SELECTED), 80728 (country data) - at 350 days
+        df_daily = df_daily[df_daily['ocv_key'].str.count('_') < 2]
+
+        #  +[CountryCode, CountryName, RegionCode, RegionName, Population, PopulationMale, PopulationFemale, PopulationDensity, Population80]
+        df_daily = df_daily.join(df_meta.set_index('ocv_key'), on='ocv_key', how='left')
+
+        #  (new) Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Deaths, Recovered, Tampons, Population, dConfirmed, dDeaths, dRecovered, dTampons, Death_rate, dateChecked
+        #  (prv) Date, X, CountryCode, CountryName, RegionCode, RegionName, Confirmed, Deaths,                     Population,                                            Death_rate, dateChecked
+        return post_process_entries(loc_epidemiology_daily, df_daily)
+
+    # load the new version of the dataset (3 files, at least)
+    df_metadata = load_metadata()
+    df_epidemiology_daily = load_epidemiology_daily(df_metadata)
+    return df_epidemiology_daily, df_metadata
 
 
 # https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
