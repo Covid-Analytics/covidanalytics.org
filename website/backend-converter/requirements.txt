@@ -1,6 +1,6 @@
 # for the script
 nbformat==5.1.2
-nbconvert==5.6.1
+nbconvert==6.3.0
 jinja2==2.11.3
 # for execution of the notebook
 jupyter_client==6.1.12
